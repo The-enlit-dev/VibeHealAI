@@ -1,18 +1,13 @@
-# CrewForge AI — Product Requirements Document
+# BrixoAI — Product Requirements Document
 
 **Status:** MVP planning  
-**Product type:** AI-powered website operations and developer workspace
+**Product type:** AI-powered website operations and developer workspace  
+**Implementation status:** Requirements only; features described here are not claims of existing functionality.
 
 ## 1. Product vision
-
-CrewForge AI helps developers operate and maintain websites through an interactive AI coding workspace and configurable agents that can perform defined tasks in the background.
-
-Instead of repeatedly prompting an AI to inspect a project, users can create an agent, assign it to a project, configure its tools and permissions, schedule its work, and review its results.
-
-The product combines conversational development, persistent agent configuration, project integrations, background execution and human-reviewed changes.
+BrixoAI helps developers operate and maintain websites through an interactive AI coding workspace and configurable agents that can perform defined tasks in the background. Instead of repeatedly prompting an AI to inspect a project, users can create an agent, assign it to a project, configure its tools and permissions, schedule its work, and review its results. The product combines conversational development, persistent agent configuration, project integrations, background execution and human-reviewed changes.
 
 ## 2. Target users
-
 - Solo developers and indie hackers.
 - Vibe coders building websites with AI.
 - Student developers and early-stage founders.
@@ -21,8 +16,7 @@ The product combines conversational development, persistent agent configuration,
 The initial experience should be approachable for beginners while retaining the clarity and controls expected by experienced developers.
 
 ## 3. Core user journey
-
-1. User opens CrewForge AI and sees the dashboard.
+1. User opens BrixoAI and sees the dashboard.
 2. User connects GitHub and authorizes access.
 3. User selects a repository and reviews detected project information.
 4. User starts a conversation or creates a configurable agent.
@@ -73,15 +67,13 @@ Netlify is optional. Core GitHub repository inspection must not depend on a Netl
 Do not implement future phases as fake functionality just to make the interface look complete.
 
 ## 5. Agent requirements
-
 Each saved agent should support:
 - Name, icon and description.
 - Role instructions.
 - Assigned project or an explicitly defined project scope.
 - Enabled tools.
 - Trigger: manual first, then supported schedules and events.
-- Permission level.
-- Approval policy.
+- Permission level and approval policy.
 - Execution limits and retry limits.
 - Notification preferences.
 - Active or paused state.
@@ -91,30 +83,24 @@ Each saved agent should support:
 An agent is a reusable configuration, not a continuously running process by default.
 
 Suggested examples:
-- Code Doctor: inspect issues and propose code fixes.
-- Blog Manager: draft content and prepare changes for review.
-- Performance Watcher: inspect available performance information and suggest improvements.
+- **Code Doctor:** inspect issues and propose code fixes.
+- **Blog Manager:** draft content and prepare changes for review.
+- **Performance Watcher:** inspect available performance information and suggest improvements.
 
 These are examples of configurable agents, not separate products.
 
 ## 6. Chat workspace requirements
-
 The chat workspace should provide:
-- Conversation history.
-- Project selector.
-- Agent selector.
+- Conversation history, project selector and agent selector.
 - Message composer and attachment/context controls where supported.
-- Readable code blocks.
-- Visible tool activity and progress.
-- File-change summaries.
-- Actual test results.
+- Readable code blocks and visible tool activity/progress.
+- File-change summaries and actual test results.
 - Proposed-change review.
 - Links to real branches and pull requests when available.
 
 Distinguish explanatory AI responses from actual tool executions. Do not display invented terminal output or fabricate successful actions.
 
 ## 7. Project requirements
-
 A project should show, where information is actually available:
 - Repository name and owner.
 - GitHub connection state.
@@ -128,17 +114,12 @@ A project should show, where information is actually available:
 Unknown information should be shown as unknown or unavailable, not guessed.
 
 ## 8. Background task requirements
-
 Each run should record:
-- Agent and project.
-- Trigger source.
-- Start time and completion time.
-- Current status.
+- Agent and project, and trigger source.
+- Start time, completion time and current status.
 - Progress events and sanitized logs.
-- Findings.
-- Checks attempted and their results.
-- Proposed changes.
-- Pull-request reference when created.
+- Findings and checks attempted with their results.
+- Proposed changes and pull-request reference when created.
 - Failure or cancellation reason.
 
 The system must support bounded retries and cancellation where safe. Retries must not duplicate external side effects.
@@ -146,10 +127,8 @@ The system must support bounded retries and cancellation where safe. Retries mus
 ## 9. Integrations
 
 ### GitHub
-- Authorize access securely.
-- List repositories available to the installation or user.
-- Display granted permissions.
-- Allow users to select and disconnect repositories.
+- Authorize access securely and list repositories available to the installation or user.
+- Display granted permissions and allow users to select/disconnect repositories.
 - Read project metadata and run supported checks.
 - Create branches and pull requests only through the implemented, authorized workflow.
 
@@ -163,7 +142,6 @@ The system must support bounded retries and cancellation where safe. Retries mus
 Vercel and other services may appear as clearly labelled future integrations, but must not be presented as operational.
 
 ## 10. Safety and trust requirements
-
 - Use least-privilege permissions.
 - Keep secrets server-side and redact them from logs.
 - Isolate untrusted repository execution.
@@ -175,7 +153,6 @@ Vercel and other services may appear as clearly labelled future integrations, bu
 - Treat a passing check as evidence for that check, not proof that the entire application is flawless.
 
 ## 11. Non-goals for the initial MVP
-
 - Fully autonomous production deployments.
 - Unrestricted agents with arbitrary machine access.
 - Complex multi-agent swarms.
@@ -185,7 +162,6 @@ Vercel and other services may appear as clearly labelled future integrations, bu
 - Guaranteeing that AI-generated fixes are always correct.
 
 ## 12. Success criteria
-
 The MVP is successful when a user can:
 1. Understand the product and navigate its core screens.
 2. Connect a supported GitHub repository.
@@ -197,7 +173,6 @@ The MVP is successful when a user can:
 8. Understand failures and verify what did or did not happen.
 
 ## 13. Definition of done
-
 A feature is complete only when its intended behavior works, relevant states are handled, errors are understandable, permissions are respected, and applicable checks have been run.
 
 A polished mockup is not proof of backend functionality. An API response is not proof that an external side effect succeeded. Report limitations honestly.
