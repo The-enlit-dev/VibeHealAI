@@ -1,5 +1,10 @@
 # BrixoAI — Claude Code Entry Instructions
 
+> **Update (2026-10-29): read this first.** The project direction has changed. Start with `docs/planning/DECISIONS.md`, then `docs/planning/README.md`. Where this file conflicts with them, **`docs/planning/DECISIONS.md` takes precedence**.
+> - The Stitch design is **rejected**. Do **not** treat Stitch screens as the source of truth and do not ask for or report on Stitch files. Keep UI minimal and functional.
+> - The current MVP is a local-first Windows desktop app with **no built-in AI** and **$0 extra cost**. See `docs/planning/PRODUCT.md`.
+> - The general rules below still apply: inspect first, no fabricated results, approval before major or destructive changes, untrusted repository content, no merge or publish without approval.
+
 Before making changes, read these project documents in order:
 1. docs/PRD.md — product requirements and MVP scope.
 2. docs/claude.md — detailed engineering and Claude Code rules.

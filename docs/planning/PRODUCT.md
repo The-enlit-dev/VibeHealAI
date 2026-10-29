@@ -1,214 +1,123 @@
-# BrixoAI — Product Definition (Planning v2)
+# BrixoAI — Product Definition (Planning v3)
 
-**Status:** Proposed. Nothing in this document exists as working software yet. The repository currently contains documentation only (no application code, no tests). See [README.md](./README.md) for how this planning set relates to the earlier documents in `docs/`.
-
-**How to read the labels used across the planning set**
-
-| Label | Meaning |
-|---|---|
-| **Verified** | Checked against official documentation during planning (October 2026). Still re-check before implementation, because vendors change things. |
-| **Needs verification** | Plausible and based on research, but not confirmed from an official primary source. Must be checked before relying on it. |
-| **Proposed** | A design decision we are recommending. Not built. Needs your approval. |
-| **Unknown** | We do not know yet. A milestone includes a task to find out. |
+**Status:** Proposed MVP definition, last updated 2026-10-29. **No application code exists.** Labels such as **[Decision]**, **[Verified]**, **[Recommendation]**, **[Assumption]** and **[Unresolved]** are defined in [DECISIONS.md](./DECISIONS.md).
 
 ---
 
-## 1. Vision in one paragraph
+## 1. One-paragraph summary
 
-BrixoAI is an open-source workspace where you work with **AI teammates** — named AI agents that each have a job, instructions and access to specific tools — and ask them to do real work, not just produce text. The first version focuses on one thing done well: **you pick a project folder on your own computer, describe a coding task in the web app, and an AI agent (running through Claude Code on your machine) does the work, asks your permission before anything risky, and reports back honestly.** Over time, BrixoAI grows into GitHub workflows, website publishing, reusable skills, memory, scheduled automations and eventually cloud computers that keep working when your laptop is closed.
+BrixoAI is a free, local-first Windows desktop app for **vibe coders** whose AI-built JavaScript/TypeScript project has stopped working [Decision DEC-01, DEC-02]. It helps them:
+- see what is broken and explain the error in plain English,
+- capture the failing output safely,
+- prepare a safe summary to give to their own AI tool,
+- review every file change before keeping it,
+- undo changes, and check whether the fix actually worked.
 
-> **Term — AI agent:** a program that uses an AI model to plan steps and call tools (read files, run commands, edit code) until a task is finished. A chatbot only answers; an agent acts.
+**In the MVP, BrixoAI contains no built-in AI** [Decision DEC-06]. The user runs Claude Code (or another AI tool they already have) separately, and BrixoAI is the careful, honest safety net around that work. That is because no officially supported way exists for BrixoAI to use the owner's Claude subscription at no extra cost [Verified 2026-10-25, see [INTEGRATIONS.md](./INTEGRATIONS.md#2-why-brixoai-cannot-embed-ai-on-your-subscription)], and paid API access is excluded by the $0 budget [Decision DEC-05].
 
-> **Term — Claude Code:** Anthropic's coding agent. It can read and edit files and run terminal commands. BrixoAI will *use* it; BrixoAI is not Claude Code and must not be branded as Claude Code (see [INTEGRATIONS.md](./INTEGRATIONS.md#1-claude-code)).
+> **Term: vibe coder.** Someone who builds software mostly by instructing AI tools, often without fully understanding the code those tools write.
 
-## 2. Target users
+## 2. The problem
 
-| User | What they want | What they struggle with today | MVP priority |
-|---|---|---|---|
-| **Vibe coders** — people who build software mostly by instructing AI | Ask for a change, see it done, review it, ship it | Juggling terminals, losing track of what the AI changed, fear of the AI breaking things | **Primary (MVP)** |
-| **Beginners** who want powerful AI without complicated setup | Guided setup, plain-English explanations, safe defaults | Jargon, API keys, terminals, unclear costs | **Primary (MVP)** — shapes every UX decision |
-| **Business owners** who want repetitive digital work automated | "Update my site's blog weekly", "check my SEO", "summarise my inbox" | Most of these need browser access, many integrations and always-on scheduling | **Secondary** — served gradually from the Next phase onward |
+| | Description |
+|---|---|
+| **Target user** [Decision] | A beginner or intermediate vibe coder on **Windows** with a JavaScript/TypeScript web project (for example Next.js, React or Vite), usually built with AI tools such as Cursor, Lovable, Bolt, v0 or Claude. |
+| **Frustrating situation** [Assumption, to validate] | The project used to work. Now `npm run dev` or `npm run build` fails, or the page crashes. They don't understand the error, can't tell which file is really at fault, and fear that letting an AI "fix" it will break something else. Many don't use git, so they have no easy way back. |
+| **Trigger** [Assumption] | A failing command or red error screen after a change, a dependency update, copying the project to another computer, or a new environment variable. |
+| **Current workarounds** [Assumption] | Paste the error into a chat AI with no project context. Let an agentic tool make changes they can't follow. Ask on Discord or Reddit. Restore an old copy. Start over. |
+| **Why these may fall short** [Assumption, to validate] | General tools don't put **understand → capture safely → review every change → undo → verify** first, in beginner language. **Biggest risk:** existing tools such as Claude Code (which has its own checkpoints) may already be good enough for this audience. Validation must test this directly. |
 
-Why business owners are not the MVP focus: almost everything they want requires **browser automation, third-party integrations and background scheduling** — the three hardest and riskiest capabilities. Building a reliable coding workflow first creates the foundation (tasks, approvals, logs, memory) those later features reuse.
+## 3. The MVP workflow (no built-in AI)
 
-## 3. The primary problem
+[Recommendation] Each step says who does it.
 
-AI coding tools are powerful but scattered and intimidating. A beginner using Claude Code in a terminal has:
-- no single place to see **what the AI is doing right now**, what it **did**, and what it **wants permission** to do;
-- no persistent **teammates** with saved instructions per project;
-- no easy path from "code changed" to "pull request opened" to "website published";
-- no clear picture of **cost**.
-
-**BrixoAI's answer:** one calm web workspace that controls a trusted helper on your own computer, shows every step truthfully, asks before risky actions, and remembers your projects and preferences.
-
-## 4. Main user journey (MVP)
-
-1. **Sign up** on the BrixoAI web app.
-2. **Install the BrixoAI Helper** (a small program for your computer) and **pair** it with your account by typing a short code shown in the terminal into the web app. (Pairing explained in [SECURITY.md](./SECURITY.md#3-local-helper-pairing-and-connection-security).)
-3. In the helper, **choose which project folders** BrixoAI may access. Nothing else on your computer is shared.
-4. **Connect your AI access** on your own machine: you provide your own Anthropic API key (stored in your computer's secure keychain, never sent to BrixoAI). See the auth discussion in [ARCHITECTURE.md](./ARCHITECTURE.md#6-claude-authentication-modes).
-5. In the web app, **open a project** and type a task: *"Add a contact form to the homepage and make the tests pass."*
-6. Watch **live progress**: files read, commands run, edits made — each shown as a real event from the helper, never invented.
-7. When the agent wants to do something sensitive (run a command not on the safe list, edit outside the project, use the network), BrixoAI shows an **approval card**. You approve or deny.
-8. You can **cancel** at any time.
-9. When finished, you see a **summary**, the **files changed (diff)**, the **checks that actually ran** and their results, and the **estimated cost** where available.
-10. The task is saved in **task history**.
-
-Later journeys (not MVP): open a GitHub pull request from the result (M5), deploy to Netlify (M8), save the agent as a reusable teammate with skills and memory (M4, M6, M7), run it on a schedule (Later).
-
-## 5. Inspired by Grok Bot — without copying
-
-- BrixoAI is **inspired by the capability set you described** for Grok Bot: persistent AI teammates, computer/browser access, coding, publishing, integrations, memory, skills and automations.
-- **We have not independently verified Grok Bot's actual features, design or implementation.** The planning set treats your feature list (Section 6) as the requirements, not anything copied from another product.
-- BrixoAI will **not** copy proprietary source code, names, logos, screenshots, UI layouts, copywriting, icons or other protected design assets from Grok Bot or any other product.
-- BrixoAI's visual design comes from **your own Stitch screens** (pending — see [../DESIGN.md](../DESIGN.md)).
-- Generic ideas (chat + agents + approvals + task history) are common industry patterns and are fine to build independently.
-
-## 6. Feature classification
-
-**Columns:** *Phase* — **MVP** (milestones M0–M4), **Next** (M5–M9), **Long-term** (Later). *Dependencies* point to other features or milestones in [ROADMAP.md](./ROADMAP.md).
-
-### A. AI teammates and conversations
-
-| Feature | Phase | Why | Dependencies |
-|---|---|---|---|
-| Named agents with job, instructions, preferences, project context | **MVP (M4)** | Core identity of the product; cheap once tasks work | Tasks (M3), `agents` + `agent_versions` tables |
-| Persistent conversations | **MVP (M4)** | Needed to give follow-up instructions | Tasks, Claude session resume |
-| Useful long-term memory | **Next (M7)** | Valuable but easy to get wrong (stale or leaked facts). Needs editing/deletion UI first | Conversations, memory review UI |
-| Text and code input | **MVP (M3)** | The basic task input | — |
-| Image/screenshot input | **Next (M5–M6)** | Very useful for UI fixes; needs upload storage and passing images to the agent (needs verification of the best supported method) | Supabase Storage, attachments |
-| Document input (PDF etc.) | **Next** | Same plumbing as images | Attachments |
-| Voice input | **Long-term** | Nice-to-have; browser speech APIs vary | Stable chat UX |
-| Model choice from supported providers | **MVP (M4), Claude only** | The helper can list models the runtime supports (needs verification of exact SDK method). Other providers later | Helper, Claude auth |
-| Configurable effort (where supported) | **MVP (M4) if exposed by the runtime** | Claude Code supports an effort setting (`/effort` accepts a value in `-p` mode — Verified). SDK option name needs verification | Helper |
-| Progress, cancellation, errors, approvals, task history | **MVP (M1–M3)** | This is the trust foundation of the product | Helper, Realtime |
-| Shared workspace for agents and projects | **MVP (single user)**; multi-user **Long-term** | Data model includes `workspaces` from day one so teams can be added later without migration pain | Auth, RLS |
-
-### B. Computer and browser capabilities
-
-| Feature | Phase | Why | Dependencies |
-|---|---|---|---|
-| Local helper with user-selected folders | **MVP (M1–M3)** | Local-first means low cost and the user's code stays on their machine | Pairing, folder allowlist |
-| Claude Code integration via supported methods | **MVP (M1)** | Through the official Claude Agent SDK using the user's own credential — Verified as a supported pattern | Helper |
-| Terminal and file access with permissions | **MVP (M1)** | Delivered via Claude Code's built-in tools + permission system + BrixoAI approvals | Helper, approvals |
-| Browser access for approved website tasks | **Long-term** (experiment in Next) | High risk (logins, payments, prompt injection from web pages). Could start with a Playwright MCP server in a sandbox. Needs separate security review | MCP (M9), security review |
-| Isolated, persistent cloud computers | **Long-term** | Costs real money per hour and needs strong isolation. Options listed in [TECH_STACK.md](./TECH_STACK.md#7-background-tasks-scheduling-and-future-cloud-workers) | Stable task model, billing decisions |
-| Clear separation of local vs cloud execution | **MVP (design), Long-term (cloud)** | Every task records *where* it runs (`execution_target`) from day one | Data model |
-
-### C. Vibe-coding features
-
-| Feature | Phase | Why | Dependencies |
-|---|---|---|---|
-| Code inspection, editing, debugging, testing | **MVP (M3)** | What Claude Code already does well | Helper |
-| Local diff view of changed files | **MVP (M4)** / **Next (M5)** | Users must see what changed. Uses local `git diff` | Git installed locally |
-| Branches and commits (local) | **Next (M5)** | Side effect on the user's repo, so it needs approval UX | Approvals |
-| GitHub repo connection + pull requests | **Next (M5)** | Requires GitHub App setup and token security | GitHub App, encrypted token storage |
-| Code review agent | **Next (M5)** | A preset agent + skill; reuses tasks | Agents, skills |
-| Screenshot-based UI/UX help | **Next** | Needs image input | Attachments |
-| Figma integration | **Long-term** | Official API + MCP server exist (needs verification of current access terms) | MCP (M9) |
-| Stitch integration | **Long-term** | We have not found a confirmed public API for Stitch — **Unknown**. For now, the user exports screens manually | Research |
-| Documentation agent (PRD, specs, test plans) | **Next (M6)** | A preset agent + built-in skill. Cheap once skills exist | Skills |
-| Tech-stack recommendation agent | **Next (M6)** | Same as above | Skills |
-| SEO / GEO / AEO agent | **Next (M6)** (on-page checks of a local project) | Works on files the agent can read | Skills |
-| Google Search Console integration | **Long-term** | OAuth with Google, sensitive scopes, app verification may be needed | Integrations framework |
-
-> **Terms:** **SEO** = search-engine optimisation. **GEO** = generative-engine optimisation (being cited by AI answer engines). **AEO** = answer-engine optimisation (structuring content to be picked as a direct answer). GEO and AEO are emerging practices without official standards.
-
-### D. Skills and extensibility
-
-| Feature | Phase | Why | Dependencies |
-|---|---|---|---|
-| Built-in skills library | **Next (M6)** | Claude Code natively supports skills as `SKILL.md` files (Verified), so BrixoAI can write skill files the helper passes to the agent | Helper, agents |
-| User-created skills (name, description, instructions) | **Next (M6)** | Same mechanism | Skills UI |
-| Import skills from GitHub repos | **Next (M6, late)** | Imported skills are untrusted instructions — they need review before enabling | Security review UI |
-| Skill versions, permissions, validation, enable/disable | **Next (M6)** | `skill_versions` table; agents pin a version | Data model |
-| MCP support for compatible external tools | **Next (M9)** | The SDK supports MCP servers (Verified). Each server is a new trust boundary | Approvals, security review |
-| Integration directory | **Long-term** | Needs a curated, reviewed list | MCP |
-
-> **Term — MCP (Model Context Protocol):** an open standard that lets AI agents use external tools through a common plug format. Think of it as "USB for AI tools".
-
-### E. Website publishing
-
-| Feature | Phase | Why | Dependencies |
-|---|---|---|---|
-| Sites section | **Next (M8)** | Lists sites linked to projects | Projects |
-| Deploy via the user's existing hosting account | **Next (M8)** | User pays their own hosting; BrixoAI never hosts user sites in the MVP | Netlify OAuth/token |
-| Netlify as first provider | **Next (M8)** | Official deploy API exists (Verified via Netlify docs search; re-check details) | Encrypted token storage |
-| Deploy logs, status, preview and live URLs | **Next (M8)** | Shown only from real Netlify API responses | Netlify integration |
-| More providers, custom domains | **Long-term** | Each provider = new integration to maintain | Integrations framework |
-| BrixoAI-managed subdomains | **Long-term** | Means BrixoAI becomes a host: abuse handling, costs, legal terms. Defer | Business decision |
-
-### F. Memory, workflows and automations
-
-| Feature | Phase | Why | Dependencies |
-|---|---|---|---|
-| Project memory and summaries | **Next (M7)** | Must be visible, editable and deletable | Conversations |
-| User-editable preferences / stored instructions | **MVP (M4)** as agent instructions; richer in **M7** | Simple text fields first | Agents |
-| Reusable workflows | **Long-term** (skills cover the basics in M6) | A workflow engine is a big build | Skills, tasks |
-| Daily/hourly scheduled tasks | **Long-term** | Needs a reliable always-on runner. Locally only works while the computer is on and the helper is running | Scheduler, limits, monitoring |
-| Multi-agent coordination | **Long-term** | Complex, costly, hard to debug. Claude Code subagents exist and may be used inside a single task earlier | Stable single-agent flow |
-| Background execution with laptop closed | **Long-term** | Requires a cloud worker | Cloud worker decision |
-
-### G. Dashboard and quality of life
-
-| Feature | Phase | Why | Dependencies |
-|---|---|---|---|
-| Minimal dashboard: projects, recent activity, task progress, connected services | **MVP (M3–M4)** | Shows real data only | Tasks |
-| Usage/token reporting | **MVP (M4)** | The runtime reports token usage and an estimated cost per run (`total_cost_usd` — Verified as a *client-side estimate*) | Helper |
-| Transparent estimated API cost | **MVP (M4)**, labelled "estimate" | Must say clearly it may differ from the bill | Usage records |
-| Progress reports and completed-task summaries | **MVP (M3)** | The agent's final message + list of real events | Tasks |
-| Time-saved estimates | **Long-term** | Must explain the formula; easy to mislead. Needs real usage data first | Usage history |
-| Music integration | **Long-term / optional** | Unrelated to the core value | — |
-| Offline capabilities | **Long-term / optional** | The helper needs the AI provider online anyway; only UI caching is realistic | — |
-
-## 7. MVP scope
-
-**MVP = milestones M0–M4** in [ROADMAP.md](./ROADMAP.md).
-
-Included:
-1. Web app with sign-in, a projects list, a task view with live progress, approvals, cancellation, task history and a minimal dashboard. Provisional UI until the Stitch screens arrive.
-2. BrixoAI Helper (a command-line program) for macOS, Linux and Windows via WSL2. Native Windows support depends on decision D7 in [README.md](./README.md#decisions-that-need-your-approval), because Claude Code's command sandbox is not available there (Verified).
-3. Secure pairing between helper and account, with revocation.
-4. Folder allowlist; Claude Code execution through the official Agent SDK using the user's own Anthropic API key.
-5. Named agents with instructions, model choice and an agent-version snapshot per task.
-6. Conversations (follow-ups on the same task session).
-7. Token and estimated-cost display.
-
-## 8. Explicit MVP exclusions
-
-- GitHub pull requests, Netlify deploys, skills, MCP, long-term memory: Next phase.
-- Browser automation, cloud computers, scheduling, multi-agent, voice, integrations directory: Long-term.
-- Billing, paid plans, teams and organisations.
-- Hosting user websites on BrixoAI infrastructure.
-- BrixoAI paying for users' AI usage. This is **not allowed** under Anthropic's terms for products that run Claude Code: each user must use their own credential (Verified — see [INTEGRATIONS.md](./INTEGRATIONS.md#1-claude-code)).
-- Offering "Sign in with Claude.ai" inside BrixoAI. **Not permitted** for third-party apps (Verified).
-- Native desktop app (Electron/Tauri). The helper starts as a CLI; packaging comes Later.
-- Any feature that would display fake activity, logs or success.
-
-## 9. Success metrics
-
-Early-stage metrics (measured honestly, with consent, with privacy-respecting analytics or manual tracking):
-
-| Metric | Target for first 10–20 test users | How measured |
+| # | Step | Who |
 |---|---|---|
-| Time from sign-up to first completed task | < 20 minutes, with the beginner guide | Timestamps: account created → first `succeeded` task |
-| Setup completion rate | ≥ 70% reach a paired helper | Count `devices` rows per user |
-| Task success rate (user-judged) | ≥ 60% of tasks marked "useful" by user | Thumbs up/down on the task result |
-| Unapproved sensitive actions | **0** | Audit log review; security tests |
-| Honest reporting | 0 cases of UI showing an action that did not happen | Bug reports, e2e tests |
-| Cancellation reliability | 100% of cancels stop the run within 10 s | e2e test + manual test |
+| 1 | Open BrixoAI and choose **one** project folder. BrixoAI refuses to work outside it ([SECURITY.md](./SECURITY.md) PB-1 to PB-5). | User + BrixoAI |
+| 2 | BrixoAI inspects the project locally, without running it: `package.json` scripts, Node/npm version requirements, lockfile, whether `node_modules` exists, and environment-variable **names** that are expected but missing (from `.env.example`). Secret file *contents* are never read. | BrixoAI |
+| 3 | Capture the error: paste it, **or** approve running one listed `package.json` script (for example `build`). The script runs with BrixoAI's safety controls (CE-1 to CE-7) and the output is captured and redacted. | User approves, BrixoAI runs |
+| 4 | BrixoAI matches the error against **built-in offline explanations** (§5) and shows a plain-English explanation, likely files and suggested checks. If nothing matches, it says so honestly. | BrixoAI |
+| 5 | **Start a protected fix session.** BrixoAI snapshots the project files that could change (FC-1). | User + BrixoAI |
+| 6 | **Optional AI help.** BrixoAI prepares a *handoff brief*: the redacted error, project facts, relevant file paths and safety instructions such as "propose minimal changes, explain each one, don't touch .env". The user previews it and copies it themselves. BrixoAI sends nothing anywhere (HB-1 to HB-3, NP-1). | BrixoAI prepares, user copies |
+| 7 | The user works with **their own** Claude Code (or other tool), outside BrixoAI. BrixoAI cannot control that tool's actions (SN-4). | User |
+| 8 | **Review changes.** BrixoAI shows every file that changed since the snapshot: a plain summary plus a line-by-line diff. Risky changes are flagged, such as deleted files, `package.json`/lockfile edits, new scripts, or changes to config or secret files. | BrixoAI |
+| 9 | The user **keeps** or **undoes** changes, per file or all at once. | User |
+| 10 | **Verify.** With approval, BrixoAI re-runs the same script and reports pass or fail honestly. "Pass" means only that this check passed. | User approves, BrixoAI runs |
+| 11 | BrixoAI stores a short, redacted session summary locally, kept 30 days and deletable at any time (DEC-09). | BrixoAI |
 
-## 10. MVP acceptance criteria
+## 4. MVP scope
 
-The MVP is accepted when **all** of these are true and demonstrated on a real machine:
+| In the MVP [Decision DEC-02 + Recommendation] | Not in the MVP |
+|---|---|
+| Windows 10/11 x64 desktop app, no WSL2 needed | macOS, Linux, Windows on ARM |
+| One project folder per session | Workspaces, multiple projects at once |
+| JavaScript/TypeScript projects with `package.json` and npm | Other languages, pnpm/yarn/bun |
+| Paste an error, or run one approved `package.json` script | Arbitrary shell commands, long-running dev-server supervision |
+| Offline rule-based error explanations | Built-in AI or any model calls (DEC-06) |
+| Handoff brief for the user's own AI tool (copy only) | BrixoAI launching or driving Claude Code (blocked, unknown U1) |
+| Snapshot → review changes → keep or undo → verify | Automatic fixes, autonomous agents, multi-agent systems |
+| `npm install` only as a separate, clearly warned, approved action | Automatic dependency changes |
+| Local settings, session summaries, backups, 30-day retention, delete all | Cloud storage, sync, accounts, sign-in (DEC-07) |
+| Minimal functional UI (DEC-10) | New design system, Stitch, polish |
+| — | GitHub integration, deploys, skills, MCP, memory, schedules, business-owner features, voice, browser automation |
 
-1. A new user can sign up, install and pair the helper, allowlist a folder and add their API key by following [BEGINNER_GUIDE.md](./BEGINNER_GUIDE.md) without help.
-2. The user can submit a coding task in the web app; the helper runs it; live events appear within ~2 s of happening on the machine.
-3. A tool call that needs approval pauses the task (`awaiting_approval`). Approving continues it; denying blocks that action. No response within the timeout counts as deny.
-4. Cancel stops the agent and marks the task `cancelled`.
-5. If the helper is offline, the UI says so, and the queued task expires with a clear message instead of hanging forever.
-6. The final result shows a summary, the real changed files, the commands that ran with exit status, and estimated cost labelled as an estimate.
-7. One user cannot read or change another user's projects, tasks or devices (automated row-level security tests pass).
-8. No API key, token or secret appears in the database, the logs or the browser (automated redaction tests + manual check).
-9. Named agents can be created, edited and selected; each task records which agent version it used.
-10. Every milestone's listed tests pass in CI.
+## 5. Built-in error explanations (offline)
+
+[Recommendation] A small, versioned set of rules that recognise common error patterns and explain them in plain English. Initial candidates, to be confirmed against the validation test collection:
+
+| Error family | Example signal | Typical explanation |
+|---|---|---|
+| Missing package | `Cannot find module 'x'`, `Module not found: Can't resolve` | The package isn't installed, or the import path is wrong |
+| Wrong filename case | Import works on another machine, fails here | Windows and macOS treat letter case differently from Linux hosts |
+| Port in use | `EADDRINUSE` | Another program is already using that port |
+| Missing environment variable | `undefined` config value; `.env.example` lists a name `.env` lacks | A required setting is missing. BrixoAI shows the **name only** |
+| Node version mismatch | `engines` field vs installed Node; `ERR_REQUIRE_ESM`; unsupported syntax | The installed Node.js version doesn't match the project |
+| TypeScript error | `TS2307`, `TS2322`, … | The code's types don't match. Shows file and line |
+| Damaged install | Lockfile and `node_modules` out of sync | Dependencies need a clean reinstall (an approved action) |
+
+**Unknown U2:** how much real-world coverage these rules achieve. They will be measured, not promised.
+
+## 6. Success measures
+
+[Recommendation] Initial targets for the first 5–10 testers:
+
+| Measure | Target | How measured |
+|---|---|---|
+| Time to first useful result (error captured and explained) | ≤ 15 minutes from install for 70% of testers | Local session timestamps (shared by testers voluntarily) |
+| "I understood what was wrong" | ≥ 4 out of 5 in 70% of sessions | Short in-app rating, stored locally, shared voluntarily |
+| Rule-based explanation coverage | Measured against the test collection; target set after the first measurement | Test collection results |
+| Fix confirmed by re-running the check | Reported honestly; no target until data exists | Verification results |
+| Unapproved file changes made **by BrixoAI** | **0** | Automated tests + local audit log |
+| Reads outside the chosen folder; secret contents shown or stored | **0** | Automated tests (SECURITY.md VR-1 to VR-3) |
+| Undo restores files exactly | 100% in tests | Automated tests |
+| Would use it again for the next breakage | ≥ 40% of testers within two weeks | Follow-up interview |
+| Extra cost to the owner | **$0** | DEC-05 |
+
+## 7. Validation plan ($0)
+
+[Recommendation] Validate demand before building much.
+
+1. **Interviews (10–15):** in vibe-coder communities, ask "Tell me about the last time your project broke. What did you try? What did it cost you?" No pitching. Free.
+2. **Concierge tests (about 5):** walk testers through the exact workflow by hand on their broken project, with their consent. **They use their own AI tools.** The owner's subscription is not used to diagnose other people's projects (unknown U11).
+3. **Test collection (about 20 projects):** deliberately broken sample projects covering the error families in §5. Used to measure rule coverage and to test snapshot, review and undo. Stays on the owner's machine.
+4. **Prototype test (5–10 users):** only after the prototype security gate in [SECURITY.md §4](./SECURITY.md#4-release-gates) passes.
+
+Decision point after validation: continue, narrow further, or change direction. Results are recorded in [DECISIONS.md](./DECISIONS.md).
+
+## 8. Assumptions and unresolved questions
+
+- [Assumption] The pain is frequent and serious enough for vibe coders to install a separate tool.
+- [Assumption] A safety net around the user's own AI tool is valuable even though BrixoAI contains no AI.
+- [Assumption] Most target users are on Windows and use npm.
+- [Unresolved] U1 (may BrixoAI launch or drive Claude Code for the user?), U2 (rule coverage) and U11 (testing with others' projects). See [ARCHITECTURE.md §9](./ARCHITECTURE.md#9-open-technical-questions).
+
+## 9. Long-term vision (parked, not planned work)
+
+The original ambition remains a direction, not a commitment. It may be revisited only after the MVP is validated, and each item needs its own decision and cost check:
+- AI teammates,
+- embedded AI (if a permitted, affordable path exists),
+- GitHub workflows,
+- website publishing,
+- skills and MCP tools,
+- memory, schedules, cloud execution,
+- business-owner automation.

@@ -1,5 +1,10 @@
 # BrixoAI — Claude Code Instructions
 
+> **Update (2026-10-29): read this first.** Parts of this file are out of date. The current direction is in `docs/planning/` (start with `DECISIONS.md`), which **takes precedence** over this file.
+> - The Stitch design is **rejected**. Ignore the Stitch references below (sections 2, 3, 5 and 9) and keep UI minimal and functional.
+> - The mission in section 1 (website-operations workspace with agents and GitHub) is superseded. The MVP is a local-first Windows desktop app that helps vibe coders fix broken JavaScript/TypeScript projects safely, with **no built-in AI** and **$0 extra cost** (`docs/planning/PRODUCT.md`).
+> - Security, verification and honesty rules in this file still apply. Detailed requirements are in `docs/planning/SECURITY.md`.
+
 ## 1. Mission
 Build BrixoAI, an AI website-operations workspace with conversational coding, configurable agents, GitHub integration, background tasks and reviewable code changes. Deliver working, tested increments. Do not attempt to build every feature at once.
 

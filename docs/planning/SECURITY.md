@@ -1,161 +1,144 @@
-# BrixoAI — Security and Permissions (Planning v2)
+# BrixoAI — Security and Privacy Requirements (Planning v3)
 
-**Status:** Proposed design. **No control described here is implemented**, and BrixoAI makes no security certification claims. This document extends the baseline in [../SECURITY.md](../SECURITY.md), which remains in force. Labels are explained in [PRODUCT.md](./PRODUCT.md).
+**Status:** Starting specification [Decision DEC-08], last updated 2026-10-29. **Every requirement below is _Proposed_. None is implemented or tested yet.** BrixoAI is not "secure" because this document exists. A control counts only when it has been built, tested and its status updated in §6. Labels are defined in [DECISIONS.md](./DECISIONS.md).
 
-## Why security comes first here
-
-BrixoAI lets an AI run commands on a real person's computer. A mistake can delete files, leak secrets or push bad code. Our approach is **defence in depth**: several independent layers, so one failure is not a disaster.
-
-```mermaid
-flowchart TB
-  A["Layer 1: Account isolation<br/>(Supabase Auth + Row Level Security)"] --> B["Layer 2: Paired, revocable helper<br/>(device credential in OS keychain)"]
-  B --> C["Layer 3: Folder allowlist<br/>(helper refuses other paths)"]
-  C --> D["Layer 4: Claude Code permission rules<br/>(deny secret paths, default mode)"]
-  D --> E["Layer 5: BrixoAI approvals<br/>(canUseTool → user decides)"]
-  E --> F["Layer 6: OS sandbox for commands<br/>(macOS / Linux / WSL2)"]
-  F --> G["Layer 7: Limits<br/>(time, turns, budget)"]
-  G --> H["Layer 8: Redaction + audit log"]
-```
+The older baseline in [../SECURITY.md](../SECURITY.md) still states valid principles (least privilege, untrusted repository content, no fabricated results, approval before consequential actions). This document turns them into testable requirements for the local desktop MVP.
 
 ---
 
-## 1. Authentication and account isolation
+## 1. What we are protecting against
 
-- Users sign in with **Supabase Auth** (GitHub OAuth or email magic link — decision pending).
-- **Row Level Security (RLS) is enabled on every table.** Policies check that `workspace_id` belongs to the signed-in user (single-user workspaces in the MVP).
-- Server code re-checks ownership before any privileged action. It never trusts IDs sent from the browser without checking.
-- Hidden or disabled buttons are **not** a security boundary.
-- The Supabase **service role / secret key** exists only in Netlify server environment variables. It never goes to the browser, the helper or the repository.
-- **Tests:** automated RLS tests with two users (user B cannot select, insert, update or delete user A's rows in any table), run against the local Supabase stack in CI.
-
-## 2. Secure storage of API keys and OAuth tokens
-
-| Secret | Where it lives | Never stored in |
-|---|---|---|
-| User's Anthropic API key | **User's OS keychain**, read by the helper and passed only to the Claude runtime child process via environment | BrixoAI database, browser, logs, repo files, chat |
-| Helper device credential | OS keychain (helper side); **only a hash** in the `devices` table | Plain text anywhere |
-| GitHub App private key, client secrets | Netlify environment variables (server only) | Repository, database, browser |
-| Users' GitHub user tokens / Netlify tokens (M5, M8) | Encrypted at rest in a server-only table or Supabase Vault (Needs verification of Vault suitability), decrypted only in server code | Browser, helper, logs |
-| Supabase anon/publishable key | Browser and helper (designed to be public; RLS protects data) | — |
-
-Rules:
-- `.env.example` contains **placeholders only**. Real `.env` files are git-ignored.
-- **Never ask users to paste keys into chat, task prompts, planning documents or source files.** The UI shows where to put each secret.
-- Encryption keys for stored tokens live in environment variables and can be rotated. The plan includes a re-encryption script.
-- Disconnect = delete the stored token + revoke at the provider where possible.
-
-## 3. Local helper pairing and connection security
-
-**Pairing flow (device-code style, Proposed):**
-1. The user runs `brixo-helper pair`. The helper requests a pairing from the server and receives a **short user code** (e.g. `KQ7M-2XRD`) plus a secret device code. Both expire in 10 minutes.
-2. The helper shows the user code and a link. The user, **already signed in** on the web app, enters the code and sees the device name and operating system before clicking **Approve**.
-3. The helper polls the server, rate-limited. After approval it receives a random **device credential**, stores it in the OS keychain, and the server stores only its hash.
-4. The web app lists paired devices with last-seen time and a **Revoke** button. Revoking immediately blocks the credential and fails any of that device's running tasks.
-
-**Connection security:**
-- The helper opens **no network ports** and accepts no incoming connections. All traffic is outbound HTTPS/WSS to Supabase and the BrixoAI server.
-- The device token used for Supabase should be **short-lived** and scoped to that device's rows (approach: unknown U1 in [ARCHITECTURE.md](./ARCHITECTURE.md#10-open-unknowns)).
-- Pairing endpoints are rate-limited. Codes are single-use. The approval screen warns: *"Only approve a code you see on your own computer right now."* This counters phishing ("enter this code for me").
-- The helper verifies TLS normally and never disables certificate checks.
-- Helper releases are published from CI with provenance (npm provenance — Needs verification); signed desktop builds come Later.
-
-## 4. Project-folder restrictions
-
-- The helper keeps a local **allowlist** of absolute folder paths in its config file (in the user's config directory). The cloud only knows a project ID and a display name.
-- The helper **refuses** tasks for projects with no local folder binding on that device.
-- Path checks resolve symlinks (`realpath`) before comparing, to block `../` and symlink escapes.
-- Claude runs with `cwd` set to the project folder. Claude Code's file tools treat the working directory as their scope. Writes outside it need approval (Verified behaviour of `acceptEdits` and `default` modes).
-- **Deny rules for sensitive locations** are always added, e.g. home-directory SSH keys, cloud credentials, browser profiles, password-manager data, and the BrixoAI helper's own config and keychain access. Exact rule syntax to be verified in M1. Use `//` absolute anchors (Verified syntax note).
-- The allowlist UI warns against adding the whole home directory or a system folder, and refuses `/`, `C:\` and the home directory itself.
-- **Important limitation (Verified):** Claude Code's sandbox allows **reads across most of the machine by default**, and the built-in Read tool is not sandboxed. Read access to secrets must therefore be blocked with deny rules and `filesystem.denyRead` / credential settings, not assumed.
-
-## 5. Terminal and browser permissions
-
-**Terminal (MVP):**
-- BrixoAI's default is Claude Code `permissionMode: 'default'`. **`bypassPermissions` is never offered in the MVP.**
-- Safe read-only commands that Claude Code already treats as read-only run without prompts (Verified). Everything else goes to a BrixoAI approval card through `canUseTool`.
-- Per-agent **pre-approved command patterns** (e.g. `Bash(npm test *)`) are allowed only as scoped rules. A bare `Bash` allow is not permitted, because it auto-approves all commands and skips the callback (Verified warning).
-- **OS sandbox:** enable Claude Code's command sandbox with `failIfUnavailable: true` and `allowUnsandboxedCommands: false` (Verified settings). It isolates file writes to the working directory and routes network access through an allowlist proxy, on macOS (Seatbelt), Linux and WSL2 (bubblewrap). **Native Windows has no sandbox (Verified)**, so the helper either requires WSL2 or runs native Windows in a stricter mode where every non-read command needs approval (decision U8).
-- **Network:** sandboxed commands start with an empty domain allowlist (Verified). BrixoAI proposes a default allowlist for package registries (npm, PyPI), with others needing approval.
-
-**Browser automation (Long-term):** a separate sandboxed browser profile, never the user's main logged-in profile; a per-site allowlist; approval before logins, form submissions, purchases or downloads; screenshots of what the agent saw for review.
-
-## 6. Approval of sensitive actions
-
-| Action | Default policy |
+| Threat | Example |
 |---|---|
-| Reading files inside the project | Allowed |
-| Editing files inside the project | Allowed by default once a task runs, shown live; agents may be set to "ask before edits" |
-| Editing outside the project | **Approval** (and blocked entirely for denied paths) |
-| Running commands not on the read-only/pre-approved list | **Approval** |
-| Installing dependencies | **Approval** |
-| Network access to non-allowlisted domains | **Approval** |
-| `git commit` / branch (local) | **Approval** (M5) |
-| `git push`, opening a PR | **Approval** every time (M5) |
-| Merging a PR | **Not supported** by BrixoAI (user merges on GitHub) |
-| Netlify preview deploy | **Approval** (M8) |
-| Netlify production deploy | **Approval with explicit confirmation text** (M8) |
-| Enabling a skill or MCP server | **Review screen + approval** (M6, M9) |
-| Deleting files / `rm -rf` | **Approval**. Claude Code also refuses critical-path removals in every mode (Verified) |
+| **Escaping the project folder** | A path such as `..\..\Users\me\.ssh\id_rsa`, a symlink or Windows junction inside the project pointing elsewhere, or a reserved device name |
+| **Unwanted or destructive file changes** | Overwriting or deleting files without the user realising |
+| **Running untrusted code** | `package.json` scripts and install scripts are code written by whoever made the project. They run with the user's permissions |
+| **Secrets leaking** | `.env` values, API keys or tokens appearing in the UI, logs, session summaries, backups or the handoff brief |
+| **Prompt injection, indirectly** | Text in project files or error logs written to trick an AI tool. BrixoAI has no built-in AI, but the handoff brief and the user's own AI tool can still be targeted |
+| **Actions by the user's external AI tool** | Claude Code (run by the user) may edit or delete files or run commands. BrixoAI cannot prevent this. It can detect and undo **file changes inside the project folder** |
+| **Tampered app or updates** | A modified installer or update |
 
-Each approval card shows: the agent, the exact command or file path, a plain-English explanation, the risk level, and **Approve / Deny** (plus "always allow this exact command for this agent" for low-risk patterns). Each decision is written to `approval_requests` and `audit_log` with user, time and the exact payload approved. **A timeout counts as deny.**
+**Core principle [Decision DEC-08]:** enforcement lives in BrixoAI's application code: path checks, approval gates, process control and redaction. It never relies on instructions to an AI.
 
-## 7. Untrusted repository files, skills, websites and MCP tools
+**Stages:** **P** = must be in place before the first prototype touches a real project · **B** = before a public beta · **L** = can safely wait.
 
-**Everything an agent reads is untrusted data, not instructions from the user.** This includes repository files, README instructions, code comments, issue text, web pages, MCP tool descriptions and outputs, and imported skills.
+## 2. Requirements
 
-- **Critical, Verified finding:** with default Agent SDK options, or `claude -p`, Claude Code loads the project's `.claude/settings.json` **hooks**, connects servers in `.mcp.json`, and reads `CLAUDE.md` — **with no trust dialog**. A malicious repository could run commands through hooks the moment a task starts. **Mitigation:** the helper uses `settingSources: []` by default. A per-project **"Trust this project's Claude settings"** toggle shows exactly what would load (hooks, MCP servers, instructions). Even when trusted, hooks and MCP servers are listed for the user to review.
-- Also disable auto memory for untrusted projects (`CLAUDE_CODE_DISABLE_AUTO_MEMORY=1` — Verified option) so content from one project cannot persist into others unexpectedly.
-- **Prompt injection** (text that tries to trick the AI into harmful actions) cannot be fully prevented. The approval layer and sandbox are what limit the damage. The agent's system prompt states that file and web content are data, not commands.
-- **Skills (M6):** imported skills are shown in full before enabling. They are versioned, and an agent pins a specific version. Changes require re-approval. Skills from GitHub are fetched as text only and never executed on import.
-- **MCP (M9):** local (stdio) servers are treated like installing software: explicit install approval, with the command shown. Remote servers need OAuth consent. Tool calls require approval unless the user pre-approves specific tools.
-- **Rendered content:** markdown from agents is sanitised before display (no raw HTML or scripts). Filenames and logs are escaped. A Content Security Policy is set on the web app.
+### 2.1 Project boundaries (PB)
+| ID | Requirement | Stage |
+|---|---|---|
+| PB-1 | Every path BrixoAI reads or writes is resolved (following symlinks) and must sit inside the selected project folder. Reject `..` segments, absolute paths, UNC/network paths (`\\server\share`), Windows device names (`CON`, `NUL`, `COM1`…), reserved characters, and names ending in a dot or space. | P |
+| PB-2 | Don't follow symlinks or Windows junctions found inside the project when reading or writing. Report them instead. | P |
+| PB-3 | Writes resist swap attacks: open relative to an already-opened folder handle and re-check the final path after opening (a pattern exists in Rakazo, see [REUSE.md](./REUSE.md)). | B |
+| PB-4 | Normalise Windows paths (backslashes, letter case, short `8.3` names, trailing separators) **before** any check. | P |
+| PB-5 | Refuse a drive root, the user's whole profile folder, or system folders as a project. | P |
 
-## 8. Secret redaction and safe logging
+### 2.2 File changes, snapshots and undo (FC)
+| ID | Requirement | Stage |
+|---|---|---|
+| FC-1 | Before a protected fix session, snapshot the files that could change, stored locally with a manifest (path, size, hash). Excluded: `node_modules`, `.git`, build outputs, and secret files (see SE-1; changes to those are detected and warned, not backed up). | P |
+| FC-2 | Change review shows every added, modified and deleted file, with a plain-language summary and a line-by-line diff. Deletions and overwrites are prominent. | P |
+| FC-3 | Undo restores the snapshot exactly (verified by hash) per file or for the whole session. | P |
+| FC-4 | Every write BrixoAI itself makes (undo, restore) is atomic: write a temporary file, then replace. It refuses if the file changed unexpectedly since review. | P |
+| FC-5 | BrixoAI never changes project files except on an explicit user action (undo or restore), and records each change in a local audit log. | P |
+| FC-6 | Handle files locked by another program (common on Windows) with a clear message and retry. | B |
+| FC-7 | Warn about risky diff content: new dependencies, install scripts, network calls, obfuscated code. | L |
 
-- The helper **redacts before sending** anything to the cloud: known key formats (Anthropic, GitHub, AWS, Stripe, Supabase JWTs, private-key blocks), `.env`-style `KEY=value` lines for sensitive key names, plus high-entropy string detection. The redactor is a pure function in `packages/shared`, with a large unit-test corpus.
-- **Events are summaries.** Example: "Ran `npm test` — exit code 1 — 3 failing tests". Output excerpts are capped (proposal: 8 KB per event), and full output stays local.
-- The helper never sends the contents of `.env` files, keychain entries or files matching deny rules.
-- Server logs: no request bodies containing tokens; structured logging with an allowlist of fields.
-- The user can view exactly what was uploaded for any task (it is just the `task_events` rows).
-- **Tests:** a redaction corpus test in CI; an end-to-end test that plants a fake secret in a project and asserts it never appears in the database.
+### 2.3 Command execution (CE)
+| ID | Requirement | Stage |
+|---|---|---|
+| CE-1 | BrixoAI runs only scripts listed in the project's `package.json`, chosen by exact name, after explicit approval that shows the script's real command text. No arbitrary commands. | P |
+| CE-2 | No shell. On Windows, run npm through `node` and npm's own JavaScript entry point, not through `cmd.exe`, to avoid argument-injection problems (unknown U4). | P |
+| CE-3 | Every run has a timeout. Cancel stops the **whole process tree**. On Windows this uses a Job Object configured to kill everything when closed (a Rakazo candidate, see [REUSE.md](./REUSE.md)). | P |
+| CE-4 | Commands get a minimal allowlisted environment, never BrixoAI's own variables. | P |
+| CE-5 | `npm install` is a separate action with a plain warning that install scripts run code from the internet. | P |
+| CE-6 | Output is size-capped and redacted (SE-2) before display or storage. | P |
+| CE-7 | Only one command runs at a time per project, and its live status (running, cancelled, timed out, exit code) is shown honestly. | P |
+| CE-8 | Optional memory/CPU limits and an option to block network access during checks. | L |
 
-## 9. Task cancellation, timeouts and failure recovery
+### 2.4 Safety net around external tools (SN)
+| ID | Requirement | Stage |
+|---|---|---|
+| SN-1 | Change detection compares the project against the snapshot, not just file-watcher events (unknown U3). | P |
+| SN-2 | Changes to secret files or files outside the snapshot scope are reported as "changed, not backed up". | P |
+| SN-3 | Ending a protected session without reviewing changes requires confirmation. | P |
+| SN-4 | The UI and docs state plainly that BrixoAI **cannot** stop, inspect or undo commands an external tool ran, or changes it made outside the project folder. | P |
 
-- **Cancel:** sets `cancel_requested_at`. The helper calls the SDK's `interrupt()` (Verified), resolves pending approvals as deny, and force-stops the runtime after a 10-second grace period. Cancel is idempotent (clicking twice is harmless).
-- **Limits (defaults proposed, per-agent overrides within hard caps):** 30-minute wall clock, 50 agent turns, a per-task estimated-cost cap, a 15-minute approval timeout, a 10-minute queue expiry.
-- **Helper loss:** no heartbeat for 2 minutes → server marks running tasks `failed` (`helper_lost`).
-- **No automatic whole-task retries** (to avoid repeated side effects). The user explicitly clicks **Run again**.
-- **External side effects are idempotent where possible:** PR creation checks for an existing PR on the branch first; deploys record the deploy ID before reporting success.
-- State changes are validated: transitions follow the state machine in [ARCHITECTURE.md](./ARCHITECTURE.md#41-task-states-canonical-list-used-across-all-planning-docs), enforced in a database function, not just the UI.
+### 2.5 Secrets (SE)
+| ID | Requirement | Stage |
+|---|---|---|
+| SE-1 | Secret files are never read for display, briefs or summaries: `.env*` (except `.env.example`, whose variable **names** may be read), `*.pem`, `*.key`, `*.pfx`, `.npmrc`, `.pypirc`, credential JSON files, plus a user-editable list. | P |
+| SE-2 | Redaction runs on everything shown, stored or copied. It catches common key and token formats (Anthropic, OpenAI-style `sk-…`, GitHub, AWS, Stripe, JWTs, Bearer tokens, private-key blocks), `KEY=value` lines with sensitive names, and exact values from `.env` files (matched in memory, never stored). | P |
+| SE-3 | Warn if a reviewed change would add a likely secret to a tracked file. | B |
+| SE-4 | BrixoAI stores no credentials in the MVP. It has no accounts and no API keys. | P |
 
-## 10. Safe deployment and GitHub permissions
+### 2.6 Handoff brief (HB)
+| ID | Requirement | Stage |
+|---|---|---|
+| HB-1 | The brief is built only from redacted data: error output, project facts, file paths. It contains no secret file contents. | P |
+| HB-2 | The user sees the full brief before copying. BrixoAI only places it on the clipboard. It never sends it anywhere. | P |
+| HB-3 | The brief tells the external AI tool to treat project content as untrusted, propose minimal changes, explain each change and avoid secret files. **This is guidance, not enforcement**, and the UI says so. | P |
 
-- GitHub App with **minimum permissions** and user-selected repositories ([INTEGRATIONS.md](./INTEGRATIONS.md#2-github)). Installation tokens are short-lived (1 hour — Verified) and narrowed per request.
-- Agents work on a **new branch**, never directly on the default branch. BrixoAI does not merge.
-- Pushes, PRs and deploys need approval each time and are recorded in `audit_log` with the provider's response (PR number/URL, deploy ID).
-- **Production deploys** require explicit confirmation. Preview deploys come first.
-- The web app's own deployment: Netlify deploys from the `main` branch only after CI passes. Branch protection is on `main`. **Nothing is deployed to production without your explicit approval** (project rule in [../../CLAUDE.md](../../CLAUDE.md)).
-- Dependencies: lockfile committed, Dependabot alerts, `npm audit` in CI, minimal dependencies.
-- Open source: a `SECURITY.md` vulnerability-reporting policy at the repo root before public launch (Later).
+### 2.7 Network and privacy (NP)
+| ID | Requirement | Stage |
+|---|---|---|
+| NP-1 | The MVP makes **no network connections**: no telemetry, no crash reporting, no update checks, no cloud. Only commands the user approves (for example `npm install`) can reach the network, and the approval says so. | P |
+| NP-2 | Any future network feature needs informed consent that names the recipient, the data, the purpose and any cost. Declining keeps all local features working. | B (if any network feature is added) |
+| NP-3 | A test confirms the app makes no unexpected outbound connections during a full session. | P |
 
----
+### 2.8 Local data (LD)
+| ID | Requirement | Stage |
+|---|---|---|
+| LD-1 | Settings, session summaries, snapshots and logs live only in the app's local data folder ([DATA_MODEL.md](./DATA_MODEL.md)). | P |
+| LD-2 | 30-day default retention with automatic clean-up. **Delete all history** and **delete this session** actions. Behaviour documented in the app and in BEGINNER_GUIDE.md [Decision DEC-09]. | P |
+| LD-3 | Logs are redacted, size-capped and rotated, and contain no file contents by default. | P |
+| LD-4 | Export of session summaries (redacted). | B |
 
-## Must be implemented before testing with real users
+### 2.9 Windows and app hardening (WN)
+| ID | Requirement | Stage |
+|---|---|---|
+| WN-1 | Native Windows operation with no WSL2. Handle long paths, letter case and line endings correctly. | P |
+| WN-2 | The app opens **no network ports**. The UI talks to the main process only through Electron's internal messaging. | P |
+| WN-3 | Electron hardening: context isolation on, renderer sandboxed, no Node.js in the renderer, strict content security policy, no remote content, navigation and new windows blocked. | P |
+| WN-4 | Per-user install with no administrator rights. | B |
+| WN-5 | Signed installer and integrity checks. Must be achievable at $0 (unknown U9); otherwise documented as a limitation. | B |
+| WN-6 | No automatic updates in the MVP. Users update manually from a trusted source. | P |
 
-This is a **gate**: no external tester touches BrixoAI until every item is done and verified.
+### 2.10 Verification (VR)
+| ID | Requirement | Stage |
+|---|---|---|
+| VR-1 | Every requirement has an ID, at least one test, and a status in §6 (Proposed → Implemented → Tested). | P |
+| VR-2 | Boundary tests on a real Windows machine: `..`, symlinks, junctions, device names, UNC paths, letter-case tricks. Plus planted-secret tests (a fake key must never appear in the UI, logs, summaries or briefs) and process-tree-kill tests. | P |
+| VR-3 | Undo round-trip tests: snapshot → external change → undo → hashes match. | P |
+| VR-4 | Before a beta: free tooling (dependency audit, static analysis) plus a documented self-review. A paid external review conflicts with DEC-05, so that gap is stated openly. | B |
 
-- [ ] RLS on every table + passing two-user isolation tests.
-- [ ] Service-role key server-only; secret scanning (GitHub secret scanning / pre-commit) enabled on the repo.
-- [ ] Helper pairing with expiring single-use codes, hashed device credentials, a device list and working **Revoke**.
-- [ ] Folder allowlist with symlink-safe checks; refusal of home/root folders.
-- [ ] `settingSources: []` by default + the "trust this project" review flow.
-- [ ] Deny rules for credential locations; sandbox enabled where available with `failIfUnavailable`; a documented Windows policy.
-- [ ] `permissionMode: 'default'`, no `bypassPermissions`, no bare `Bash` allow; approvals via `canUseTool` with timeout = deny.
-- [ ] Cancel, time, turn and budget limits working and tested.
-- [ ] Redaction in the helper with a test corpus + the planted-secret end-to-end test passing.
-- [ ] Sanitised markdown rendering and a Content Security Policy.
-- [ ] Anthropic API key never leaves the user's machine (verified by inspecting network traffic and database contents in a test run).
-- [ ] Audit log entries for approvals.
-- [ ] A plain-English risk notice in onboarding: what the agent can do on your computer, and how to stop it.
-- [ ] Rate limiting on pairing and task-creation endpoints.
+### 2.11 Deferred: built-in AI agent requirements
+Only relevant if a permitted, zero-cost embedded-AI path is ever approved ([INTEGRATIONS.md §3](./INTEGRATIONS.md#3-ai-options-and-their-status)). The earlier design notes still apply as starting points [Verified 2026-10-25 against Claude Agent SDK docs]:
+- remove all built-in tools (`tools: []`) and expose only BrixoAI's own mediated tools;
+- don't load project settings (`settingSources: []`);
+- don't persist sessions (`persistSession: false`);
+- deny-by-default `PreToolUse` hooks;
+- turn and budget limits;
+- telemetry off.
+
+## 3. Prompt injection: how the MVP limits it
+- BrixoAI never acts on instructions found in project files or logs. It has no AI to follow them.
+- The handoff brief marks project content as untrusted (HB-3), but the user's AI tool may still be influenced. The safety net makes resulting file changes **visible and undoable** (FC-2, FC-3, SN-1), and the UI is honest that external commands are out of reach (SN-4).
+
+## 4. Release gates
+
+**Prototype gate (P):** before BrixoAI touches any real project, all **P** requirements are **implemented and tested** on Windows: PB-1/2/4/5, FC-1 to FC-5, CE-1 to CE-7, SN-1 to SN-4, SE-1/2/4, HB-1 to HB-3, NP-1/3, LD-1 to LD-3, WN-1/2/3/6, VR-1 to VR-3.
+
+**Beta gate (B):** all **B** requirements implemented and tested, the remaining limitations documented in plain language, and VR-4 completed.
+
+## 5. Known residual risks (accepted only if documented to users)
+- Approved scripts run with the user's own permissions. There is no operating-system sandbox on native Windows.
+- The user's external AI tool can act outside the project folder or run commands BrixoAI never sees.
+- Redaction can miss unusual secret formats.
+- Without a signed installer (U9), Windows will show security warnings and users can't easily verify the download.
+
+## 6. Control status
+
+| Area | Status |
+|---|---|
+| All requirements in §2 | **Proposed. Not implemented, not tested** (2026-10-29) |

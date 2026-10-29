@@ -1,119 +1,57 @@
-# BrixoAI — Integrations (Planning v2)
+# BrixoAI — AI Access and Future Integrations (Planning v3)
 
-**Status:** Proposed. No integration is implemented. Labels are explained in [PRODUCT.md](./PRODUCT.md).
+**Status:** Last updated 2026-10-29. This file previously planned GitHub, Netlify, Supabase and MCP integrations for a hosted product. Those are **not in the MVP** (§4). It now records how AI fits into BrixoAI under the $0 budget [Decision DEC-05] and why the MVP has no built-in AI [Decision DEC-06]. Labels are defined in [DECISIONS.md](./DECISIONS.md).
 
-> **Term — integration:** a connection between BrixoAI and another service (GitHub, Netlify, etc.) so an agent can use it on your behalf.
->
-> **Term — OAuth:** the "Log in with X and allow access" flow. You approve specific permissions on the other service's website, and BrixoAI receives a token instead of your password.
->
-> **Term — scope / permission:** exactly what a token is allowed to do (e.g. "read repository contents" but not "delete repository").
-
-## Priority overview
-
-| Integration | Priority | Milestone | Difficulty |
-|---|---|---|---|
-| Claude Code (via Agent SDK) | **P0 — MVP core** | M1 | Medium |
-| Supabase | **P0 — MVP core** | M2 | Medium |
-| GitHub | **P1 — Next** | M5 | Medium–High |
-| Netlify | **P1 — Next** | M8 | Medium |
-| MCP (user-configured servers) | **P2 — Next** | M9 | Medium–High (mostly security) |
-| Browser automation | **P3 — Long-term** | Later | High (security) |
-| Figma | P3 — Long-term | Later | Medium |
-| Stitch | P3 — Long-term | Later | **Unknown** (no confirmed public API) |
-| Google Search Console | P3 — Long-term | Later | Medium–High (Google OAuth verification) |
-| Others (Slack, email, calendars, Notion, Vercel, Cloudflare) | P4 — Long-term | Later | Varies |
+> **Plain English:** BrixoAI does not contain an AI. You use Claude Code yourself, as you already do. BrixoAI makes that safer: it captures the error, gives you a clean summary to paste, takes a backup first, shows you exactly what changed, and lets you undo.
 
 ---
 
-## 1. Claude Code
+## 1. The Claude Code handoff (the MVP's AI path)
 
-| Aspect | Details |
-|---|---|
-| **Purpose** | The engine that plans and performs coding work: reading and editing files, running commands, using skills and MCP tools |
-| **How BrixoAI uses it** | The local helper calls the **Claude Agent SDK** (`@anthropic-ai/claude-agent-sdk`, TypeScript), which runs Claude Code's agent loop on the user's machine (Verified: the SDK "runs the Claude Code binary" with built-in tools, permissions, sessions and hooks) |
-| **Setup (user)** | Install Node.js LTS and the BrixoAI Helper. Create an Anthropic API key in the Claude Console with a **monthly spend limit**. Enter it into the helper, which stores it in the OS keychain |
-| **Authentication** | **Mode A (MVP): user's own API key** — clearly permitted. **Mode B: user's own Claude Code subscription login via the unmodified CLI** — Needs verification with Anthropic. **Mode C: Bedrock / Google Cloud / Foundry** — Later. Details and quoted policy in [ARCHITECTURE.md](./ARCHITECTURE.md#6-claude-authentication-modes) |
-| **Hard rules (Verified)** | No "Sign in with Claude.ai" in BrixoAI. Never collect, store or proxy Claude.ai credentials or session tokens. BrixoAI may not pay for, resell or intermediate users' Claude usage. Do not modify the Claude Code binary or remove its built-in authentication methods. Branding: "Powered by Claude" OK; do not call features "Claude Code" or mimic its visuals |
-| **Permissions BrixoAI configures** | `cwd` = the allowlisted project folder. `settingSources: []` for untrusted projects (so repository hooks, `.mcp.json` and settings do not auto-load — Verified risk). `permissionMode: 'default'`. Scoped `allowedTools` for safe reads. `disallowedTools` / deny rules for secret paths (e.g. `Read(//Users/*/.ssh/**)` style rules; exact patterns to verify). `canUseTool` callback → BrixoAI approval cards. Claude Code command sandbox enabled with `failIfUnavailable: true` and `allowUnsandboxedCommands: false` on macOS/Linux/WSL2 (Verified settings) |
-| **Cost** | Library free. AI usage pay-as-you-go on the **user's** Anthropic account. Per-run cost reported as an estimate (Verified) |
-| **Difficulty** | Medium. The SDK does the heavy lifting; the work is relaying events and approvals reliably and safely |
-| **Priority** | **P0 (M1)** |
-| **Open questions** | Exact TS option names for turn/budget limits, effort and model listing (U3); Mode B acceptability (U2) |
+[Recommendation]
 
-## 2. GitHub
+1. BrixoAI builds a **handoff brief**: the redacted error, project facts (scripts, Node version, missing env-variable *names*), relevant file paths and safety instructions.
+2. You see the whole brief, then copy it. BrixoAI only uses the clipboard and sends nothing anywhere ([SECURITY.md](./SECURITY.md) HB-1 to HB-3, NP-1).
+3. You open Claude Code yourself, in the project folder, and paste it.
+4. Afterwards, BrixoAI shows every file Claude Code changed and lets you keep or undo each one.
 
-| Aspect | Details |
-|---|---|
-| **Purpose** | Link projects to repositories; list repos; open branches and pull requests from completed tasks; later, react to issues |
-| **Two different jobs** | (1) **Local git** (commit, branch, diff) happens on the user's machine through the helper with the user's existing git setup — no GitHub token in BrixoAI's cloud. (2) **GitHub API** actions (list repos, open PRs) use a GitHub App |
-| **Recommended mechanism** | **GitHub App** rather than an OAuth App or personal access tokens. A GitHub App has fine-grained permissions, the user chooses which repositories it may access, and installation tokens are **short-lived (1 hour — Verified)** and can be narrowed to specific permissions per request (Verified) |
-| **Setup (you, once)** | Register a GitHub App in your GitHub account settings: name, callback URL, webhook (optional at first), permissions. Store the App's **private key** and client secret only in Netlify environment variables — never in the repository |
-| **Setup (user)** | Click "Connect GitHub", then install the BrixoAI GitHub App on chosen repositories |
-| **Authentication** | Server-side: App JWT → installation access token (1 h). User-to-server tokens for actions "as the user" (lifetime and refresh behaviour Needs verification) |
-| **Minimum permissions (proposal)** | M5 start: Metadata (read), Contents (read). For PRs: Contents (read & write) on selected repos, Pull requests (read & write). No Administration, no Workflows write, no Secrets |
-| **Pushing code** | Proposed: the helper pushes using the user's **own local git credentials** (they already push from their machine), and BrixoAI's GitHub App only opens the PR and reads status. This keeps write tokens off the user's machine and out of agent reach. Alternative: a short-lived installation token handed to the helper for one push. Decide in M5 |
-| **Approvals** | Every push and PR creation requires explicit approval. **Merging is never done by BrixoAI in the MVP/Next phases** |
-| **Cost** | Free for public and private repos within GitHub's free plan limits |
-| **Difficulty** | Medium–High (token handling, webhook verification later) |
-| **Priority** | **P1 (M5)** |
+**Why this is allowed and free:** it's ordinary use of Claude Code, a native Anthropic application, under your own subscription. BrixoAI never touches your Claude credentials and never sends requests to Anthropic [Verified 2026-10-25 against the terms quoted in §2]. Your normal subscription usage limits still apply.
 
-## 3. Supabase
+**Limitation:** BrixoAI can't control Claude Code's actions. Commands Claude Code runs, and changes outside the project folder, are outside BrixoAI's view ([SECURITY.md](./SECURITY.md) SN-4). Claude Code has its own permission prompts and checkpoint features. BrixoAI's review and undo is an extra, beginner-focused layer, not a replacement.
 
-| Aspect | Details |
-|---|---|
-| **Purpose** | BrixoAI's own database, sign-in, live updates and file storage. Not a user-facing integration in the MVP |
-| **Setup (you)** | Create a Supabase account and **two** free projects: `brixo-dev` and later `brixo-prod` (the Free plan allows 2 — Needs verification). Install the Supabase CLI for local development (requires Docker for the local stack) |
-| **Authentication** | Browser: anon/publishable key + user session (safe to expose; RLS protects data). Server: **service role / secret key only in Netlify environment variables**, never in the browser or the helper. Helper: device-scoped credential (approach to be decided — unknown U1 in [ARCHITECTURE.md](./ARCHITECTURE.md#10-open-unknowns)) |
-| **Permissions** | Row Level Security on **every** table, plus explicit grants (new-project Data API change — Needs verification) |
-| **Cost** | Free tier for development. Pro (~$25/month, Needs verification) recommended before relying on it for real users, because Free projects pause after 7 days of inactivity and lack automatic backups (Needs verification) |
-| **Difficulty** | Medium (RLS policies must be designed and tested carefully) |
-| **Priority** | **P0 (M2)** |
-| **Future user-facing angle** | Vibe coders often build on Supabase. A Supabase MCP server could let agents manage the *user's own* Supabase projects — Later, under MCP rules |
+## 2. Why BrixoAI cannot embed AI on your subscription
 
-## 4. Netlify
+Checked against official Anthropic documentation on 2026-10-25 [Verified]:
 
-| Aspect | Details |
-|---|---|
-| **Purpose (two roles)** | (1) Hosting the BrixoAI web app itself (see [TECH_STACK.md](./TECH_STACK.md#6-hosting-and-deployment-of-brixoai-itself)). (2) **Sites feature (M8):** deploy users' websites to **their own** Netlify accounts |
-| **Deploy API** | Netlify's API supports deploying with a **file digest** (list of file paths + SHA1 hashes, then uploading only the files Netlify asks for) or a **ZIP upload**; functions use SHA256 and a separate upload (Needs verification against current Netlify API docs; found via Netlify docs search results) |
-| **Recommended flow** | The helper builds the site locally (an approved command), computes the digest, and asks the BrixoAI server to create the deploy using the user's Netlify token. The server returns the required file list; the helper uploads files via the server or with a short-lived upload grant (decide in M8). **Preview (draft) deploys by default; production deploys require explicit approval** |
-| **Authentication** | Netlify OAuth application (register as a developer) or a user-supplied personal access token. Tokens are stored **encrypted server-side**, never in the browser or helper (Needs verification of current OAuth app registration steps) |
-| **Permissions** | Netlify tokens are typically account-wide (Needs verification). Show the user clearly what the connection allows; support disconnect |
-| **Cost** | The user's own Netlify plan. Free plan: 300 credits/month, sites pause when exhausted (Needs verification). Deploys consume the **user's** credits — tell them before deploying |
-| **Difficulty** | Medium |
-| **Priority** | **P1 (M8)** |
+- **Subscription sign-in is for Anthropic's own apps:** "OAuth authentication is intended exclusively for purchasers of Claude Free, Pro, Max, Team, and Enterprise subscription plans and is designed to support ordinary use of Claude Code and other native Anthropic applications." ([Legal and compliance](https://code.claude.com/docs/en/legal-and-compliance))
+- **Products must use API keys:** "Developers building products or services that interact with Claude's capabilities, including those using the Agent SDK, should use API key authentication through Claude Console or a supported cloud provider." (same page)
+- **No subscription routing or credential handling by third parties:** "Anthropic does not permit third-party developers to offer Claude.ai login into their own applications, or to route requests through Free, Pro, or Max plan credentials on behalf of their users. Moreover, developers may not collect, store, or intermediate Claude.ai credentials or session tokens." (same page)
+- **Agent SDK note:** "Unless previously approved, Anthropic does not allow third party developers to offer claude.ai login or rate limits for their products, including agents built on the Claude Agent SDK." ([Agent SDK overview](https://code.claude.com/docs/en/agent-sdk/overview))
+- **Long-lived tokens are for your own scripts:** `claude setup-token` creates a one-year subscription token "for CI pipelines and scripts" ([Authentication](https://code.claude.com/docs/en/authentication)). Asking users to paste such a token into BrixoAI would be collecting credentials, which the rule above forbids.
+- **API access is billed separately:** paid per token, with spend caps per usage tier ([Pricing](https://platform.claude.com/docs/en/about-claude/pricing), [Rate limits](https://platform.claude.com/docs/en/api/rate-limits)). A Claude subscription does not include API credit.
 
-## 5. MCP (Model Context Protocol)
+**Grey area, treated as blocked:** the same legal page says the rules don't prevent "an end user from signing in to the unmodified Claude Code binary with their own Claude subscription, including where a platform hosts Claude Code". It also says running Claude Code inside a product requires agreeing to the Commercial Terms. Whether BrixoAI may *launch or drive* the user's own Claude Code is therefore **not confirmed** (unknown U1). Under DEC-05 (no workarounds), BrixoAI doesn't do it unless Anthropic confirms in writing (owner decision P-1).
 
-| Aspect | Details |
-|---|---|
-| **Purpose** | Let agents use external tools (databases, design tools, browsers, SaaS apps) through one standard |
-| **Spec status** | Latest specification revision found: **2026-07-28**. It removes protocol-level sessions and the initialize handshake (stateless requests carrying version and capabilities in `_meta`) (Needs verification against the official spec pages; found via the spec changelog in search). Authorization is based on OAuth 2.1 (introduced in the 2025-03-26 revision; current details Needs verification) |
-| **How BrixoAI uses it** | The Agent SDK accepts MCP servers through its `mcpServers` option (Verified). BrixoAI stores which servers an agent may use; the helper passes them per task |
-| **Transports** | Local servers (stdio — runs a program on the user's machine) and remote servers (HTTP). Local stdio servers execute code on the user's computer, so they are treated like installing software |
-| **Setup (user)** | Add a server from a curated list (Later) or by URL/command (advanced, with warnings) |
-| **Authentication** | Remote servers: OAuth handled per server. Tokens stored like other integration tokens; local-only servers keep credentials on the device |
-| **Permissions** | Each MCP tool call goes through BrixoAI approval unless the user explicitly pre-approves that specific tool. Allow rules must name a specific server (Verified: unanchored `mcp__*` allow rules are ignored by Claude Code) |
-| **Risks** | Tool descriptions and outputs are untrusted (prompt injection); a malicious server can exfiltrate data. Never auto-load a repository's `.mcp.json` (Verified risk with default settings) |
-| **Cost** | Free protocol; individual servers may cost money |
-| **Difficulty** | Medium–High, mostly security and UX |
-| **Priority** | **P2 (M9)** |
+## 3. AI options and their status
 
-## 6. Future integrations
+| Option | What it would mean | Cost to owner | Status |
+|---|---|---|---|
+| **A. No built-in AI + Claude Code handoff** | §1 above | $0 | **Chosen for the MVP** [Decision DEC-06] |
+| B. Claude Agent SDK with the user's own API key | BrixoAI runs an AI agent inside the app | Pay-per-token API billing for anyone using it, including the owner | **Excluded** (DEC-05). The SDK remains the preferred engine *if* embedded AI is ever approved [Decision DEC-11] |
+| C. BrixoAI launches or drives the user's own Claude Code | For example, starting `claude` in the project folder for the user | $0 if permitted | **Blocked** pending written confirmation (U1, P-1) |
+| D. Subscription token or claude.ai login inside BrixoAI | BrixoAI handles subscription credentials | — | **Not permitted** (§2) |
+| E. Free third-party providers (for example OpenRouter free models) | A different engine and provider | Free tiers have tight limits and some providers may train on prompts [Assumption, from 2026-10-25 research] | **Deferred.** Needs its own decision, a terms review and a privacy review |
+| F. Local models (for example Ollama or LM Studio) | AI running on the user's own computer | $0, but needs capable hardware | **Deferred.** Needs its own decision and engine work |
 
-| Integration | Purpose | Setup and auth | Permissions | Cost | Difficulty | Priority / notes |
-|---|---|---|---|---|---|---|
-| **Browser automation** | Agents that visit websites, fill forms, check pages | Likely a Playwright-based MCP server in a sandbox; never the user's main browser profile by default | Per-site allowlist; approval before submitting forms, purchases or logins | Free software; cloud browsers cost money | High | Long-term. Needs its own security review (logins, payments, prompt injection from pages). Note: Claude Code's sandbox does not support Chromium by default (Verified limitation) |
-| **Figma** | Read designs to guide UI implementation | Figma OAuth or personal access token; Figma offers an official MCP server (Needs verification of current availability and plan requirements) | Read-only file access | Depends on the user's Figma plan (Needs verification) | Medium | Long-term, via MCP (M9 foundation) |
-| **Stitch** | Import design screens | **Unknown** — no confirmed public API found during planning. Interim: the user exports screens and adds them to `design/stitch/` as described in [../DESIGN.md](../DESIGN.md) | — | — | Unknown | Research later (U7) |
-| **Google Search Console** | Real search performance data for the SEO agent | Google Cloud project + OAuth consent screen; scopes like read-only Search Console; Google app verification may be required for sensitive scopes (Needs verification) | Read-only | Free API with quotas (Needs verification) | Medium–High | Long-term. Until then, the SEO agent works only on local files and public pages |
-| **Vercel / Cloudflare Pages** | More hosting choices for Sites | Provider OAuth/tokens | Deploy-only | User's plan | Medium each | Long-term |
-| **Slack / email / calendar / Notion** | Business-owner automations and notifications | OAuth per provider; often via MCP | Narrow scopes | Varies | Medium each | Long-term; consider MCP servers before building custom integrations |
+## 4. Future integrations (not in the MVP)
 
-## Integration framework (shared design)
+| Integration | Possible future use | Prerequisite before planning | Cost note |
+|---|---|---|---|
+| GitHub | Branches and pull requests from reviewed fixes | MVP validated; an auth design (DEC-07 currently excludes accounts) | GitHub free tiers; check limits then |
+| Hosting (Netlify or others) | Publishing websites | Owner decision; probably out of scope for the problem being solved | User's own accounts |
+| MCP tools | External tools for an AI agent | Built-in AI approved | Depends on the tool |
+| Email / GitHub sign-in | Accounts | Validation shows accounts are needed (DEC-07) | Auth services may cost money |
+| Figma | Design input | Design direction decided (P-8) | — |
+| Stitch | — | **Not planned.** The Stitch design was rejected (DEC-10) | — |
 
-To avoid rebuilding the same plumbing per provider (Proposed):
-- One `integrations` table row per connection: provider, status, granted scopes, external account ID, connected/revoked timestamps. **Tokens are never in this table.** They live encrypted in a separate server-only store (see [DATA_MODEL.md](./DATA_MODEL.md#4-what-lives-where)).
-- One server-side adapter module per provider (`apps/web/src/server/integrations/<provider>.ts`) that normalises errors and permission checks.
-- A connection screen showing exactly what was granted, with **Disconnect** (revokes on the provider side when the API allows it).
-- Every external side effect (push, PR, deploy) writes an `audit_log` row with who approved it and the provider's actual response.
+Rakazo is not an integration. It's a reference codebase for selective reuse; see [REUSE.md](./REUSE.md).

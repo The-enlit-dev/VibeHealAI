@@ -1,160 +1,68 @@
-# BrixoAI — Technical Stack and Cost Plan (Planning v2)
+# BrixoAI — Technical Stack and Cost Plan (Planning v3)
 
-**Status:** Proposed. Nothing has been installed. Labels are explained in [PRODUCT.md](./PRODUCT.md).
+**Status:** Provisional, last updated 2026-10-29. Nothing has been installed. Labels are defined in [DECISIONS.md](./DECISIONS.md).
 
-**About prices and limits.** Figures were researched in October 2026. Facts confirmed from official documentation are marked **Verified**. Figures found only through search results or third-party articles are marked **Needs verification**, because this planning environment could not open those vendors' pricing pages directly. **Re-check every number on the vendor's official pricing page before you rely on it.** No service runs a production product for free forever.
-
-**Guiding rule:** the smallest reliable stack. Each technology must earn its place.
+**Ground rule [Decision DEC-05]:** $0 in extra spending beyond the owner's existing Claude Code subscription. No API charges, paid hosting, databases, services, domains or subscriptions. Free and open-source tools and local storage only. No paid service is enabled and no free trial is assumed.
 
 ---
 
-## Cost summary first
+## 1. MVP stack
 
-| Phase | Expected fixed monthly cost | Variable costs |
-|---|---|---|
-| Development (you building, M0–M4) | **$0** for BrixoAI infrastructure on free tiers | Your own Anthropic API usage while testing. Set a monthly spend limit in the Claude Console |
-| Small private beta (≈10–50 users) | **Likely $0–$25** (Supabase free may be enough; the inactivity pause and lack of backups argue for Supabase Pro once real users depend on it) | Each user pays their own AI usage (required by Anthropic's terms — Verified) |
-| Public open-source launch with a hosted instance | **~$25–$50+** (Supabase Pro + possibly a Netlify paid plan) | Grows with users; monitoring may need a paid plan |
-| Cloud workers (Later) | **Usage-based, can be significant** | Per-minute compute per task |
-
-**Biggest cost lever:** BrixoAI never pays for users' AI usage. That is both cost-saving and **required**: products that run Claude Code may not pay for, resell or intermediate Claude usage on users' behalf (Verified, Claude Code legal and compliance page).
-
-## Free-tier categories
-
-| Category | Examples in this plan |
-|---|---|
-| **Genuinely free (open-source software you run yourself)** | Next.js, React, TypeScript, Tailwind CSS, shadcn/ui, Node.js, Zod, Vitest, Playwright, Supabase CLI, Git |
-| **Free but usage-limited hosted tiers** (fine for development; pause or stop at limits) | Supabase Free, Netlify Free, GitHub Free (Actions minutes on private repos), Sentry developer tier (Needs verification) |
-| **Trials / credits** | Some cloud-sandbox vendors offer starter credits (Needs verification per vendor). Not relied on |
-| **Always paid (usage-based)** | Anthropic API (paid by each user), cloud workers (Later), custom domains (~$10–$20/year if you buy one; optional) |
-
----
-
-## 1. Frontend and UI components
-
-**Purpose in plain English:** what users see and click in their browser.
-
-| Option | What it is | Fit for BrixoAI | Free limits | When you pay |
+| Part | Choice | Purpose (plain English) | Expected licence | Cost |
 |---|---|---|---|---|
-| **Next.js 16 + React + TypeScript** (**Recommended**) | A React framework that also lets you write server code in the same project | Your preference; good for an app with sign-in, server actions and realtime. 16.x is the current stable line (Needs verification of the exact patch; confirm with `npm view next version` at scaffold time) | Open source (MIT) | Never for the framework itself |
-| Vite + React (single-page app) | Lighter, browser-only React setup | Simpler, but you would need a separate backend for privileged actions | Open source | Never |
-| **Tailwind CSS** (**Recommended**) | Utility CSS classes for styling | Fast styling; maps cleanly to design tokens from Stitch | Open source | Never |
-| **shadcn/ui** (**Recommended**) | Copy-paste React components (built on Radix) that you own and edit | Easy to restyle to match the Stitch screens; no lock-in | Open source | Never |
-| A full UI kit (MUI, Chakra) | Pre-styled component libraries | Harder to make match a custom Stitch design | Open source | Never |
+| Desktop shell | **Electron** [Decision DEC-04] | Turns a web-style UI into a Windows app and includes its own Node.js runtime | MIT [Assumption: verify at install] | $0 |
+| UI | **React + Vite + TypeScript** [Decision DEC-04] | React builds the screens, Vite bundles them, TypeScript catches mistakes early | MIT / MIT / Apache-2.0 [Assumption: verify] | $0 |
+| Styling | Tailwind CSS + shadcn/ui [Recommendation] | Quick, minimal, functional styling with no design work (DEC-10) | MIT [Assumption: verify] | $0 |
+| Main-process logic | **Node.js built-ins** (fs, path, child_process, crypto) [Recommendation] | File checks, running scripts, hashing snapshots | Part of Node/Electron | $0 |
+| Windows process control | `koffi` **only if** the Rakazo Job Object code is adopted after review ([REUSE.md](./REUSE.md)) | Lets JavaScript call Windows system functions for process-tree cleanup | MIT [Verified 2026-10-25 via npm package page and koffi.dev] | $0 |
+| Package manager | **npm** [Decision DEC-14] | Installs development libraries | Bundled with Node | $0 |
+| Unit tests | Vitest [Recommendation] | Tests small pieces of logic, such as path checks and redaction | MIT [Assumption: verify] | $0 |
+| App tests | Playwright (Electron support) [Recommendation] | Clicks through the real app like a user (U13) | Apache-2.0 [Assumption: verify] | $0 |
+| Code checks | ESLint + TypeScript compiler [Recommendation] | Catch errors before running | MIT / Apache-2.0 [Assumption: verify] | $0 |
+| Storage | **Local JSON files** in the app data folder [Recommendation] | Settings, session summaries, snapshot manifests ([DATA_MODEL.md](./DATA_MODEL.md)) | — | $0 |
+| Source control | Git + GitHub, **private** repository [Decision DEC-12] | Version history and review | — | $0 within free limits (§4) |
+| Distribution (prototype) | Built installer shared via GitHub Releases on the private repo, or directly with testers [Recommendation] | Getting builds to testers | — | $0 (U10) |
 
-**Decision:** Next.js + TypeScript + Tailwind + shadcn/ui. The UI stays **provisional** (plain shadcn defaults) until the Stitch screens are supplied (see [../DESIGN.md](../DESIGN.md)).
+**Licence check rule [Recommendation]:** before any dependency is installed (which needs separate approval), confirm its licence is compatible with Apache-2.0 and record it. Prefer few dependencies.
 
-## 2. Backend and API
+## 2. Removed from the MVP
 
-**Purpose:** code that runs on a server, where secrets can be kept safely.
-
-| Option | Fit | Free limits | When you pay |
-|---|---|---|---|
-| **Next.js Route Handlers and Server Actions on Netlify** (**Recommended**) | Same codebase as the UI. Used only for privileged actions (pairing, GitHub token exchange, Netlify API) | Counts against Netlify credits (see §6) | When credits run out |
-| Supabase Edge Functions | Server functions hosted by Supabase (Deno runtime) | Free-tier invocation quota (Needs verification) | Beyond quota |
-| Separate Node server (Express/Fastify) on a VPS | Full control; can hold long-lived connections | No meaningful free tier | ~$5+/month |
-
-**Decision:** Next.js server code only. Most reads and writes go straight from the browser to Supabase, protected by Row Level Security, which keeps function usage low. Supabase Edge Functions stay an option for scheduled jobs later.
-
-## 3. Database and authentication
-
-**Purpose:** store data permanently and handle sign-in.
-
-| Option | Fit | Free limits | When you pay |
-|---|---|---|---|
-| **Supabase** (Postgres + Auth + Realtime + Storage) (**Recommended**) | One service for four needs; open source; Postgres is a standard skill | 2 free projects, 500 MB database, 1 GB file storage, ~5 GB egress, 50,000 monthly active users, **projects pause after 7 days of inactivity**, no automatic backups on Free (all **Needs verification**: third-party sources). Realtime: **200 concurrent connections, 100 messages/second** on Free (**Verified**, Supabase Realtime limits page) | Pro plan, commonly reported at about $25/month per organisation (Needs verification). Recommended once real users depend on it (no pausing, backups) |
-| Firebase | Google's app backend | NoSQL, not open source, harder to self-host | Usage-based |
-| Neon (Postgres) + Clerk (auth) + Pusher (realtime) | Best-in-class parts | Three vendors, three dashboards, three sets of limits | Each separately |
-| Self-hosted Supabase | Same features on your own server | Free software, but you run and secure the server | Server cost + your time |
-
-**Decision:** Supabase. Note: Supabase announced that new projects need **explicit Postgres grants** for Data API access, with existing free projects affected from 30 October 2026 (Needs verification). Our migrations will include explicit `grant` statements from the start.
-
-**Sign-in methods:** GitHub OAuth (natural for vibe coders, prepares for M5) **or** email magic link (friendlier for business owners). Both are free in Supabase Auth. → Decision needed.
-
-## 4. Local desktop helper
-
-**Purpose:** the program on the user's computer that runs AI coding work in allowed folders.
-
-| Option | Fit | Cost | Trade-offs |
-|---|---|---|---|
-| **Node.js LTS command-line program in TypeScript** (**Recommended for MVP**) | Same language as the web app; the official Agent SDK has a TypeScript package (Verified). Distributed via npm (`npx brixo-helper`) | Free | Requires Node.js installed; terminal-based |
-| Python CLI | The Agent SDK also has a Python package (Verified) | Free | Two languages in one project |
-| Tauri desktop app (Rust + web UI) | Small native app with tray icon | Free | Rust learning curve; code signing costs (Apple Developer ~$99/year — Needs verification; Windows signing certificates vary) |
-| Electron desktop app | Full desktop app in JavaScript | Free | Large downloads; signing costs as above |
-
-**Decision:** Node.js CLI first (M1). Desktop packaging later, once the helper's behaviour is stable.
-
-**Storing secrets locally:** the OS keychain (macOS Keychain, Windows Credential Manager, Linux Secret Service) through a small, well-maintained Node library. Choose and verify the library in M1; options include `@napi-rs/keyring` or `keytar` (keytar is archived — Needs verification).
-
-## 5. Claude Code integration
-
-**Purpose:** the AI "engine" that actually reads, edits and runs code.
-
-| Option | Fit | Cost | Notes |
-|---|---|---|---|
-| **Claude Agent SDK, TypeScript** (`@anthropic-ai/claude-agent-sdk`) (**Recommended**) | Official library that runs Claude Code's agent loop with permissions, `canUseTool` approvals, `interrupt()`, sessions, hooks and MCP (all Verified) | Free library; **AI usage billed to the user's own API key** | Anthropic requires API-key (or cloud-provider) authentication for products built on the SDK (Verified). Governed by Anthropic's Commercial Terms |
-| Claude Code CLI as a subprocess (`claude -p --output-format stream-json`) | Lets a user use their own existing Claude Code login (Mode B) | User's own plan | **Needs verification with Anthropic** before advertising (see [ARCHITECTURE.md](./ARCHITECTURE.md#6-claude-authentication-modes)) |
-| Anthropic Client SDK + home-made tool loop | Full control | User's API usage | You would rebuild file tools, permissions and safety yourself. Not recommended |
-| Claude Managed Agents (Anthropic-hosted agent harness) | Hosted sandbox; candidate for future cloud execution (Verified that it exists) | API usage + hosting fees (Needs verification) | Later, for the cloud worker |
-
-**Cost transparency:** Claude Code reports `total_cost_usd` and token usage per run. Anthropic describes these as **client-side estimates that can differ from the actual bill** (Verified). BrixoAI will always label them "estimated". For current per-model prices, see Anthropic's official pricing page. This plan does not copy prices that may change.
-
-**Model names:** BrixoAI should not hard-code model names. It should list the models the runtime reports as available (exact SDK method to be verified in M1).
-
-## 6. Hosting and deployment (of BrixoAI itself)
-
-**Purpose:** where the BrixoAI web app lives on the internet.
-
-| Option | Fit | Free limits | When you pay |
-|---|---|---|---|
-| **Netlify** (**Recommended**, your preference) | Supports Next.js; Git-based deploys; also the first provider for the user-site publishing feature (M8), so we learn one platform | **Free plan: 300 credits/month; when credits run out, all your sites pause** (show "Site not available") until the next cycle or an upgrade; 1 concurrent build (Needs verification: Netlify changelog and billing FAQ via search). Commercial use on Free appears allowed according to Netlify staff forum answers (Needs verification against the current Terms) | Personal ~$9/month (1,000 credits); Pro from ~$20/month (Needs verification) |
-| Cloudflare Workers/Pages | Generous free tier; Next.js support via an adapter (OpenNext) | Free-tier request limits (Needs verification) | Paid Workers plan |
-| Vercel | Made by the Next.js team | Hobby plan reported as **non-commercial only** (Needs verification) | Pro per seat |
-
-**Decision:** Netlify. Watch credit usage in M2 (unknown U6). Supabase Realtime carries live updates, so we avoid polling Netlify functions.
-
-## 7. Background tasks, scheduling and future cloud workers
-
-**Purpose:** running work later, on a schedule, or when your laptop is closed.
-
-| Need | MVP answer | Later options (all Needs verification on pricing and limits) |
+| Previously proposed | Why removed | Revisit when |
 |---|---|---|
-| Long-running agent work | The local helper (no cloud cost) | Cloud worker |
-| Expire stale queued tasks, mark lost helpers | Checked "lazily" when tasks are read, plus a small scheduled job | Supabase `pg_cron` (availability on Free to verify) or Netlify Scheduled Functions |
-| User-defined schedules ("every morning") | Not in MVP | `pg_cron` / scheduled function **enqueues** a task; it runs on the helper if online, otherwise on a cloud worker |
-| Cloud computers (persistent or per task) | Not in MVP | Claude Managed Agents (Anthropic-hosted or self-hosted sandbox); E2B; Modal; Fly.io Machines; Cloudflare Containers; Daytona. Compare on isolation, persistence, per-minute price and open-source friendliness when the time comes |
-| Job queue | The `tasks` table *is* the queue (claimed atomically with a database function) | Postgres-based queues (e.g. `pgmq` in Supabase — Needs verification) before adding Redis or another vendor |
+| Next.js | No server-rendered pages needed in a desktop app | Only if a web product is ever planned |
+| Netlify | Nothing to host; would add cost risk | Same |
+| Supabase | No accounts, sync or cloud data (DEC-07, DEC-09) | Validation shows accounts are needed |
+| Separate local helper + pairing | One desktop app is simpler and opens no ports | — |
+| Claude Agent SDK + Anthropic API key | Requires API billing ([INTEGRATIONS.md](./INTEGRATIONS.md#2-why-brixoai-cannot-embed-ai-on-your-subscription)) | A permitted $0 path exists, or the budget changes |
+| Sentry or other monitoring services | Sends data off the device (NP-1); possible cost | — |
+| Domains, websites | Not needed for the MVP | — |
 
-**Why no queue service in the MVP:** one user's helper processes one task at a time (proposal), so a database table with an atomic "claim" is enough. Adding Redis or a queue vendor would be popularity-driven complexity.
+## 3. Costs at a glance
 
-## 8. File storage and logs
+| Item | Cost |
+|---|---|
+| BrixoAI infrastructure | **$0**. There is none: the app runs entirely on the user's computer |
+| AI usage | **$0 extra**. The user's own Claude Code subscription, used directly in Claude Code |
+| Development tools | **$0**. Open-source |
+| CI on a private repository | **$0** within GitHub's free quota (§4) |
+| Code signing | **$0 only via a free programme** (§4); otherwise unsigned builds |
 
-| Data | Where | Free limits | Notes |
-|---|---|---|---|
-| Task events (sanitised summaries) | Supabase Postgres `task_events` | Counts toward the 500 MB database (Needs verification) | Throttled and size-capped per event (proposal: 8 KB each); old events pruned or archived |
-| Full raw agent transcripts | **User's machine** (Claude Code keeps session transcripts locally — Verified) | Free | Not uploaded by default (privacy + storage) |
-| Attachments (screenshots, documents) | Supabase Storage, private buckets with RLS policies | 1 GB on Free (Needs verification) | M5+ |
-| Application logs (web/server) | Netlify function logs + Supabase logs | Short retention on free tiers (Supabase Free ~7 days — Needs verification) | Never log secrets; redact first |
+## 4. Zero-extra-cost conflicts
 
-## 9. Monitoring and testing
+Every place where the plan could cost money, and how it's handled:
 
-| Tool | Purpose (plain English) | Cost | When |
-|---|---|---|---|
-| **Vitest** | Fast unit tests ("does this function do what I think?") | Free (open source) | M0 |
-| **Playwright** | End-to-end tests that drive a real browser like a user | Free (open source) | M2–M3 |
-| **Supabase CLI local stack** | Runs a private copy of Supabase on your computer to test database rules safely | Free; **requires Docker Desktop or a compatible runtime** (Docker Desktop is free for personal and small business use — Needs verification of the licence threshold) | M2 |
-| **ESLint + TypeScript `tsc`** | Catch mistakes before running code | Free | M0 |
-| **GitHub Actions** | Runs the checks automatically on every pull request | Free for public repositories; limited minutes for private repos (Needs verification) | M0 |
-| **Sentry** (optional) | Error tracking in production | Free developer tier with limited events (Needs verification) | Before the beta |
-| Dependabot / `npm audit` | Warns about vulnerable dependencies | Free | M0 |
+| Item | Conflict | Handling |
+|---|---|---|
+| Built-in AI (Agent SDK) | **Yes.** Needs paid API usage | Removed. Claude Code handoff instead (DEC-06) |
+| GitHub Actions on a **private** repo | **Possible.** [Verified 2026-10-25, GitHub billing docs] GitHub Free includes 2,000 minutes a month for private repos, and Windows runners count **2×**. Public repos get standard runners free, but the repo stays private (DEC-12) | Keep CI small: Linux for most tests, Windows only for the Windows-specific suites. **The owner should check there's no payment method enabling overage, or that the Actions spending limit is $0.** GitHub states usage is blocked when the quota runs out and no valid payment method is on file |
+| Windows code signing | **Yes.** Commercial certificates cost money | Prototype: unsigned builds (Windows SmartScreen will warn). Beta: SignPath Foundation's free signing for open-source projects reportedly needs an OSI licence, a **public** repo and free downloads (U9) [Assumption: verify eligibility]. That conflicts with DEC-12 for now |
+| External security review | **Yes.** Usually paid | Free tools + documented self-review (SECURITY.md VR-4). The weaker assurance is stated openly |
+| Automatic updates | Depend on signing and hosting | No auto-updates in the MVP (WN-6). Manual updates |
+| Distribution | Private repo releases are visible only to people with access | Give testers repository access or share builds directly (U10) |
+| Testing on others' projects with the owner's subscription | Unclear whether it counts as "ordinary, individual usage" | Testers use their own AI tools (U11) |
+| Domains, hosting, databases, monitoring | Would cost money | Not used |
 
-**Not needed in the MVP:** Kubernetes, Redis, microservices, a separate API server, a vector database (memory search can start with Postgres full-text search; `pgvector` is available in Supabase if needed later — Needs verification).
-
----
-
-## Open-source considerations
-
-- **Licence decision needed:** MIT or Apache-2.0 (maximum adoption; companies can build closed products on top) vs AGPL-3.0 (anyone offering a modified hosted version must share their changes). Apache-2.0 adds an explicit patent grant. → Decision needed.
-- **Claude Code itself is not part of BrixoAI's open-source code.** Users install it, or it comes via the Agent SDK package under Anthropic's terms. BrixoAI must not modify the Claude Code binary or remove its authentication methods (Verified condition for products that run Claude Code).
-- **Branding:** "Powered by Claude" is allowed. Calling a BrixoAI feature "Claude Code", or using Claude Code-style visuals, is not (Verified, Agent SDK branding guidelines).
-- **Self-hosting:** the open-source design should let anyone run their own Supabase + Netlify (or other host) instance. Configuration comes from environment variables, with a placeholder-only `.env.example`.
+## 5. Requirements for developing BrixoAI (owner's machine)
+- Windows 10/11 (the target platform), Node.js LTS, Git, and an editor. All free.
+- Claude Code (existing subscription) to help write the code. That's ordinary use and adds no API cost.
+- No Docker, cloud accounts or paid tools needed.
