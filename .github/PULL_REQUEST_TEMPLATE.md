@@ -1,3 +1,8 @@
+<!--
+  Update (2026-10-29): the Stitch design has been rejected (see docs/planning/DECISIONS.md, DEC-10).
+  Mark the "Stitch references" checkbox below as N/A, and instead confirm the change keeps
+  the UI minimal and functional. Current plans: docs/planning/.
+-->
 ## Summary
 <!-- What changed and why? -->
 

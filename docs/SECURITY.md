@@ -1,5 +1,7 @@
 # BrixoAI — Security Baseline
 
+> **Update (2026-10-29).** The principles below still apply. The detailed, testable requirements for the current local desktop MVP are in `docs/planning/SECURITY.md`. Statements here about isolated cloud workers and server-side credentials reflect the earlier cloud design: the MVP has no server and stores no credentials. `docs/planning/DECISIONS.md` takes precedence over this file.
+
 **Status:** required design and implementation principles, not a claim of security certification or completed controls.
 
 ## Identity and authorization

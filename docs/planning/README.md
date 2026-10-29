@@ -40,20 +40,18 @@ v3 replaces that with the narrow, local-only, $0 MVP above. The reasons are reco
 
 ## 4. Older documents and recommended follow-up changes
 
-The original files outside `docs/planning/` predate these decisions. In this update, only **`CLAUDE.md`** and **`docs/claude.md`** received short banners pointing here (approved scope, DEC-13). The rest are **unchanged** and contain outdated statements.
+The original files outside `docs/planning/` predate these decisions. Each now has a short, dated banner at the top pointing here. The banner says the file's old content is superseded or, for `docs/SECURITY.md`, that its principles still apply. The text below each banner is **unchanged** and kept for history (DEC-13; banners for the remaining files approved 2026-10-29).
 
-**[Recommendation] Further changes, each needing separate approval (P-2):**
-
-| File | Outdated content | Recommended change |
+| File | Banner added | Remaining recommended change (needs separate approval, P-2) |
 |---|---|---|
-| `docs/DESIGN.md` | Treats Stitch screens as the source of truth | Banner: Stitch rejected (DEC-10); keep the design-independent screen-state checklist |
-| `docs/PRD.md` | Website-operations product, GitHub-first journey, cloud worker, named agents | Banner: superseded by `docs/planning/PRODUCT.md` |
-| `docs/ARCHITECTURE.md` | Cloud worker, queue and integration design | Banner: superseded by `docs/planning/ARCHITECTURE.md` |
-| `docs/ROADMAP.md` | UI-first phases waiting on Stitch | Banner: superseded by `docs/planning/ROADMAP.md` |
-| `docs/SECURITY.md` | "Isolated workers" and server-side credential assumptions | Banner: principles still apply; requirements in `docs/planning/SECURITY.md` |
-| `README.md` (root) | Describes a website-operations workspace; points to Stitch | Update the summary and links to `docs/planning/` |
-| `.github/PULL_REQUEST_TEMPLATE.md` | Checkbox "Screens match supplied Stitch references" | Replace with "Matches the approved minimal UI scope" |
-| `CLAUDE.md`, `docs/claude.md` (full text) | Reading order, Stitch rules and "credentials server-side" are still in the body under the new banners | Rewrite during a later consolidation step |
+| `CLAUDE.md`, `docs/claude.md` | Yes | Rewrite the body (reading order, Stitch rules, "credentials server-side") during a later consolidation step |
+| `docs/DESIGN.md` | Yes: Stitch rejected; screen-state checklist still applies | — |
+| `docs/PRD.md` | Yes: superseded by `PRODUCT.md` | Archive later |
+| `docs/ARCHITECTURE.md` | Yes: superseded by `ARCHITECTURE.md` | Archive later |
+| `docs/ROADMAP.md` | Yes: superseded by `ROADMAP.md` | Archive later |
+| `docs/SECURITY.md` | Yes: principles apply, requirements in `SECURITY.md` | Merge principles into `docs/planning/SECURITY.md` later |
+| `README.md` (root) | Yes: new direction and links | Rewrite the summary and "Start here" list |
+| `.github/PULL_REQUEST_TEMPLATE.md` | Yes, as a hidden comment, so it doesn't appear in rendered PR descriptions | Replace the "Stitch references" checkbox with "Keeps the UI minimal and functional" |
 
 **No files are renamed or archived.** Any archiving (for example moving old documents into `docs/archive/`) will be proposed separately.
 

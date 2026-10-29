@@ -1,5 +1,7 @@
 # BrixoAI
 
+> **Update (2026-10-29): the direction has changed.** BrixoAI is now planned as a free, local-first Windows desktop app that helps vibe coders fix broken JavaScript/TypeScript projects safely, with no built-in AI. Start with [`docs/planning/README.md`](./docs/planning/README.md) and [`docs/planning/DECISIONS.md`](./docs/planning/DECISIONS.md), which take precedence. The Stitch design mentioned below has been rejected. The rest of this file describes the earlier direction and is kept for history.
+
 BrixoAI is an AI-powered website-operations and developer workspace. It combines conversational development with configurable agents that inspect projects, run bounded checks, and prepare changes for human review.
 
 **Status:** planning/documentation stage. This repository contains product and implementation guidance; do not assume the application is implemented.
