@@ -40,18 +40,20 @@ v3 replaces that with the narrow, local-only, $0 MVP above. The reasons are reco
 
 ## 4. Older documents and recommended follow-up changes
 
-The original files outside `docs/planning/` predate these decisions. Each now has a short, dated banner at the top pointing here. The banner says the file's old content is superseded or, for `docs/SECURITY.md`, that its principles still apply. The text below each banner is **unchanged** and kept for history (DEC-13; banners for the remaining files approved 2026-10-29).
+The original files outside `docs/planning/` predate these decisions.
+- `CLAUDE.md`, `docs/claude.md` and the root `README.md` were **rewritten** on 2026-10-30 to match the current direction (approved by the owner).
+- The other older files have a short, dated banner at the top pointing here. Their text below the banner is unchanged and kept for history (DEC-13).
 
-| File | Banner added | Remaining recommended change (needs separate approval, P-2) |
+| File | Status | Remaining recommended change (needs separate approval, P-2) |
 |---|---|---|
-| `CLAUDE.md`, `docs/claude.md` | Yes | Rewrite the body (reading order, Stitch rules, "credentials server-side") during a later consolidation step |
-| `docs/DESIGN.md` | Yes: Stitch rejected; screen-state checklist still applies | — |
-| `docs/PRD.md` | Yes: superseded by `PRODUCT.md` | Archive later |
-| `docs/ARCHITECTURE.md` | Yes: superseded by `ARCHITECTURE.md` | Archive later |
-| `docs/ROADMAP.md` | Yes: superseded by `ROADMAP.md` | Archive later |
-| `docs/SECURITY.md` | Yes: principles apply, requirements in `SECURITY.md` | Merge principles into `docs/planning/SECURITY.md` later |
-| `README.md` (root) | Yes: new direction and links | Rewrite the summary and "Start here" list |
-| `.github/PULL_REQUEST_TEMPLATE.md` | Yes, as a hidden comment, so it doesn't appear in rendered PR descriptions | Replace the "Stitch references" checkbox with "Keeps the UI minimal and functional" |
+| `CLAUDE.md`, `docs/claude.md` | Rewritten 2026-10-30 | — |
+| `README.md` (root) | Rewritten 2026-10-30 | — |
+| `docs/DESIGN.md` | Banner: Stitch rejected; screen-state checklist still applies | — |
+| `docs/PRD.md` | Banner: superseded by `PRODUCT.md` | Archive later |
+| `docs/ARCHITECTURE.md` | Banner: superseded by `ARCHITECTURE.md` | Archive later |
+| `docs/ROADMAP.md` | Banner: superseded by `ROADMAP.md` | Archive later |
+| `docs/SECURITY.md` | Banner: principles apply, requirements in `SECURITY.md` | Merge principles into `docs/planning/SECURITY.md` later |
+| `.github/PULL_REQUEST_TEMPLATE.md` | Banner, as a hidden comment, so it doesn't appear in rendered PR descriptions | Replace the "Stitch references" checkbox with "Keeps the UI minimal and functional" |
 
 **No files are renamed or archived.** Any archiving (for example moving old documents into `docs/archive/`) will be proposed separately.
 
