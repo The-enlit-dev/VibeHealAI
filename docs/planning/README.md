@@ -53,7 +53,7 @@ The original files outside `docs/planning/` predate these decisions.
 | `docs/ARCHITECTURE.md` | Banner: superseded by `ARCHITECTURE.md` | Archive later |
 | `docs/ROADMAP.md` | Banner: superseded by `ROADMAP.md` | Archive later |
 | `docs/SECURITY.md` | Banner: principles apply, requirements in `SECURITY.md` | Merge principles into `docs/planning/SECURITY.md` later |
-| `.github/PULL_REQUEST_TEMPLATE.md` | Banner, as a hidden comment, so it doesn't appear in rendered PR descriptions | Replace the "Stitch references" checkbox with "Keeps the UI minimal and functional" |
+| `.github/PULL_REQUEST_TEMPLATE.md` | Updated 2026-10-31: the Stitch checkbox is replaced with "Keeps the UI minimal and functional" | Optional: its "Related requirement" hint still mentions "the PRD section" |
 
 **No files are renamed or archived.** Any archiving (for example moving old documents into `docs/archive/`) will be proposed separately.
 

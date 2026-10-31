@@ -1,8 +1,3 @@
-<!--
-  Update (2026-10-29): the Stitch design has been rejected (see docs/planning/DECISIONS.md, DEC-10).
-  Mark the "Stitch references" checkbox below as N/A, and instead confirm the change keeps
-  the UI minimal and functional. Current plans: docs/planning/.
--->
 ## Summary
 <!-- What changed and why? -->
 
@@ -27,7 +22,7 @@ Commands and results:
 - [ ] Authorization and least-privilege boundaries are respected.
 - [ ] No merge, publish or production deployment is triggered automatically.
 - [ ] Any external side effects are documented.
-- [ ] Screens match supplied Stitch references where applicable.
+- [ ] Keeps the UI minimal and functional (no new design work; see docs/planning/DECISIONS.md, DEC-10).
 
 ## Limitations / follow-up
 <!-- What remains incomplete or could not be verified? -->
