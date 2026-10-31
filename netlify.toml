@@ -1,0 +1,19 @@
+# Netlify configuration for the BrixoAI marketing site ONLY.
+# This file does not deploy anything. Connecting the repository to Netlify is an owner decision.
+#
+# The static site has no build step. The waitlist API (waitlist/) is NOT deployed here: when the
+# site is hosted on Netlify, the signup form shows "not reachable" until a hosted endpoint exists.
+# The desktop app and the local backend are never published by this configuration.
+
+[build]
+  publish = "website"
+  command = ""
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "no-referrer"
+    X-Frame-Options = "DENY"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+    Content-Security-Policy = "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; form-action 'self'; base-uri 'none'; frame-ancestors 'none'"
