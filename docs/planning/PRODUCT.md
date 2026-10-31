@@ -1,6 +1,6 @@
 # BrixoAI — Product Definition (Planning v3)
 
-**Status:** Proposed MVP definition, last updated 2026-10-29. **No application code exists.** Labels such as **[Decision]**, **[Verified]**, **[Recommendation]**, **[Assumption]** and **[Unresolved]** are defined in [DECISIONS.md](./DECISIONS.md).
+**Status:** MVP definition, last updated 2026-10-31. The core workflow below is **not implemented yet**. The integration marketplace (§10) has a first implementation (IM1, IM2). Labels such as **[Decision]**, **[Verified]**, **[Recommendation]**, **[Assumption]** and **[Unresolved]** are defined in [DECISIONS.md](./DECISIONS.md).
 
 ---
 
@@ -14,6 +14,8 @@ BrixoAI is a free, local-first Windows desktop app for **vibe coders** whose AI-
 - undo changes, and check whether the fix actually worked.
 
 **In the MVP, BrixoAI contains no built-in AI** [Decision DEC-06]. The user runs Claude Code (or another AI tool they already have) separately, and BrixoAI is the careful, honest safety net around that work. That is because no officially supported way exists for BrixoAI to use the owner's Claude subscription at no extra cost [Verified 2026-10-25, see [INTEGRATIONS.md](./INTEGRATIONS.md#2-why-brixoai-cannot-embed-ai-on-your-subscription)], and paid API access is excluded by the $0 budget [Decision DEC-05].
+
+**Added 2026-10-31 [Decision DEC-16 to DEC-19]:** BrixoAI also has an **integration marketplace** of first-party integrations, such as GitHub and Vercel. A small BrixoAI backend manages them and keeps credentials away from the desktop app. They exist to feed useful context into the workflow below. They are not a separate product. See §10.
 
 > **Term: vibe coder.** Someone who builds software mostly by instructing AI tools, often without fully understanding the code those tools write.
 
@@ -59,7 +61,7 @@ BrixoAI is a free, local-first Windows desktop app for **vibe coders** whose AI-
 | `npm install` only as a separate, clearly warned, approved action | Automatic dependency changes |
 | Local settings, session summaries, backups, 30-day retention, delete all | Cloud storage, sync, accounts, sign-in (DEC-07) |
 | Minimal functional UI (DEC-10) | New design system, Stitch, polish |
-| — | GitHub integration, deploys, skills, MCP, memory, schedules, business-owner features, voice, browser automation |
+| Read-only provider context through the integration marketplace (§10), added 2026-10-31 | Provider write actions (deploys, pushes, payments), skills, MCP, memory, schedules, business-owner features, voice, browser automation, third-party plugins |
 
 ## 5. Built-in error explanations (offline)
 
@@ -121,3 +123,27 @@ The original ambition remains a direction, not a commitment. It may be revisited
 - skills and MCP tools,
 - memory, schedules, cloud execution,
 - business-owner automation.
+
+## 10. Integration marketplace (added 2026-10-31)
+
+[Decision DEC-16 to DEC-21]
+
+| Aspect | Decision |
+|---|---|
+| Purpose | Give the broken-project workflow relevant context. Examples: which branch and commits a project is on (GitHub); whether the last deployment failed (Vercel, Netlify); the intended design (Figma); a spec (Notion) |
+| Providers | GitHub, Vercel, Netlify, Supabase, Figma, Stripe, Shopify, Notion, Slack. All nine appear in the catalog with honest labels |
+| Who maintains them | BrixoAI only (first-party). No third-party plugins, submissions, downloads or monetisation in the MVP |
+| Access | Read-only first. Any write or sensitive action needs separate approval to build, and explicit approval each time it runs |
+| Where credentials live | On the BrixoAI backend, encrypted. Never in the desktop app |
+| Hosting | None for now. The backend runs locally for development (DEC-22) |
+
+**What a user sees today (2026-10-31):**
+- the catalog, search and filters;
+- details for each provider, including what it would access, in plain English;
+- GitHub as **Not configured** until the backend owner registers a GitHub App;
+- the other eight providers as **Coming soon**.
+
+**Success measures (to add once live):**
+- time to connect GitHub;
+- the share of sessions where provider context helped the user understand the problem;
+- **0** provider tokens visible anywhere in the desktop app (CR-1).
