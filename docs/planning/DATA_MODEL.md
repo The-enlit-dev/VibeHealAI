@@ -1,6 +1,11 @@
-# BrixoAI — Local Data Design (Planning v3)
+# BrixoAI — Data Design (Planning v4)
 
-**Status:** Proposed, last updated 2026-10-29. No data store exists. This file previously described a cloud (Supabase) database with server API routes. That design is **not used**: the MVP stores everything locally and has no server [Decision DEC-07, DEC-09]. Labels are defined in [DECISIONS.md](./DECISIONS.md).
+**Status:** Last updated 2026-10-31.
+- §1 to §7 describe the **desktop app's local data** for the core safety workflow. That design is proposed, and none of it is implemented yet.
+- §8 is new and describes the **backend's integration data** [Decision DEC-18, DEC-20], which is **implemented** for local development.
+- History: the earlier cloud (Supabase) database design is still not used. BrixoAI does not use Supabase or any hosted database for its own data (DEC-22). Supabase appears only as a provider users may connect.
+
+Labels are defined in [DECISIONS.md](./DECISIONS.md).
 
 ---
 
@@ -9,7 +14,7 @@
 - **Minimal.** Store only what the workflow needs: settings, short session summaries, snapshots for undo, and an audit log.
 - **Redacted.** Anything derived from project output is redacted before it is stored ([SECURITY.md](./SECURITY.md) SE-2, LD-3).
 - **Deletable.** 30-day default retention, plus "delete this session" and "delete all history" [Decision DEC-09].
-- **No secrets.** BrixoAI holds no credentials (SE-4) and never stores secret file contents (SE-1).
+- **No secrets on the desktop.** The desktop app holds no provider credentials (CR-1) and never stores secret file contents (SE-1). Provider credentials live only in the backend vault (§8), encrypted.
 
 ## 2. Where data lives
 
@@ -36,7 +41,7 @@
 |---|---|---|
 | **Settings** | retention days (default 30), extra secret-file patterns, script timeout default, UI preferences | Until changed |
 | **Project record** | local folder path, display name, last opened, detected facts (scripts, Node version requirement) | Until the user removes it or deletes all history |
-| **Session** | id, project, timestamps, state ([ARCHITECTURE.md §4](./ARCHITECTURE.md#4-how-a-session-flows)), captured-error reference, explanation rule id (if matched), change-review result, verification result, user rating (optional) | 30 days |
+| **Session** | id, project, timestamps, state ([ARCHITECTURE.md §3.1](./ARCHITECTURE.md#31-how-a-core-session-flows-planned-from-v3)), captured-error reference, explanation rule id (if matched), change-review result, verification result, user rating (optional) | 30 days |
 | **Captured output** | redacted text, exit code, duration, whether it was cancelled or timed out | With its session |
 | **Snapshot** | manifest (relative path, size, hash), file copies, excluded-path list | With its session. Deleted at the end of retention or on request |
 | **Change review** | per file: added, modified, deleted, kept or undone, risk flags | With its session |
@@ -59,4 +64,47 @@
 
 ## 7. Internal interfaces (no network API)
 
-There are no server routes. The window talks to the main process through Electron's internal messaging only (WN-2). Proposed messages [Recommendation]: `selectProject`, `inspectProject`, `runScript`, `cancelScript`, `createSnapshot`, `diffAgainstSnapshot`, `restoreFiles`, `buildBrief`, `listSessions`, `deleteSession`, `deleteAllHistory`. Every message that touches files or runs commands goes through the Project Gate ([ARCHITECTURE.md §3](./ARCHITECTURE.md#3-components-and-responsibilities)).
+For the core workflow there are no server routes (the backend API in [ARCHITECTURE.md §5](./ARCHITECTURE.md#5-backend-api) serves integrations only). The window talks to the main process through Electron's internal messaging only (WN-2). Proposed messages [Recommendation]: `selectProject`, `inspectProject`, `runScript`, `cancelScript`, `createSnapshot`, `diffAgainstSnapshot`, `restoreFiles`, `buildBrief`, `listSessions`, `deleteSession`, `deleteAllHistory`. Every message that touches files or runs commands goes through the Project Gate ([ARCHITECTURE.md §3](./ARCHITECTURE.md#3-components-and-responsibilities)).
+
+## 8. Backend integration data (implemented 2026-10-31, local development)
+
+### 8.1 Where it lives
+The backend stores everything under `BRIXO_DATA_DIR` (default `./.brixo-data/`, git-ignored). The directory is created with owner-only permissions and every file is written atomically with mode `0600` (on Windows the user profile's default permissions apply; see U6).
+
+```text
+.brixo-data/
+  connections.json            connection records (no secrets)
+  authorization-states.json   pending authorizations, keyed by SHA-256 of the state value
+  approvals.json              pending/approved approvals for non-read actions
+  credentials.json            encrypted credential records (AES-256-GCM)
+  audit.jsonl                 append-only, redacted audit log
+```
+
+Each file sits behind a repository interface (`Collection`, `CredentialVault` and `AuditLog` in `server/storage/` and `server/credentials/`). A hosted backend would implement these on a database and a key-management service, with no changes to the services that use them (P-10, P-12).
+
+### 8.2 Records
+
+| Record | Key fields | Never contains | Retention |
+|---|---|---|---|
+| **Connection** | id, providerId, status (`connected`/`error`), externalAccountId (for example a GitHub installation id), accountLabel, grantedPermissions, credentialId (vault reference or null), connectedAt, updatedAt, manageUrl, lastError (safe code and message) | Tokens, secrets | Until disconnected |
+| **Authorization state** | id = SHA-256(state), providerId, createdAt, expiresAt (10 minutes) | The raw state value | Removed when used; expired ones pruned on the next connect |
+| **Approval** | id, connectionId, capabilityId, access level, SHA-256 of the canonical input, status, createdAt, expiresAt (5 minutes) | The input itself | Removed when used; expired ones are rejected |
+| **Credential** | id, providerId, keyId, iv, auth tag, ciphertext, createdAt | Plaintext | Deleted on disconnect |
+| **Audit entry** | id, at, action, outcome (`success`/`denied`/`failure`), providerId, connectionId, capabilityId, redacted message (500 characters max) | Credential values, provider response bodies | 30-day clean-up planned (AU-3, not implemented yet) |
+
+### 8.3 What the desktop app receives
+Only the API views in `shared/api.ts`:
+- `ProviderSummary`, `ProviderDetail`, `ConnectionView`, `ActivityEntry`;
+- results of read-only capabilities, which contain only whitelisted fields (IN-7).
+
+The desktop keeps the local access token for the backend in `.env.desktop`, in the main process only. It holds no provider credentials.
+
+### 8.4 GitHub specifically
+- BrixoAI stores the installation id, the account login and the granted permissions.
+- **No GitHub token is stored on disk.** Installation tokens last 1 hour, are minted on demand and are cached in memory only. The temporary user token from the install flow is revoked immediately.
+- Commit author email addresses are not returned or stored.
+
+### 8.5 Deleting
+- **Disconnect** deletes the connection record and its vault entry, and attempts provider-side revocation.
+- Deleting `.brixo-data/` removes all backend data.
+- Changing `BRIXO_ENCRYPTION_KEY` makes existing credentials unreadable. They fail closed, and the provider must be reconnected.

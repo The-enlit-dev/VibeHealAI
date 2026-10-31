@@ -1,6 +1,11 @@
-# BrixoAI — AI Access and Future Integrations (Planning v3)
+# BrixoAI — AI Access and Integration Marketplace (Planning v4)
 
-**Status:** Last updated 2026-10-29. This file previously planned GitHub, Netlify, Supabase and MCP integrations for a hosted product. Those are **not in the MVP** (§4). It now records how AI fits into BrixoAI under the $0 budget [Decision DEC-05] and why the MVP has no built-in AI [Decision DEC-06]. Labels are defined in [DECISIONS.md](./DECISIONS.md).
+**Status:** Last updated 2026-10-31.
+- §1 to §3 (AI access) are unchanged from v3: the MVP has **no built-in AI** and the Claude Code handoff stays [Decision DEC-06, DEC-24].
+- §4 is new and describes the **first-party integration marketplace** [Decision DEC-17 to DEC-21].
+- §5 keeps the v3 "future integrations" table for history. It is superseded.
+
+Labels are defined in [DECISIONS.md](./DECISIONS.md).
 
 > **Plain English:** BrixoAI does not contain an AI. You use Claude Code yourself, as you already do. BrixoAI makes that safer: it captures the error, gives you a clean summary to paste, takes a backup first, shows you exactly what changed, and lets you undo.
 
@@ -43,7 +48,65 @@ Checked against official Anthropic documentation on 2026-10-25 [Verified]:
 | E. Free third-party providers (for example OpenRouter free models) | A different engine and provider | Free tiers have tight limits and some providers may train on prompts [Assumption, from 2026-10-25 research] | **Deferred.** Needs its own decision, a terms review and a privacy review |
 | F. Local models (for example Ollama or LM Studio) | AI running on the user's own computer | $0, but needs capable hardware | **Deferred.** Needs its own decision and engine work |
 
-## 4. Future integrations (not in the MVP)
+## 4. Integration marketplace (added 2026-10-31)
+
+> **Plain English:** BrixoAI can connect to services you already use, such as GitHub, to show useful context while you fix a broken project. BrixoAI's own backend keeps the keys, and the desktop app never sees them. Each integration starts read-only.
+
+### 4.1 Provider plan
+
+Status uses the marketplace labels: **Not configured** means real code exists but needs setup; **Coming soon** means a catalog entry only.
+
+| # | Provider | Milestone | Status on 2026-10-31 | First, read-only scope | Out of scope until separately approved |
+|---|---|---|---|---|---|
+| 1 | GitHub | IM2 | **Adapter built and unit-tested with a fake API. Not configured** until the owner registers a GitHub App (P-11). **Not tested live** | Repositories, repository details, branches, commits, pull requests | Pushing, branches, PR creation, merging, deleting, issues |
+| 2 | Vercel | IM3 | Coming soon | Projects, deployments, deployment status | Creating, promoting or deleting deployments; env vars |
+| 3 | Netlify | IM3 | Coming soon | Sites, deploys, deploy status | Creating, publishing or deleting deploys; env vars |
+| 4 | Supabase | IM4 | Coming soon | Project list and status | Queries, schema changes, keys |
+| 5 | Figma | IM4 | Coming soon | File outline (pages, frames) | Editing files, comments |
+| 6 | Stripe | IM4 | Coming soon | **Test mode only:** products and prices | Live mode, payments, refunds, payouts, account changes (never planned) |
+| 7 | Shopify | IM4 | Coming soon | Store details, product titles and handles | Orders, customers, any write |
+| 8 | Notion | IM4 | Coming soon | Pages explicitly shared with BrixoAI | Editing pages |
+| 9 | Slack | IM4 | Coming soon | Channel names | Posting (a later write action, needs per-message approval) |
+
+The permission names for providers 2 to 9 are **intended scope only**. They have not been checked against each provider's official documentation (U15), and the UI says so.
+
+### 4.2 How a provider is added (no marketplace or connection-manager changes)
+1. **Review the provider's official docs:** auth model, scopes, rate limits, data handling and terms. Record findings here and resolve U15 for that provider.
+2. **Write metadata** (`server/providers/<id>/metadata.ts`):
+   - permissions with plain-English descriptions and access levels;
+   - capabilities and the permissions they require;
+   - authorization hosts and notes.
+3. **Implement the adapter** (`ProviderAdapter` in `server/integrations/adapter.ts`):
+   - `configuration()`, `beginConnect()`, `completeConnect()` and `revoke()`;
+   - read-only capabilities with input validators and whitelisted output.
+4. **Register it** in `server/providers/index.ts` in place of its planned adapter. The registry validates it at startup, and the contract tests in `server/integrations/registry.test.ts` run against it automatically.
+5. **Add provider-specific tests** with a fake HTTP layer. Never commit real responses that contain tokens.
+6. **Optional:** add a read-only context view in `desktop/renderer/context-views/`.
+7. **Status:** mark the provider complete only after its real API integration has been tested (DEC-21).
+
+### 4.3 Rules every integration follows
+- First-party only. No plugin downloads or third-party code (DEC-17, IN-1).
+- Read-only first. Any write or sensitive action needs:
+  - owner approval to build it;
+  - per-action user approval at runtime (IN-4).
+- Credentials stay in the backend vault. The desktop app never sees them (CR-1).
+- Official authentication only. No routing of another service's subscription credentials, and no unofficial workarounds (DEC-24).
+- Honest status: Coming soon, Not configured, Available, Connected or Error (IN-8).
+- Each integration must say how it helps the broken-project workflow (`contextUse`, DEC-16).
+
+### 4.4 Third-party plugins (future, not planned work)
+The registry and adapter interface are the extension point. Opening them to third parties would need, at minimum:
+- signed declarative manifests;
+- out-of-process execution with per-plugin permissions;
+- a review and takedown process;
+- a security review.
+
+All of that is out of scope for the MVP (DEC-17).
+
+## 5. History: v3 "future integrations" table (superseded 2026-10-31)
+
+The table below was written when integrations were out of the MVP. It is kept for history; §4 replaces it.
+
 
 | Integration | Possible future use | Prerequisite before planning | Cost note |
 |---|---|---|---|

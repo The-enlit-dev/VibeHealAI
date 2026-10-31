@@ -1,44 +1,110 @@
 # BrixoAI
 
-BrixoAI is a planned free, local-first **Windows desktop app** for vibe coders whose AI-built JavaScript/TypeScript project has stopped working. It helps them:
-- understand the error;
-- capture failing output safely;
+BrixoAI helps vibe coders, especially beginners, safely understand, fix and manage a **broken JavaScript/TypeScript project**:
+- understand the error and capture failing output safely;
 - back up files before trying a fix;
 - review every change;
 - undo changes and re-run checks to see whether the fix really worked.
 
-The first version contains **no built-in AI**. Users run their own AI tool, such as Claude Code, separately, and BrixoAI is the careful, honest safety net around that work.
+There is **no built-in AI**. Users run their own AI tool, such as Claude Code, and BrixoAI is the careful, honest safety net around that work.
 
-**Status:** planning stage. This repository currently contains documentation only; **no application code exists yet**. Plans are proposals until implemented and tested.
+**Integration marketplace (new, 2026-10-31).** BrixoAI connects to services you already use, with first-party integrations maintained by BrixoAI, to bring relevant context into that workflow:
+- **Providers:** GitHub, Vercel, Netlify, Supabase, Figma, Stripe, Shopify, Notion and Slack.
+- **Credentials:** a BrixoAI backend holds them, encrypted. The desktop app never sees them.
+- **Access:** every integration starts read-only.
 
-## Start here
-1. [docs/planning/DECISIONS.md](./docs/planning/DECISIONS.md): the owner's decisions. Takes precedence over every other document.
-2. [docs/planning/README.md](./docs/planning/README.md): index of the planning documents.
-3. [docs/planning/BEGINNER_GUIDE.md](./docs/planning/BEGINNER_GUIDE.md): plain-English overview, costs and setup checklist.
-4. [CLAUDE.md](./CLAUDE.md): instructions for Claude Code sessions working on this repository.
+## Status (2026-10-31)
+
+| Part | State |
+|---|---|
+| Integration marketplace (IM1): registry, adapter interface, connection, permission and approval services, encrypted vault, audit log, backend API, desktop catalog UI | **Implemented and tested** with automated tests (Linux). Desktop window not yet launched on Windows |
+| GitHub (IM2): read-only GitHub App integration | **Implemented and tested against a fake GitHub API only.** Shows **Not configured** until a GitHub App is registered ([setup](./docs/integrations/GITHUB_APP_SETUP.md)). **Not tested live** |
+| Vercel, Netlify, Supabase, Figma, Stripe, Shopify, Notion, Slack | **Coming soon:** catalog entries only, and they cannot be connected |
+| Core broken-project workflow (Project Gate, script runner, snapshots, diff review, undo, handoff brief) | **Not implemented yet** (milestones M1–M4) |
+| Hosting | **None.** The backend runs locally only. Nothing is deployed |
+
+## Local setup
+
+**Requirements:** Node.js 22.12 or newer (LTS), npm, Git.
+
+Install the dependencies (one time):
+
+```bash
+npm install
+```
+
+Create `.env` and `.env.desktop` with freshly generated secrets. Both files are git-ignored, and the command never overwrites existing files:
+
+```bash
+npm run setup:env
+```
+
+Build and start the backend on `127.0.0.1:8787`:
+
+```bash
+npm run dev:server
+```
+
+In a second terminal, build and open the desktop app:
+
+```bash
+npm run dev:desktop
+```
+
+If npm 11 skipped Electron's install script, so `npm run dev:desktop` reports a missing Electron binary, fetch it once:
+
+```bash
+node node_modules/electron/install.js
+```
+
+Without GitHub App settings, the marketplace shows GitHub as **Not configured**, and that's expected. To test GitHub live, follow [docs/integrations/GITHUB_APP_SETUP.md](./docs/integrations/GITHUB_APP_SETUP.md).
+
+### Checks
+
+| Command | What it runs |
+|---|---|
+| `npm run typecheck` | TypeScript for backend, Electron main, preload and renderer |
+| `npm run lint` | ESLint, including architecture-boundary import rules |
+| `npm test` | Vitest unit and API tests |
+| `npm run build` | Builds everything, then fails if the renderer bundle contains secret-like content |
+| `npm run check` | All of the above |
+
+### Configuration
+- [`.env.example`](./.env.example): backend settings. Placeholders only.
+- [`.env.desktop.example`](./.env.desktop.example): desktop settings. Only the backend URL and the local access token.
+
+## Project layout
+
+```text
+shared/     Types and validation shared by desktop and backend (no secrets)
+server/     Backend API: integration platform, provider adapters, vault, storage, audit
+  integrations/  registry, adapter interface, connection manager, permissions, approvals
+  providers/     github/ (real, read-only) and planned catalog entries
+  credentials/   CredentialVault + AES-256-GCM file implementation
+  storage/       repository interfaces, JSON-file storage, audit log
+  http/          /v1 routes (Node http module, no framework)
+desktop/    Electron app: main (IPC, backend client), preload (window.brixo), renderer (React UI)
+scripts/    setup-env and the bundle secret check
+docs/       Planning set, decisions and integration setup guides
+```
 
 ## Documentation
-- [Product](./docs/planning/PRODUCT.md): problem, target user, MVP workflow, scope, success measures, validation plan.
-- [Architecture](./docs/planning/ARCHITECTURE.md): components, data flow, Windows approach, open questions.
-- [Security and privacy](./docs/planning/SECURITY.md): requirements with IDs and release stages (proposed, not yet implemented).
-- [Local data](./docs/planning/DATA_MODEL.md): what is stored on the user's computer and for how long.
-- [Tech stack and costs](./docs/planning/TECH_STACK.md): free tools and every possible cost conflict.
-- [AI access and integrations](./docs/planning/INTEGRATIONS.md): why the MVP has no built-in AI; future integrations.
-- [Reuse register](./docs/planning/REUSE.md): reviewed Rakazo candidates and attribution rules.
-- [Roadmap](./docs/planning/ROADMAP.md): milestones and gates.
-- [Engineering rules](./docs/claude.md): detailed rules for building BrixoAI.
+1. [docs/planning/DECISIONS.md](./docs/planning/DECISIONS.md): the owner's decisions. They take precedence over every other document.
+2. [docs/planning/README.md](./docs/planning/README.md): index of the planning documents.
+3. [docs/planning/BEGINNER_GUIDE.md](./docs/planning/BEGINNER_GUIDE.md): plain-English overview, costs and setup.
+4. [docs/planning/ARCHITECTURE.md](./docs/planning/ARCHITECTURE.md): desktop, backend, integration platform and core components.
+5. [docs/planning/SECURITY.md](./docs/planning/SECURITY.md): requirements, with tested status in §6.
+6. [docs/planning/INTEGRATIONS.md](./docs/planning/INTEGRATIONS.md): provider plan and how to add a provider.
+7. [CLAUDE.md](./CLAUDE.md): instructions for Claude Code sessions.
 
 Older documents (`docs/PRD.md`, `docs/ARCHITECTURE.md`, `docs/ROADMAP.md`, `docs/DESIGN.md`) describe an earlier direction and are kept for history. `docs/SECURITY.md` keeps the baseline security principles.
 
 ## Working principles
-- Local-first: everything stays on the user's computer. No accounts or cloud services in the MVP.
-- $0 extra cost: free and open-source tools only.
-- Security enforced in code: project-folder boundaries, blocked secret files, approval before running scripts or changing files, backups and undo.
-- Honest results: report what actually happened. Never fabricate success.
-- Small, testable steps, with explicit approval before installing dependencies, merging or publishing.
-
-## Development
-Not started. The planned stack is Electron, React, Vite and TypeScript with npm, on native Windows (see [TECH_STACK.md](./docs/planning/TECH_STACK.md)). Install and run commands will be documented here once implementation begins and they have been verified.
+- **$0 extra cost.** No paid services, hosting, databases or APIs. Nothing is deployed.
+- **Credentials stay on the backend,** encrypted. They never appear in the desktop app, logs, source or bundles.
+- **Read-only first.** Sensitive actions need explicit approval.
+- **Honest status.** Coming soon, Not configured, Connected and Error mean exactly that. No fabricated success.
+- **Small, testable steps,** with explicit approval before merging, publishing or deploying.
 
 ## Licence
 Apache-2.0 is the intended licence. The LICENSE file has not been added yet, and will be added with the owner's approval.

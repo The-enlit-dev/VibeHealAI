@@ -2,7 +2,7 @@
 
 **Who this is for:** you, the project owner, and anyone new to building software. It explains what BrixoAI will be, how its parts fit together, what it costs, and what to set up.
 
-**Status:** this guide describes the **plan** as of 2026-10-29. **BrixoAI doesn't exist yet as software.** Labels are defined in [DECISIONS.md](./DECISIONS.md).
+**Status:** updated 2026-10-31. The **integration marketplace** now exists as early software you can run on your own computer (see §8). The **broken-project safety workflow** in §1 is still a plan. Labels are defined in [DECISIONS.md](./DECISIONS.md).
 
 ---
 
@@ -19,6 +19,12 @@ You built a website or app with AI help, and now it's broken. BrixoAI is a free 
 8. re-runs the check and tells you honestly whether it now passes.
 
 BrixoAI has **no built-in AI** in its first version. That keeps it free and within Anthropic's rules ([INTEGRATIONS.md](./INTEGRATIONS.md)).
+
+**New (2026-10-31): integrations.** BrixoAI can also connect to services you use, such as GitHub, to show helpful context. For example: which branch you're on and what changed recently. To do this safely, BrixoAI has two parts:
+- the **desktop app**, which you look at;
+- a small **backend**, which holds the keys to your connected services. The desktop app never sees those keys.
+
+For now the backend runs only on your own computer.
 
 ## 2. An analogy: the garage
 
@@ -51,6 +57,14 @@ BrixoAI has **no built-in AI** in its first version. That keeps it free and with
 | **Claude Code** | Anthropic's coding assistant, which you already subscribe to |
 | **Prompt injection** | Hidden text in files that tries to trick an AI into doing something harmful |
 | **Pull request (PR)** | A proposed change on GitHub, waiting for review before it's merged |
+| **Backend** | A program that runs behind the scenes. BrixoAI's backend stores connection keys and talks to GitHub and other services for the desktop app |
+| **Integration / provider** | A service BrixoAI can connect to, such as GitHub or Vercel |
+| **Marketplace** | The list of integrations inside BrixoAI, with what each can access and whether it's ready |
+| **GitHub App** | GitHub's official way for a tool to access only the repositories you pick, with only the permissions it needs |
+| **OAuth / authorization** | The "Allow BrixoAI to access…" screen a service shows you. You approve there, not inside BrixoAI |
+| **Access token** | A temporary key a service gives BrixoAI after you approve. BrixoAI keeps it on the backend, encrypted |
+| **Encryption at rest** | Stored data is scrambled with a secret key, so the file is useless without that key |
+| **Read-only** | BrixoAI can look but not change anything |
 
 ## 4. What it costs
 
@@ -61,6 +75,9 @@ BrixoAI has **no built-in AI** in its first version. That keeps it free and with
 | Accounts or sign-up for BrixoAI | **None needed** |
 | Cloud storage, hosting, domains | **None** |
 | GitHub | **$0** within free limits for a private repository. Check that no paid overage is enabled ([TECH_STACK.md §4](./TECH_STACK.md#4-zero-extra-cost-conflicts)) |
+| BrixoAI backend | **$0.** It runs on your computer. Nothing is hosted, and no domain or database service is used |
+| Registering a GitHub App (optional, for live GitHub testing) | **$0.** Don't add a payment method |
+| Other providers (later) | Usually $0 for read-only developer access, but **each is checked before it's built** ([TECH_STACK.md §4](./TECH_STACK.md#4-zero-extra-cost-conflicts)). Stripe is test mode only |
 
 Things that *would* cost money, such as built-in AI via an API key, code-signing certificates or paid security reviews, are excluded or replaced with free alternatives.
 
@@ -71,6 +88,12 @@ Things that *would* cost money, such as built-in AI via an API key, code-signing
 - It takes a backup before a fix session, and you can always undo **file changes inside the project folder**.
 - It **can't** see or undo commands your AI tool runs, or changes outside the project folder. Read Claude Code's own permission prompts carefully.
 - A passing check means that check passed, not that the whole app is bug-free.
+- **Integrations:**
+  - each one starts **read-only**;
+  - anything that would change data needs your explicit approval every time;
+  - connection keys stay on the backend, encrypted;
+  - **Disconnect** deletes them. For GitHub, also uninstall the app in GitHub's settings to remove access completely.
+- **Never** paste passwords, API keys or tokens into the desktop app. Integrations use the service's own approval screen.
 
 ## 6. Who does what
 
@@ -101,3 +124,20 @@ Things that *would* cost money, such as built-in AI via an API key, code-signing
 - [ ] Decide when to add the Apache-2.0 LICENSE file (P-4).
 
 **Never needed for the MVP:** an Anthropic API key, a cloud account, a domain, Docker, or any paid service.
+
+## 8. Running the marketplace on your computer (added 2026-10-31)
+
+You need **Node.js 22 LTS or newer** and **Git**. Then, in the project folder:
+
+1. `npm install`: downloads the free tools (one time).
+2. `npm run setup:env`: creates two private settings files with new random secrets: `.env` for the backend and `.env.desktop` for the app. They are never committed to Git.
+3. `npm run dev:server`: starts the backend. Leave this window open.
+4. In a second window, run `npm run dev:desktop` to open the BrixoAI desktop app.
+
+You'll see nine integrations:
+- **GitHub** says **Not configured**. That's expected until a GitHub App is registered ([GitHub App setup](../integrations/GITHUB_APP_SETUP.md)).
+- The others say **Coming soon**.
+
+If the app says **Backend not reachable**, step 3 isn't running.
+
+To check everything still works after a change: `npm run check` (types, lint, tests and build).

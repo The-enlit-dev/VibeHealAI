@@ -1,0 +1,12 @@
+node_modules/
+dist/
+coverage/
+# Local secrets and backend data: never commit.
+.env
+.env.*
+!.env.example
+.brixo-data/
+*.pem
+*.key
+*.log
+!.env.desktop.example

@@ -1,71 +1,78 @@
-# BrixoAI — Architecture (Planning v3)
+# BrixoAI — Architecture (Planning v4)
 
-**Status:** Proposed MVP architecture, last updated 2026-10-29. **No component is implemented.** The direction is a local-first Windows desktop app with Electron, React, Vite and TypeScript and no mandatory WSL2 [Decision DEC-04]. It contains **no built-in AI** [Decision DEC-06]. Labels are defined in [DECISIONS.md](./DECISIONS.md).
+**Status:** Last updated 2026-10-31. This version adds the **backend-managed integration marketplace** [Decision DEC-17, DEC-18]. Labels are defined in [DECISIONS.md](./DECISIONS.md).
 
-This replaces the earlier hosted design (web app on Netlify, Supabase database, paired local helper). That design isn't needed for a local-first MVP and would add cost and complexity ([DECISIONS.md §2](./DECISIONS.md#2-status-of-the-earlier-decisions-round-1-recorded-2026-10-25), D10).
+**What exists in code (2026-10-31):**
+- the integration platform (IM1) and the GitHub adapter (IM2) in `server/`, `desktop/` and `shared/`, described in §4 to §7;
+- automated tests for those parts.
+
+**What does not exist yet:**
+- the core safety-workflow components (§3: Project Gate, Script Runner, Snapshot and Undo, and the others);
+- any hosted deployment.
+
+**History:** v3 (2026-10-29) was a single local desktop app with no backend, no ports and no network. Its core components are kept below. Its "no network, no ports, no credentials" rules are superseded for integration features only ([DECISIONS.md §4](./DECISIONS.md#4-round-3-backend-managed-integration-marketplace-recorded-2026-10-31)). The v3 text is preserved in git history and in [The-enlit-dev/BrixoAI#1](https://github.com/The-enlit-dev/BrixoAI/pull/1).
 
 ---
 
 ## 1. The big picture in plain English
 
-BrixoAI is **one program on the user's Windows computer**:
-- no website, server, database service or account;
-- it connects to nothing on the internet;
-- it looks at one project folder the user picks, runs only the checks the user approves, keeps backups, shows exactly what changed, and can put things back.
+BrixoAI has **two programs**:
+1. **The desktop app** on the user's computer. It shows the marketplace, and later the broken-project workflow: inspect, explain, back up, review, undo, verify.
+2. **The BrixoAI backend.** A small server that holds provider credentials and talks to GitHub, Vercel and the other providers for the desktop app.
+   - **Today it runs only on the developer's own computer** and listens only on `127.0.0.1`.
+   - It is designed to be hosted later, but **it is not deployed** (DEC-18, DEC-22).
 
-When the user wants AI help, they open **their own** Claude Code (or another AI tool) themselves. BrixoAI gives them a safe summary to paste, then reviews whatever that tool changed.
+The desktop app never sees provider tokens or app secrets. It asks the backend things like "list my GitHub repositories", and the backend answers with plain data.
 
 ## 2. Component diagram
 
 ```mermaid
 flowchart LR
-  subgraph PC["User's Windows computer"]
-    subgraph App["BrixoAI desktop app (Electron)"]
-      UI["Window (React UI)<br/>sandboxed, no Node access"]
-      subgraph Main["Main process (Node.js / TypeScript)"]
-        GATE["Project Gate<br/>path checks, secret filter, redaction"]
-        INSPECT["Project Inspector"]
-        RUN["Script Runner<br/>no shell, timeout, process-tree kill"]
-        EXPLAIN["Error Explainer<br/>offline rules"]
-        SNAP["Snapshot, Change Review, Undo"]
-        BRIEF["Handoff Brief Builder"]
-        STORE["Local Store<br/>settings, sessions, backups, logs"]
-      end
+  subgraph PC["User's computer"]
+    subgraph Desktop["BrixoAI desktop app (Electron)"]
+      UI["Window (React)<br/>sandboxed, no Node,<br/>CSP connect-src 'none'"]
+      PRE["Preload bridge<br/>window.brixo (fixed API)"]
+      MAIN["Main process<br/>IPC validation, backend client,<br/>external-link guard"]
+      CORE["Core safety modules<br/>(planned, M1–M4)"]
     end
-    PROJECT["Selected project folder"]
-    DATA["App data folder<br/>(%APPDATA%)"]
-    CLIP["Clipboard"]
-    EXTAI["User's own Claude Code<br/>(separate program)"]
+    subgraph Backend["BrixoAI backend (Node.js, loopback only)"]
+      API["HTTP API /v1<br/>auth, host check, validation"]
+      PLAT["Integration platform<br/>registry · connections ·<br/>permissions · approvals"]
+      ADP["Provider adapters<br/>GitHub (real) · 8 planned"]
+      VAULT["Credential vault<br/>AES-256-GCM"]
+      STORE["Data store<br/>connections, states, approvals"]
+      AUDIT["Audit log<br/>append-only, redacted"]
+    end
+    BROWSER["System browser"]
   end
+  PROVIDERS["Provider APIs<br/>(api.github.com, ...)"]
 
-  UI -- "Electron internal messaging only" --> GATE
-  GATE --> INSPECT
-  GATE --> RUN
-  GATE --> SNAP
-  INSPECT --> PROJECT
-  RUN --> PROJECT
-  SNAP --> PROJECT
-  RUN --> EXPLAIN
-  BRIEF --> CLIP
-  STORE --> DATA
-  CLIP -. "user pastes" .-> EXTAI
-  EXTAI -. "edits files (outside BrixoAI's control)" .-> PROJECT
+  UI --> PRE --> MAIN
+  MAIN -- "HTTP + local access token" --> API
+  API --> PLAT --> ADP
+  PLAT --> VAULT
+  PLAT --> STORE
+  PLAT --> AUDIT
+  ADP -- "HTTPS" --> PROVIDERS
+  MAIN -- "opens authorization URL<br/>(https + allowed host only)" --> BROWSER
+  BROWSER -- "provider redirect to callback" --> API
 ```
 
-## 3. Components and responsibilities
+## 3. Core safety-workflow components (planned, unchanged from v3)
 
-| Component | Responsibility | Must not | Key requirements ([SECURITY.md](./SECURITY.md)) |
-|---|---|---|---|
-| **Window (renderer)** | Shows state, collects choices and approvals | Access files, run commands or hold secrets. It has no Node.js access | WN-3 |
-| **Project Gate** | The single choke point for every file read, file write and command. Enforces the folder boundary, blocks secret files and redacts output | Be bypassable: every other component goes through it | PB-1 to PB-5, SE-1, SE-2 |
-| **Project Inspector** | Reads `package.json`, version requirements, lockfile presence, expected env-variable **names**. Never runs project code | Read secret contents. Run git without resolving U7 | SE-1 |
-| **Script Runner** | Runs one approved `package.json` script: no shell, minimal environment, timeout, cancel kills the whole process tree, output captured and redacted | Run arbitrary commands. Pass BrixoAI's own environment | CE-1 to CE-7 |
-| **Error Explainer** | Matches captured output against versioned offline rules. Returns a plain-English explanation, likely files and suggested checks, or "not recognised" | Guess or fabricate an explanation | — |
-| **Snapshot, Change Review, Undo** | Snapshots before a protected session, detects changes, shows diffs, flags risky changes, restores exactly | Change project files without an explicit user action | FC-1 to FC-5, SN-1 to SN-4 |
-| **Handoff Brief Builder** | Builds a redacted brief for the user to copy into their own AI tool | Send anything over the network. Include secret contents | HB-1 to HB-3, NP-1 |
-| **Local Store** | Settings, session summaries, snapshots, audit log; 30-day retention; delete and export | Use any cloud service | LD-1 to LD-4 |
+These are still the centre of the product [Decision DEC-16]. **None is implemented yet.** They run in the desktop main process and work without the backend.
 
-## 4. How a session flows
+| Component | Responsibility | Key requirements ([SECURITY.md](./SECURITY.md)) |
+|---|---|---|
+| Project Gate | The single choke point for every file read, file write and command in the selected project folder | PB-1 to PB-5, SE-1, SE-2 |
+| Project Inspector | Reads `package.json`, version requirements, lockfile presence and expected env-variable names | SE-1 |
+| Script Runner | Runs one approved `package.json` script: no shell, timeout, process-tree kill | CE-1 to CE-7 |
+| Error Explainer | Offline rules that explain common errors | — |
+| Snapshot, Change Review, Undo | Backs up before a fix session, shows diffs, restores exactly | FC-1 to FC-5, SN-1 to SN-4 |
+| Handoff Brief Builder | A redacted brief the user copies into their own AI tool | HB-1 to HB-3 |
+| Local Store | Settings, sessions, snapshots, local audit log | LD-1 to LD-4 |
+
+### 3.1 How a core session flows (planned, from v3)
 
 ```mermaid
 sequenceDiagram
@@ -104,35 +111,146 @@ sequenceDiagram
 
 **Session states** [Recommendation]: `no_project` → `project_selected` → `error_captured` → `protected_session_active` → `changes_reviewed` → `verified_pass` | `verified_fail` | `not_verified` → `closed`.
 
-## 5. Local-first and privacy
-- **Nothing leaves the computer** through BrixoAI (NP-1). The only data that can leave is what the user copies into their own tools, or network access by an approved command such as `npm install`.
-- Because BrixoAI uploads nothing, the earlier per-task upload consent ([DECISIONS.md](./DECISIONS.md) D8) reduces to clear warnings at those two points.
+**How integrations will feed the workflow (later):**
+- The handoff brief and the project view can include **context** from connected providers: the GitHub repository, branch and recent commits; the latest Vercel or Netlify deployment status; Figma frames; and so on.
+- Each piece of context is fetched through the backend's read-only capabilities and redacted before display.
+- The workflow must keep working when nothing is connected.
 
-## 6. Windows without WSL2
-- [Verified 2026-10-25] Claude Code itself runs on native Windows 10 1809+ (PowerShell or Git Bash), but **its command sandbox is not supported on native Windows** ([setup docs](https://code.claude.com/docs/en/setup)). That's relevant because the user's external AI tool runs unsandboxed. BrixoAI's safety net doesn't depend on that sandbox.
-- [Recommendation] BrixoAI handles Windows specifics in the Project Gate and Script Runner:
-  - path normalisation, device names, junctions;
-  - running npm through `node` instead of `cmd.exe` (U4);
-  - Job Objects for process-tree cleanup;
-  - long paths and file locks.
-- [Recommendation] Electron includes its own Node.js runtime, so BrixoAI itself doesn't need Node installed. **Running the user's project does** need Node.js and npm installed, as it would without BrixoAI.
+## 4. Integration platform
 
-## 7. AI integration status (summary)
-Full details and sources are in [INTEGRATIONS.md](./INTEGRATIONS.md).
+Code: `server/integrations/`. Every provider plugs into the same parts, so adding one never requires changes to the marketplace UI or the connection manager.
 
-| Path | Status |
-|---|---|
-| No built-in AI; the user runs their own Claude Code separately | **Chosen for the MVP** [Decision DEC-06] |
-| Claude Agent SDK with an API key | **Excluded.** Requires API billing (DEC-05) |
-| BrixoAI using the owner's subscription inside the app | **Not permitted** for third-party products per Anthropic's terms [Verified 2026-10-25] |
-| BrixoAI launching or driving the user's own unmodified Claude Code | **Blocked** until Anthropic confirms in writing (U1, P-1) |
+| Part | File | Responsibility |
+|---|---|---|
+| **Provider metadata** | `shared/providers.ts` (types), `server/providers/*/metadata.ts` | id, name, category, description, permissions (with access level), capabilities, authorization hosts, docs links, implementation status |
+| **Adapter interface** | `server/integrations/adapter.ts` | `ProviderAdapter`: `metadata`, `configuration()`, `beginConnect()`, `completeConnect()`, `revoke()`, `capabilities` |
+| **Provider registry** | `server/integrations/registry.ts` | Validates and registers adapters: unique ids, capabilities only use declared permissions, planned adapters cannot expose capabilities |
+| **Connection manager** | `server/integrations/connection-manager.ts` | Starts authorization (single-use, expiring `state`), completes callbacks, stores credentials in the vault, disconnects and revokes, tracks status |
+| **Permission manager / action authorizer** | `server/integrations/permission-manager.ts` | Per-action checks: connection is connected; granted permissions cover the capability; non-read capabilities need a matching, unexpired, single-use approval |
+| **Availability** | `server/integrations/availability.ts` | Computes the label shown in the UI (§4.1) |
+| **Errors** | `server/integrations/errors.ts` | `IntegrationError` with safe codes and messages; provider response bodies are never passed through |
+| **Credential vault** | `server/credentials/` | `CredentialVault` interface; `EncryptedFileVault` for local development (§6) |
+| **Data store** | `server/storage/` | Repository interfaces; JSON-file implementation for local development, replaceable with a database when hosted |
+| **Audit log** | `server/storage/audit-log.ts` | Append-only JSON Lines; every entry passes through redaction |
 
-## 8. Designed now vs later
+### 4.1 Availability states
 
-| Designed now | Deliberately later |
-|---|---|
-| Project Gate, Script Runner, snapshot/undo, redaction, local store, no-network rule | Built-in AI, accounts and sign-in, cloud sync, GitHub, deploys, plugins, multi-agent, auto-updates, macOS/Linux, a visual design |
-| Clean boundary: every file and command operation goes through the Project Gate. That's what a future AI integration would call, so no plug-in abstraction is needed now | Engine or provider abstraction layers (add only when a second option is actually approved) |
+| Label | Meaning | How it's computed |
+|---|---|---|
+| **Coming soon** | Only metadata and a planned adapter exist. Connect is disabled | `implementation: "planned"` |
+| **Not configured** | A real adapter exists, but the backend is missing required configuration (for example GitHub App settings). The UI lists the missing setting **names** | `configuration().configured === false` |
+| **Available** | Real adapter and configuration present; not connected | default |
+| **Connected** | A connection exists with status `connected` | connection record |
+| **Error** | A connection exists but failed (for example authorization was revoked on the provider's side, or verification failed) | connection status `error` |
+
+### 4.2 Connection lifecycle
+
+```mermaid
+sequenceDiagram
+  autonumber
+  actor U as User
+  participant D as Desktop (main)
+  participant B as Backend
+  participant P as Provider
+  U->>D: Connect GitHub
+  D->>B: POST /v1/providers/github/connect
+  B->>B: Create single-use state (10 min), audit "connection.started"
+  B-->>D: authorizationUrl
+  D->>D: Check https + host in provider's authorizationHosts
+  D->>U: Open system browser
+  U->>P: Approve installation / consent
+  P->>B: Redirect to /v1/callback/github?state=...&code=...
+  B->>B: Consume state (single use, not expired)
+  B->>P: Exchange / verify (server-side secrets only)
+  B->>B: Store credential in vault, save connection, audit "connection.completed"
+  B-->>U: "You can close this window" page (no data echoed)
+  D->>B: GET /v1/providers (poll / refresh)
+  B-->>D: GitHub: Connected
+```
+
+**Disconnect:** the desktop app calls `DELETE /v1/connections/:id`. The backend:
+1. calls the adapter's `revoke()` (best effort, with the result recorded);
+2. deletes the vault entry;
+3. deletes the connection record;
+4. writes an audit entry.
+
+If revocation at the provider fails, the local credential is **still deleted**, and the UI says the provider-side revocation must be finished manually.
+
+### 4.3 Capabilities and per-action authorization
+- A capability is one named, typed action, such as `github.repositories.list`. It declares:
+  - its required permissions;
+  - its access level: `read`, `write` or `sensitive`;
+  - an input validator;
+  - an output mapper that returns only whitelisted fields.
+- `POST /v1/connections/:id/actions/:capability` runs one. Every call is authorized individually and audited, whether allowed or denied.
+- `write` and `sensitive` capabilities need an approval:
+  1. `POST /v1/approvals` creates a pending approval bound to (connection, capability, SHA-256 of the input).
+  2. The user confirms in the desktop app (`POST /v1/approvals/:id/approve`).
+  3. The approval is used once and expires after 5 minutes.
+- **No write or sensitive capability is implemented yet** (DEC-21). The gate is built and tested so the first one can't skip it.
+
+### 4.4 Third-party plugins (future, not built)
+The registry accepts only adapters compiled into the backend. A future third-party plugin system would:
+- add signed, declarative manifests;
+- run plugin code out of process with its own permissions;
+- add a review process.
+
+None of this exists, and no code is downloaded or executed from outside the repository (DEC-17).
+
+## 5. Backend API
+
+Code: `server/http/`. It uses Node.js's built-in `http` module, so there is no framework dependency ([TECH_STACK.md](./TECH_STACK.md)). Every route except `/v1/health` and the provider callback requires `Authorization: Bearer <local access token>`.
+
+| Method | Path | Purpose |
+|---|---|---|
+| GET | `/v1/health` | Liveness (no auth, no details) |
+| GET | `/v1/providers` | Catalog: all providers with availability |
+| GET | `/v1/providers/:providerId` | Details, permissions, capabilities, missing configuration names, connection |
+| POST | `/v1/providers/:providerId/connect` | Start authorization; returns `authorizationUrl` |
+| GET | `/v1/callback/:providerId` | Provider redirect target (protected by single-use `state`) |
+| GET | `/v1/connections` | Connections (no credentials) |
+| DELETE | `/v1/connections/:connectionId` | Disconnect and revoke |
+| POST | `/v1/connections/:connectionId/actions/:capabilityId` | Run one capability (`{ input, approvalId? }`) |
+| POST | `/v1/approvals` | Create a pending approval for a non-read capability |
+| POST | `/v1/approvals/:approvalId/approve` | Confirm a pending approval |
+| GET | `/v1/activity` | Recent audit entries (redacted) |
+
+The API's security rules are BK-1 to BK-8 in [SECURITY.md](./SECURITY.md#212-backend-and-api-bk).
+
+## 6. Credentials and data
+
+- **Vault:** `EncryptedFileVault` encrypts each credential with **AES-256-GCM** (Node.js `crypto`).
+  - It uses a random 96-bit IV per record and a 256-bit key from `BRIXO_ENCRYPTION_KEY`.
+  - Additional authenticated data (AAD) binds each ciphertext to its credential id and provider, so records can't be swapped.
+  - Each record stores a key id so the key can be rotated later.
+  - The file is written atomically with owner-only permissions where the OS supports them.
+- **Secret values in memory** are wrapped in a `Secret` type. Its `toString`, `toJSON` and `inspect` all print `[REDACTED]`, so an accidental log line can't leak them.
+- **Persistent data** (connections, authorization states, approvals) is stored as JSON files in `BRIXO_DATA_DIR` (default `./.brixo-data/`, git-ignored). It sits behind repository interfaces, so a database can replace it when the backend is hosted.
+- **GitHub specifically:** BrixoAI stores only the installation id.
+  - Short-lived (1-hour) installation tokens are minted on demand with the App's private key and cached in memory only.
+  - No long-lived GitHub user token is kept.
+
+Details: [DATA_MODEL.md](./DATA_MODEL.md).
+
+## 7. Desktop app
+
+Code: `desktop/`.
+- **Renderer:** React UI for the marketplace.
+  - No Node.js, context isolation on, sandboxed.
+  - Strict content security policy with `connect-src 'none'`: the window cannot make network requests itself.
+- **Preload:** exposes a small, fixed `window.brixo` API through `contextBridge`. It exposes no generic IPC.
+- **Main process:**
+  - validates every IPC argument;
+  - calls the backend with the local access token, which the renderer never sees;
+  - opens authorization URLs in the system browser only if they use `https` and a host listed in that provider's `authorizationHosts`;
+  - blocks in-window navigation and new windows.
+
+## 8. Hosting later (designed for, not done)
+
+- **Configuration:** everything comes from environment variables, validated at startup.
+- **Network binding:** the backend refuses to listen on a non-loopback address unless `BRIXO_ALLOW_NON_LOOPBACK=true` is set explicitly, which is meant for a future deployment behind TLS.
+- **Storage and keys:** storage and the vault are interfaces. Postgres and a cloud KMS would be new implementations, not rewrites (P-10, P-12).
+- **Identity:** hosted identity is pending (P-9). Hosting must not happen before that decision and a security review.
 
 ## 9. Open technical questions
 
@@ -151,3 +269,7 @@ Full details and sources are in [INTEGRATIONS.md](./INTEGRATIONS.md).
 | U11 | Whether walking testers through their own projects fits "ordinary, individual usage" if the owner's subscription were used | Avoid the question: testers use their own AI tools | Validation plan |
 | U12 | Windows on ARM support | Later | — |
 | U13 | Automated Electron UI testing and staying within the private-repo CI quota | Evaluate in M4 | Test plan |
+| U14 | GitHub App flow details: the `state` round-trip on the installation URL, "Request user authorization (OAuth) during installation", and the exact permission each read endpoint needs | Check against docs.github.com. It was unreachable from the build environment on 2026-10-31, so these are **[Assumption]** | Live GitHub testing |
+| U15 | Each remaining provider's official auth model, scopes, rate limits and data-handling terms | Review official docs before building each adapter (IM3, IM4) | IM3, IM4 |
+| U16 | How the desktop app learns a connection finished (polling vs a push channel) | Polling for IM1; revisit when hosted | — |
+| U17 | Encryption-key rotation procedure | Design with P-12 | Hosting |
