@@ -6,6 +6,8 @@ coverage/
 .env.*
 !.env.example
 .brixo-data/
+# Waitlist signups and exports contain personal data: never commit.
+waitlist-data/
 *.pem
 *.key
 *.log

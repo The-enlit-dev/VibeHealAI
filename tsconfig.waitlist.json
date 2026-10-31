@@ -1,0 +1,13 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "types": ["node"],
+    "rootDir": "waitlist",
+    "outDir": "dist/waitlist",
+    "sourceMap": true
+  },
+  "include": ["waitlist/**/*.ts"],
+  "exclude": ["**/*.test.ts"]
+}
