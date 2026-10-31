@@ -1,12 +1,13 @@
-// HTTP handler for the public waitlist and the static marketing site.
+// HTTP handler for the public waitlist, the static website and (when configured) the private admin area.
 // Built on node:http only (no framework), like the existing backend.
 //
-// Routes:
+// Public routes:
 //   POST /api/waitlist   JSON signup (validated, rate-limited, de-duplicated)
 //   GET  /...            static files from the website/ folder only
-//
-// The admin report and CSV export are NOT routes. They are CLI commands (see cli.ts),
-// so nothing personal is reachable over HTTP.
+// Admin routes (only when an admin account is configured, see admin.ts):
+//   /admin/              dashboard page (contains no data itself)
+//   /api/admin/*         session-protected JSON and CSV endpoints
+// There is no other way to read signups over HTTP.
 
 import { createReadStream } from "node:fs";
 import { stat } from "node:fs/promises";
@@ -14,76 +15,53 @@ import type { IncomingMessage, ServerResponse } from "node:http";
 import path from "node:path";
 import { validateSignup } from "./validation.js";
 import type { SignupStore } from "./store.js";
+import { CONTENT_TYPES, SECURITY_HEADERS, WindowCounter, clientIp, readBody, writeJson } from "./http-util.js";
 
 export const SUCCESS_MESSAGE =
-  "Thanks! You're on the early-access list. We'll only contact you about BrixoAI early access.";
+  "Thanks! You're on the early-access list. We'll only contact you about early access to this project.";
+
+export type AdminHandler = (req: IncomingMessage, res: ServerResponse, url: URL) => Promise<boolean>;
 
 export interface WaitlistAppOptions {
   store: SignupStore;
   /** Folder with the static site. Omit to serve the API only. */
   websiteDir?: string;
-  /** Origins allowed to call the API from another site. Empty means same-origin only. */
+  /** Origins allowed to call the signup API from another site. Empty means same-origin only. */
   allowedOrigins?: readonly string[];
+  /** Private admin area. Omit to disable it (its routes then return 404). */
+  admin?: AdminHandler;
   now?: () => Date;
   rateLimit?: { maxRequests: number; windowMs: number };
   maxBodyBytes?: number;
   logError?: (message: string) => void;
 }
 
-const CONTENT_TYPES: Record<string, string> = {
-  ".html": "text/html; charset=utf-8",
-  ".css": "text/css; charset=utf-8",
-  ".js": "text/javascript; charset=utf-8",
-  ".svg": "image/svg+xml",
-  ".png": "image/png",
-  ".ico": "image/x-icon",
-  ".txt": "text/plain; charset=utf-8",
-  ".webmanifest": "application/manifest+json",
-};
+async function fileSize(file: string): Promise<number | null> {
+  try {
+    const info = await stat(file);
+    return info.isFile() ? info.size : null;
+  } catch {
+    return null;
+  }
+}
 
-const SECURITY_HEADERS: Record<string, string> = {
-  "X-Content-Type-Options": "nosniff",
-  "Referrer-Policy": "no-referrer",
-  "X-Frame-Options": "DENY",
-  "Permissions-Policy": "camera=(), microphone=(), geolocation=()",
-  "Content-Security-Policy":
-    "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; " +
-    "connect-src 'self'; form-action 'self'; base-uri 'none'; frame-ancestors 'none'",
-};
+async function isDirectory(dir: string): Promise<boolean> {
+  try {
+    return (await stat(dir)).isDirectory();
+  } catch {
+    return false;
+  }
+}
+
+export { SECURITY_HEADERS };
 
 export function createWaitlistHandler(options: WaitlistAppOptions) {
   const now = options.now ?? (() => new Date());
   const maxBodyBytes = options.maxBodyBytes ?? 16 * 1024;
   const rateLimit = options.rateLimit ?? { maxRequests: 5, windowMs: 10 * 60 * 1000 };
+  const signupAttempts = new WindowCounter(rateLimit.maxRequests, rateLimit.windowMs);
   const allowedOrigins = new Set(options.allowedOrigins ?? []);
-  const attempts = new Map<string, { count: number; resetAt: number }>();
   const logError = options.logError ?? (() => undefined);
-
-  function rateLimited(ip: string, nowMs: number): boolean {
-    // Prune expired windows so the map cannot grow without bound.
-    if (attempts.size > 10_000) {
-      for (const [key, value] of attempts) if (value.resetAt <= nowMs) attempts.delete(key);
-    }
-    const current = attempts.get(ip);
-    if (!current || current.resetAt <= nowMs) {
-      attempts.set(ip, { count: 1, resetAt: nowMs + rateLimit.windowMs });
-      return false;
-    }
-    current.count += 1;
-    return current.count > rateLimit.maxRequests;
-  }
-
-  function sendJson(req: IncomingMessage, res: ServerResponse, status: number, body: unknown, extra: Record<string, string> = {}) {
-    const headers: Record<string, string> = {
-      ...SECURITY_HEADERS,
-      "Content-Type": "application/json; charset=utf-8",
-      "Cache-Control": "no-store",
-      ...extra,
-    };
-    applyCors(req, res);
-    res.writeHead(status, headers);
-    res.end(JSON.stringify(body));
-  }
 
   function applyCors(req: IncomingMessage, res: ServerResponse) {
     const origin = req.headers.origin;
@@ -95,26 +73,9 @@ export function createWaitlistHandler(options: WaitlistAppOptions) {
     }
   }
 
-  function readBody(req: IncomingMessage): Promise<string | "too-large"> {
-    return new Promise((resolve, reject) => {
-      const chunks: Buffer[] = [];
-      let size = 0;
-      let tooLarge = false;
-      req.on("data", (chunk: Buffer) => {
-        if (tooLarge) return;
-        size += chunk.length;
-        if (size > maxBodyBytes) {
-          tooLarge = true;
-          resolve("too-large");
-          return;
-        }
-        chunks.push(chunk);
-      });
-      req.on("end", () => {
-        if (!tooLarge) resolve(Buffer.concat(chunks).toString("utf8"));
-      });
-      req.on("error", reject);
-    });
+  function sendJson(req: IncomingMessage, res: ServerResponse, status: number, body: unknown, extra: Record<string, string> = {}) {
+    applyCors(req, res);
+    writeJson(res, status, body, extra);
   }
 
   async function handleSignup(req: IncomingMessage, res: ServerResponse) {
@@ -129,8 +90,7 @@ export function createWaitlistHandler(options: WaitlistAppOptions) {
       return;
     }
 
-    const ip = req.socket.remoteAddress ?? "unknown";
-    if (rateLimited(ip, now().getTime())) {
+    if (signupAttempts.hit(clientIp(req), now().getTime())) {
       sendJson(req, res, 429, { error: "Too many attempts. Please try again in a few minutes." }, { "Retry-After": "600" });
       return;
     }
@@ -141,7 +101,7 @@ export function createWaitlistHandler(options: WaitlistAppOptions) {
       return;
     }
 
-    const body = await readBody(req);
+    const body = await readBody(req, maxBodyBytes);
     if (body === "too-large") {
       sendJson(req, res, 413, { error: "The form data is too large." });
       return;
@@ -176,6 +136,35 @@ export function createWaitlistHandler(options: WaitlistAppOptions) {
     }
   }
 
+  async function sendFile(req: IncomingMessage, res: ServerResponse, file: string, size: number, status = 200) {
+    const contentType = CONTENT_TYPES[path.extname(file).toLowerCase()] ?? "application/octet-stream";
+    res.writeHead(status, {
+      ...SECURITY_HEADERS,
+      "Content-Type": contentType,
+      "Content-Length": String(size),
+      "Cache-Control": "no-cache",
+    });
+    if (req.method === "HEAD") {
+      res.end();
+      return;
+    }
+    const stream = createReadStream(file);
+    stream.on("error", () => res.destroy());
+    stream.pipe(res);
+  }
+
+  async function notFound(req: IncomingMessage, res: ServerResponse, root: string | null) {
+    if (root) {
+      const page = path.join(root, "404.html");
+      const size = await fileSize(page);
+      if (size !== null) {
+        await sendFile(req, res, page, size, 404);
+        return;
+      }
+    }
+    sendJson(req, res, 404, { error: "Not found." });
+  }
+
   async function serveStatic(req: IncomingMessage, res: ServerResponse, pathname: string) {
     if (!options.websiteDir) {
       sendJson(req, res, 404, { error: "Not found." });
@@ -194,45 +183,35 @@ export function createWaitlistHandler(options: WaitlistAppOptions) {
     }
 
     const root = path.resolve(options.websiteDir);
-    const relative = decoded === "/" ? "index.html" : decoded.replace(/^\/+/, "");
+    const relative = decoded.replace(/^\/+/, "") + (decoded.endsWith("/") ? "index.html" : "");
     const target = path.resolve(root, relative);
     // Path-traversal guard: the resolved file must stay inside the website folder.
     if (target !== root && !target.startsWith(root + path.sep)) {
-      sendJson(req, res, 404, { error: "Not found." });
+      await notFound(req, res, root);
       return;
     }
+
     const extension = path.extname(target).toLowerCase();
-    const contentType = CONTENT_TYPES[extension];
-    if (!contentType) {
-      sendJson(req, res, 404, { error: "Not found." });
+    if (!extension) {
+      // "/faq" -> "/faq/" when that folder has an index page, matching Netlify's pretty URLs.
+      if ((await isDirectory(target)) && (await fileSize(path.join(target, "index.html"))) !== null) {
+        res.writeHead(301, { ...SECURITY_HEADERS, Location: `${pathname}/` });
+        res.end();
+        return;
+      }
+      await notFound(req, res, root);
       return;
     }
-
-    let info;
-    try {
-      info = await stat(target);
-    } catch {
-      sendJson(req, res, 404, { error: "Not found." });
+    if (!CONTENT_TYPES[extension]) {
+      await notFound(req, res, root);
       return;
     }
-    if (!info.isFile()) {
-      sendJson(req, res, 404, { error: "Not found." });
+    const size = await fileSize(target);
+    if (size === null) {
+      await notFound(req, res, root);
       return;
     }
-
-    res.writeHead(200, {
-      ...SECURITY_HEADERS,
-      "Content-Type": contentType,
-      "Content-Length": String(info.size),
-      "Cache-Control": "no-cache",
-    });
-    if (req.method === "HEAD") {
-      res.end();
-      return;
-    }
-    const stream = createReadStream(target);
-    stream.on("error", () => res.destroy());
-    stream.pipe(res);
+    await sendFile(req, res, target, size);
   }
 
   return async function handle(req: IncomingMessage, res: ServerResponse): Promise<void> {
@@ -242,6 +221,7 @@ export function createWaitlistHandler(options: WaitlistAppOptions) {
         await handleSignup(req, res);
         return;
       }
+      if (options.admin && (await options.admin(req, res, url))) return;
       if (url.pathname.startsWith("/api/")) {
         sendJson(req, res, 404, { error: "Not found." });
         return;
@@ -253,7 +233,7 @@ export function createWaitlistHandler(options: WaitlistAppOptions) {
       await serveStatic(req, res, url.pathname);
     } catch (error) {
       logError(`request error: ${(error as Error).name}`);
-      if (!res.headersSent) sendJson(req, res, 500, { error: "Something went wrong." });
+      if (!res.headersSent) writeJson(res, 500, { error: "Something went wrong." });
       else res.destroy();
     }
   };

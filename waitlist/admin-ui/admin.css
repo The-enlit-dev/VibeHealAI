@@ -1,0 +1,390 @@
+/* Admin dashboard styles. Colours come from /brand.css. */
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--color-ivory);
+  color: var(--color-navy);
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  line-height: 1.5;
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-teal-ink);
+  outline-offset: 2px;
+}
+
+h1 {
+  font-size: 1.8rem;
+  margin: 0 0 4px;
+  letter-spacing: -0.02em;
+}
+
+h2 {
+  font-size: 1.05rem;
+  margin: 0 0 12px;
+}
+
+.muted {
+  color: var(--color-slate);
+}
+
+.small {
+  font-size: 0.85rem;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.bar {
+  background: var(--color-navy);
+  color: var(--color-ivory);
+}
+
+.bar-inner,
+.wrap {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+.bar-inner {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px 16px;
+  min-height: 56px;
+}
+
+.bar-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.account {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.92rem;
+}
+
+.account .button-quiet {
+  color: var(--color-ivory);
+  border-color: rgba(246, 244, 239, 0.5);
+}
+
+.wrap {
+  padding-top: 24px;
+  padding-bottom: 48px;
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 8px 14px;
+  border-radius: 6px;
+  border: 1px solid var(--color-navy);
+  background: var(--color-navy);
+  color: var(--color-ivory);
+  font: inherit;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.button-quiet {
+  background: transparent;
+  color: var(--color-navy);
+}
+
+.button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+input,
+select {
+  font: inherit;
+  width: 100%;
+  min-height: 40px;
+  padding: 8px 10px;
+  border: 1px solid #C9C4B7;
+  border-radius: 6px;
+  background: var(--color-white);
+  color: var(--color-navy);
+}
+
+label {
+  display: block;
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin: 0 0 4px;
+}
+
+.notice {
+  background: #FBEDEB;
+  color: #A3271F;
+  border: 1px solid #E8C2BD;
+  padding: 10px 14px;
+  border-radius: 6px;
+  font-weight: 600;
+}
+
+.login {
+  max-width: 400px;
+  margin: 40px auto;
+  background: var(--color-white);
+  border: 1px solid #DEDAD0;
+  border-radius: 6px;
+  padding: 28px;
+}
+
+.login input {
+  margin-bottom: 14px;
+}
+
+.login .button {
+  width: 100%;
+}
+
+.form-status {
+  min-height: 1.5em;
+  margin: 12px 0 0;
+  font-weight: 600;
+  color: #A3271F;
+}
+
+.dash-head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.dash-head p {
+  margin: 0;
+}
+
+.stats {
+  list-style: none;
+  margin: 0 0 20px;
+  padding: 0;
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.stats li,
+.panel {
+  background: var(--color-white);
+  border: 1px solid #DEDAD0;
+  border-radius: 6px;
+  padding: 16px;
+}
+
+.stat-label {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--color-slate);
+}
+
+.stat-value {
+  display: block;
+  font-size: 1.9rem;
+  font-weight: 750;
+  font-variant-numeric: tabular-nums;
+}
+
+.panel {
+  margin-bottom: 16px;
+}
+
+.chart svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.chart .bar-rect {
+  fill: var(--color-teal);
+}
+
+.chart .axis {
+  fill: var(--color-slate);
+  font-size: 11px;
+}
+
+.chart .baseline {
+  stroke: #C9C4B7;
+}
+
+.breakdowns {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: 1fr;
+}
+
+.breakdowns .panel {
+  margin-bottom: 0;
+}
+
+.breakdown {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.breakdown li {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 2px 12px;
+  margin-bottom: 10px;
+  font-size: 0.92rem;
+}
+
+.breakdown progress {
+  grid-column: 1 / -1;
+  width: 100%;
+  height: 8px;
+  accent-color: var(--color-teal);
+}
+
+.breakdown .count {
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+}
+
+.filters {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: 1fr;
+  margin-bottom: 12px;
+}
+
+.filter-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: flex-end;
+}
+
+.table-scroll {
+  position: relative; /* keeps absolutely positioned hidden labels inside the scroll area */
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.table th,
+.table td {
+  text-align: left;
+  padding: 8px 10px;
+  border-bottom: 1px solid #DEDAD0;
+  vertical-align: top;
+}
+
+.table th {
+  font-size: 0.8rem;
+  color: var(--color-slate);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.table .truncate {
+  max-width: 280px;
+}
+
+.table.compact {
+  max-width: 320px;
+  margin-top: 8px;
+}
+
+.empty {
+  padding: 24px;
+  text-align: center;
+  color: var(--color-slate);
+  border: 1px dashed #C9C4B7;
+  border-radius: 6px;
+}
+
+.pager {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+dialog {
+  max-width: 640px;
+  width: calc(100% - 32px);
+  border: 1px solid #C9C4B7;
+  border-radius: 6px;
+  padding: 24px;
+  color: var(--color-navy);
+}
+
+dialog::backdrop {
+  background: rgba(20, 33, 61, 0.45);
+}
+
+.detail {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 8px 16px;
+  margin: 0 0 20px;
+}
+
+.detail dt {
+  font-weight: 600;
+  color: var(--color-slate);
+}
+
+.detail dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+@media (min-width: 720px) {
+  .stats {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .breakdowns {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .filters {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1000px) {
+  .filters {
+    grid-template-columns: 2fr repeat(5, minmax(0, 1fr));
+  }
+
+  .filter-actions {
+    grid-column: 1 / -1;
+  }
+}

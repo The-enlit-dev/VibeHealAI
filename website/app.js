@@ -1,5 +1,5 @@
 /* global document */
-// Waitlist form behaviour for the BrixoAI marketing site.
+// Waitlist form behaviour for the public website.
 // The server validates everything again; this script only improves feedback.
 // All text is set with textContent.
 
@@ -18,7 +18,7 @@
   var FIELD_IDS = ["email", "name", "aiTool", "frustration", "capabilities", "consent"];
   var EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
   var MESSAGES = {
-    success: "Thanks! You're on the early-access list. We'll only contact you about BrixoAI early access.",
+    success: "Thanks! You're on the early-access list. We'll only contact you about early access to this project.",
     network: "We couldn't reach the signup service. Check your connection and try again.",
     unavailable: "The waitlist is not reachable right now. Please try again later.",
     generic: "Something went wrong. Please try again in a moment.",

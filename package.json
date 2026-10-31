@@ -17,7 +17,9 @@
     "build": "npm run build:server && npm run build:waitlist && npm run build:desktop && node scripts/check-bundle.mjs",
     "build:server": "tsc -p tsconfig.server.json",
     "build:waitlist": "tsc -p tsconfig.waitlist.json",
-    "site:dev": "npm run build:waitlist && node dist/waitlist/cli.js serve",
+    "build:site": "node scripts/build-site.mjs",
+    "check:site": "node scripts/build-site.mjs --check",
+    "site:dev": "npm run build:waitlist && node --env-file-if-exists=.env.waitlist dist/waitlist/cli.js serve",
     "waitlist:report": "npm run build:waitlist && node dist/waitlist/cli.js report",
     "waitlist:export": "npm run build:waitlist && node dist/waitlist/cli.js export",
     "build:desktop": "tsc -p desktop/tsconfig.main.json && tsc -p desktop/tsconfig.preload.json && vite build --config desktop/vite.config.ts",
@@ -25,7 +27,8 @@
     "dev:server": "npm run build:server && npm run start:server",
     "start:desktop": "electron .",
     "dev:desktop": "npm run build:desktop && npm run start:desktop",
-    "check": "npm run typecheck && npm run lint && npm test && npm run build"
+    "check": "npm run typecheck && npm run lint && npm run check:site && npm test && npm run build",
+    "waitlist:hash-password": "npm run build:waitlist && node dist/waitlist/cli.js hash-password"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",

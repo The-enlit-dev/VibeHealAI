@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Waitlist admin</title>
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/brand.css">
+  <link rel="stylesheet" href="/admin/admin.css">
+</head>
+<body>
+  <header class="bar">
+    <div class="bar-inner">
+      <p class="bar-title"><img src="/assets/logo.svg" alt="" width="28" height="28"> Waitlist admin</p>
+      <div id="account" class="account" hidden>
+        <span>Signed in as <strong id="account-name"></strong></span>
+        <button id="logout-button" class="button button-quiet" type="button">Sign out</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <p id="notice" class="notice" role="alert" hidden></p>
+
+    <section id="login-view" class="login" aria-labelledby="login-title" hidden>
+      <h1 id="login-title">Sign in</h1>
+      <p class="muted">Private area. Only the configured admin account can sign in.</p>
+      <form id="login-form" novalidate>
+        <label for="username">Username</label>
+        <input id="username" name="username" type="text" autocomplete="username" maxlength="128" required>
+        <label for="password">Password</label>
+        <input id="password" name="password" type="password" autocomplete="current-password" maxlength="1024" required>
+        <button id="login-button" class="button" type="submit">Sign in</button>
+        <p id="login-status" class="form-status" role="status" aria-live="polite"></p>
+      </form>
+    </section>
+
+    <section id="dashboard-view" aria-labelledby="dashboard-title" hidden>
+      <div class="dash-head">
+        <div>
+          <h1 id="dashboard-title">Waitlist</h1>
+          <p class="muted">Data as of <time id="generated-at"></time>. Latest signup: <span id="latest-signup"></span>.</p>
+        </div>
+        <button id="refresh-button" class="button button-quiet" type="button">Refresh</button>
+      </div>
+
+      <ul class="stats" aria-label="Summary">
+        <li><span class="stat-label">Total signups</span><span id="stat-total" class="stat-value"></span></li>
+        <li><span class="stat-label">Last 7 days</span><span id="stat-7" class="stat-value"></span></li>
+        <li><span class="stat-label">Last 30 days</span><span id="stat-30" class="stat-value"></span></li>
+        <li><span class="stat-label">Answered frustration</span><span id="stat-frustration" class="stat-value"></span></li>
+      </ul>
+
+      <section class="panel" aria-labelledby="trend-title">
+        <h2 id="trend-title">Signups per day, last 30 days (UTC)</h2>
+        <div id="trend-chart" class="chart"></div>
+        <details>
+          <summary>Show as a table</summary>
+          <table class="table compact">
+            <thead><tr><th scope="col">Date</th><th scope="col">Signups</th></tr></thead>
+            <tbody id="trend-table"></tbody>
+          </table>
+        </details>
+      </section>
+
+      <div class="breakdowns">
+        <section class="panel" aria-labelledby="tools-title">
+          <h2 id="tools-title">Preferred AI tools</h2>
+          <ul id="tools-list" class="breakdown"></ul>
+        </section>
+        <section class="panel" aria-labelledby="features-title">
+          <h2 id="features-title">Most requested planned features</h2>
+          <ul id="features-list" class="breakdown"></ul>
+        </section>
+        <section class="panel" aria-labelledby="themes-title">
+          <h2 id="themes-title">Frustration themes</h2>
+          <p class="muted small">Keyword-based. One answer can match several themes.</p>
+          <ul id="themes-list" class="breakdown"></ul>
+        </section>
+      </div>
+
+      <section class="panel" aria-labelledby="signups-title">
+        <h2 id="signups-title">Signups</h2>
+        <form id="filter-form" class="filters" novalidate>
+          <div><label for="f-q">Search</label><input id="f-q" name="q" type="search" maxlength="200" placeholder="Email, name or frustration"></div>
+          <div><label for="f-tool">AI tool</label><select id="f-tool" name="aiTool"><option value="">Any</option></select></div>
+          <div><label for="f-capability">Planned feature</label><select id="f-capability" name="capability"><option value="">Any</option></select></div>
+          <div><label for="f-from">From</label><input id="f-from" name="from" type="date"></div>
+          <div><label for="f-to">To</label><input id="f-to" name="to" type="date"></div>
+          <div><label for="f-sort">Sort</label><select id="f-sort" name="sort"><option value="newest">Newest first</option><option value="oldest">Oldest first</option></select></div>
+          <div class="filter-actions">
+            <button class="button" type="submit">Apply</button>
+            <button id="reset-button" class="button button-quiet" type="button">Reset</button>
+            <a id="export-link" class="button button-quiet" href="/api/admin/export.csv" download>Export CSV</a>
+          </div>
+        </form>
+        <p id="results-meta" class="muted" aria-live="polite"></p>
+        <div class="table-scroll">
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">Signed up</th>
+                <th scope="col">Email</th>
+                <th scope="col">Name</th>
+                <th scope="col">AI tool</th>
+                <th scope="col">Features</th>
+                <th scope="col">Frustration</th>
+                <th scope="col"><span class="visually-hidden">Actions</span></th>
+              </tr>
+            </thead>
+            <tbody id="signups-body"></tbody>
+          </table>
+        </div>
+        <p id="empty-state" class="empty" hidden></p>
+        <div class="pager">
+          <button id="prev-page" class="button button-quiet" type="button">Previous</button>
+          <span id="page-label" class="muted"></span>
+          <button id="next-page" class="button button-quiet" type="button">Next</button>
+        </div>
+      </section>
+    </section>
+
+    <dialog id="detail-dialog" aria-labelledby="detail-title">
+      <h2 id="detail-title">Signup details</h2>
+      <dl id="detail-list" class="detail"></dl>
+      <form method="dialog"><button class="button" type="submit">Close</button></form>
+    </dialog>
+  </main>
+
+  <script src="/admin/admin.js" defer></script>
+</body>
+</html>

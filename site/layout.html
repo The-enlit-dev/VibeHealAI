@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="{{ brand.language }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ page.title }}</title>
+  <meta name="description" content="{{ page.description }}">
+  <meta name="robots" content="{{ page.robots }}">
+  {{{ page.canonicalTag }}}
+  <meta name="theme-color" content="{{ brand.colors.navy }}">
+  <meta name="color-scheme" content="light">
+  <link rel="icon" href="{{ brand.favicon }}" type="image/svg+xml">
+  <link rel="stylesheet" href="/brand.css">
+  <link rel="stylesheet" href="/styles.css">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="{{ brand.siteName }}">
+  <meta property="og:locale" content="{{ brand.locale }}">
+  <meta property="og:title" content="{{ page.title }}">
+  <meta property="og:description" content="{{ page.description }}">
+  <meta property="og:url" content="{{ page.ogUrl }}">
+  <meta property="og:image" content="{{ page.ogImage }}">
+  <meta property="og:image:width" content="{{ page.socialImageWidth }}">
+  <meta property="og:image:height" content="{{ page.socialImageHeight }}">
+  <meta property="og:image:alt" content="{{ brand.socialImage.alt }}">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{{ page.title }}">
+  <meta name="twitter:description" content="{{ page.description }}">
+  <meta name="twitter:image" content="{{ page.ogImage }}">
+  <meta name="twitter:image:alt" content="{{ brand.socialImage.alt }}">
+  {{{ page.jsonLd }}}
+</head>
+<body class="page-{{ page.key }}">
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="/">
+        <img class="brand-mark" src="{{ brand.logo.path }}" alt="" width="32" height="32">
+        <span class="brand-name">{{ brand.siteName }}</span>
+      </a>
+      <nav class="site-nav" aria-label="Main">
+        <a href="/#capabilities">Capabilities</a>
+        <a href="/#how-it-works">How it works</a>
+        <a href="/faq/">FAQ</a>
+        <a href="/about/">About</a>
+        <a class="nav-cta" href="/#waitlist">Join the waitlist</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+{{{ page.body }}}
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div class="footer-brand">
+        <a class="brand brand-footer" href="/">
+          <img class="brand-mark" src="{{ brand.logo.path }}" alt="" width="28" height="28">
+          <span class="brand-name">{{ brand.siteName }}</span>
+        </a>
+        <p class="footer-tagline">{{ brand.tagline }}</p>
+      </div>
+      <nav class="footer-nav" aria-label="Footer">
+        <a href="/faq/">FAQ</a>
+        <a href="/about/">About</a>
+        <a href="/privacy/">Waitlist privacy</a>
+        <a href="/#waitlist">Join the waitlist</a>
+      </nav>
+      <div class="footer-notes">
+        {{{ blocks.temporaryNameNote }}}
+        <p class="footer-note">This site describes work in progress. Nothing on it is a launch announcement, a price or a promise of a specific feature.</p>
+      </div>
+    </div>
+  </footer>
+  {{{ page.script }}}
+</body>
+</html>

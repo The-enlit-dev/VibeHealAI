@@ -1,0 +1,138 @@
+{
+  "_comment": "Single source for the FAQ page, the home-page preview and the FAQPage structured data. Answers: 'short' is the direct answer; 'details' are explanation paragraphs; 'links' are genuine references. Set 'home': true to show a question on the home page.",
+  "items": [
+    {
+      "id": "what-is-it",
+      "question": "What is this project?",
+      "short": "It is a planned AI assistant for vibe coders: people who build apps, websites and software with AI tools.",
+      "details": [
+        "It aims to help with the wider workflow around AI-assisted coding: understanding a project, debugging errors, connecting the tools you already use, automating repetitive tasks and recovering safely when a change breaks something.",
+        "Code safety and recovery is one feature, not the whole product. The project is in early development and is not available to use yet."
+      ],
+      "home": true
+    },
+    {
+      "id": "who-is-it-for",
+      "question": "Who is it for?",
+      "short": "Vibe coders first, especially beginners, and then indie hackers and independent developers.",
+      "details": [
+        "If you build with Claude Code, Cursor or similar tools and sometimes feel unsure about what changed, why something broke or how to manage everything around the code, this is being designed for you."
+      ],
+      "home": true
+    },
+    {
+      "id": "is-it-available",
+      "question": "Is it available yet?",
+      "short": "No. It is in early development, and there is no release date.",
+      "details": [
+        "What exists today is an early development foundation that its developer tests with automated tests. There is no public download. You can join the waitlist to hear about early access."
+      ],
+      "home": true
+    },
+    {
+      "id": "replace-ai-tools",
+      "question": "Does it replace Claude Code, Cursor or other AI coding tools?",
+      "short": "No. It is designed to work alongside the AI coding tool you already use.",
+      "details": [
+        "Your AI tool writes and edits code. This assistant is meant to help with everything around that: understanding the project, preparing clear briefs for your AI tool, connecting services, automating chores and keeping a safe way back when something goes wrong."
+      ],
+      "home": true
+    },
+    {
+      "id": "built-in-ai",
+      "question": "Does it include its own AI model?",
+      "short": "Not today. The current plan is to work with the AI tools you already use.",
+      "details": [
+        "The project does not run or bill for its own AI model. Whether built-in AI features are added later has not been decided. If that changes, this answer will change too."
+      ]
+    },
+    {
+      "id": "what-will-it-do",
+      "question": "What will it be able to do?",
+      "short": "The plan covers project understanding and debugging, code safety and recovery, integrations, task automation, scheduled automations and workflow management.",
+      "details": [
+        "Integrations are the furthest along: an integration platform and a read-only GitHub connection exist in development and have been tested against a simulated GitHub API, not yet against live GitHub. Everything else is planned. Music and other everyday integrations are ideas being explored, not commitments."
+      ]
+    },
+    {
+      "id": "automations-approval",
+      "question": "Will automations run without my approval?",
+      "short": "The design is that you choose which automations run and when, and you approve anything sensitive.",
+      "details": [
+        "Connections to other services start read-only. Actions that change files, deploy, delete or touch payments are designed to need your explicit approval each time they run. Automations are planned and not built yet."
+      ]
+    },
+    {
+      "id": "which-integrations",
+      "question": "Which tools and services will it connect to?",
+      "short": "GitHub comes first. Vercel, Netlify, Supabase, Figma, Stripe, Shopify, Notion and Slack are planned.",
+      "details": [
+        "Only the read-only GitHub connection exists in development today. The others are on the plan, in that order, and each will start read-only. Stripe is planned for test mode only. The final list may change."
+      ]
+    },
+    {
+      "id": "ai-broke-project",
+      "question": "An AI tool broke my project. What should I do first?",
+      "short": "Stop making changes, make a copy of the project folder, then find out what changed before you try another fix.",
+      "details": [
+        "Copying the folder keeps a safe point to come back to. Then read the first lines of the error message, because they often name the file or package that failed. If your project uses Git, `git status` lists the changed files and `git diff` shows the exact lines that changed. Git can also restore a file to its last committed version.",
+        "Give your AI tool the error message and the list of changed files, rather than asking it to \"fix everything\". Smaller, specific requests are easier to review."
+      ],
+      "links": [
+        { "label": "Git documentation: git status", "url": "https://git-scm.com/docs/git-status" },
+        { "label": "Git documentation: git diff", "url": "https://git-scm.com/docs/git-diff" },
+        { "label": "Pro Git book: Undoing things", "url": "https://git-scm.com/book/en/v2/Git-Basics-Undoing-Things" }
+      ]
+    },
+    {
+      "id": "see-what-changed",
+      "question": "How can I see what an AI tool changed in my project?",
+      "short": "Use version control. With Git, commit before you ask the AI for changes, then use `git diff` to see exactly what it changed.",
+      "details": [
+        "A commit is a saved snapshot of your project. If you commit before each AI session, `git diff` shows every line the AI added or removed since then, and you can keep or discard changes file by file. Without version control, a copy of the folder made before the change is the next best thing."
+      ],
+      "links": [
+        { "label": "Git documentation: git diff", "url": "https://git-scm.com/docs/git-diff" }
+      ]
+    },
+    {
+      "id": "secrets-in-chat",
+      "question": "Should I paste API keys or .env files into an AI chat?",
+      "short": "No. Treat API keys, passwords and .env files as secrets, and keep them out of chats, screenshots and code you share.",
+      "details": [
+        "Anything you paste into a chat leaves your computer. If a key has been shared by mistake, revoke it in the service that issued it and create a new one. When you ask an AI tool for help, describe the setting (for example \"the Stripe test key is set in .env\") instead of pasting the value."
+      ],
+      "links": [
+        { "label": "OWASP Secrets Management Cheat Sheet", "url": "https://cheatsheetseries.owasp.org/cheatsheets/Secrets_Management_Cheat_Sheet.html" }
+      ]
+    },
+    {
+      "id": "project-files",
+      "question": "What happens to my project files and data?",
+      "short": "Nothing today, because the product is not released. The design keeps it working only inside the folder you choose and asks before it changes anything.",
+      "details": [
+        "The planned design is to take a backup before any change, show every change for review and change files only when you approve. Credentials for connected services are designed to stay encrypted on a backend, never inside the desktop app. These are design goals, not features you can use yet."
+      ]
+    },
+    {
+      "id": "cost",
+      "question": "How much will it cost?",
+      "short": "Pricing has not been decided.",
+      "details": [
+        "Joining the waitlist is free and does not commit you to anything."
+      ]
+    },
+    {
+      "id": "join-early-access",
+      "question": "How do I join early access, and what happens to my email?",
+      "short": "Enter your email in the waitlist form. It is used only to contact you about early access.",
+      "details": [
+        "Only your email is required. The other questions are optional and help decide what to build first. The waitlist privacy notice explains what is stored and why."
+      ],
+      "links": [
+        { "label": "Waitlist privacy notice", "url": "/privacy/" }
+      ],
+      "home": true
+    }
+  ]
+}
