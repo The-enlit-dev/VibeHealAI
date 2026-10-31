@@ -1,5 +1,7 @@
 # BrixoAI — Implementation Roadmap
 
+> **Update (2026-10-29): superseded.** These phases (UI-first, waiting on Stitch screens) are not the current plan. The current milestones are in `docs/planning/ROADMAP.md`, and `docs/planning/DECISIONS.md` takes precedence over this file. This file is kept for history only.
+
 **Status:** proposed phases. Adjust after repository inspection and receipt of the finished Stitch screens. No phase below implies that the feature already exists.
 
 ## Phase 0 — Reconnaissance and design handoff

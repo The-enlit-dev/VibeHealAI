@@ -1,5 +1,7 @@
 # BrixoAI — Product Requirements Document
 
+> **Update (2026-10-29): superseded.** This document describes an earlier direction (website-operations workspace, GitHub-first journey, cloud execution, named agents). The current product definition is `docs/planning/PRODUCT.md`, and `docs/planning/DECISIONS.md` takes precedence over this file. Its safety and honesty principles still apply. This file is kept for history only.
+
 **Status:** MVP planning  
 **Product type:** AI-powered website operations and developer workspace  
 **Implementation status:** Requirements only; features described here are not claims of existing functionality.
