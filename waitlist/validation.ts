@@ -17,7 +17,12 @@ export const PLANNED_CAPABILITIES = [
   { id: "backups-undo", label: "Backups and one-click undo" },
   { id: "project-inspection", label: "A safe check of my project's setup" },
   { id: "github-context", label: "Read-only GitHub context (repos, branches, pull requests)" },
+  { id: "integrations", label: "Connections to other tools I use (deployment, design, docs, chat)" },
+  { id: "automations", label: "Automating repetitive project tasks" },
+  { id: "scheduled-automations", label: "Automations that run on a schedule I choose" },
+  { id: "music", label: "Music and other everyday integrations" },
 ] as const;
+// The public form's options live in site/content.json; a test keeps the two lists identical.
 
 export type AiToolId = (typeof AI_TOOLS)[number]["id"];
 export type CapabilityId = (typeof PLANNED_CAPABILITIES)[number]["id"];

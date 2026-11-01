@@ -12,3 +12,4 @@ waitlist-data/
 *.key
 *.log
 !.env.desktop.example
+!.env.waitlist.example

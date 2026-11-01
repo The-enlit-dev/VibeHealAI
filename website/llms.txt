@@ -1,0 +1,21 @@
+# AI assistant for vibe coders
+
+> A planned AI assistant for vibe coders: people who build apps, websites and software with AI tools. It aims to help with project understanding, debugging, integrations, automations and code safety. It is in early development and not available yet.
+
+Status: early development, not available to use. An early development foundation: a local backend, an integration platform and a read-only GitHub connection, tested by the developer with automated tests against a simulated GitHub API. Not a public release.
+
+## Key pages
+- [Home](https://your-domain.example/): what the project is designed to do, with an honest status for each capability
+- [FAQ](https://your-domain.example/faq/): answers to common questions from vibe coders
+- [About](https://your-domain.example/about/): principles, current status and how the project is built
+- [Waitlist privacy notice](https://your-domain.example/privacy/): what the waitlist collects and why
+
+## Planned capabilities
+- Project understanding and debugging (Planned): Look at your project's setup and explain errors in plain language, so you know where a problem comes from.
+- Code safety and recovery (Planned): Back up before changes, review every change file by file, and undo what you don't want to keep.
+- Integrations with tools you use (In development): Bring context from services such as GitHub, deployment platforms and design tools into one place, read-only first.
+- AI-assisted coding workflows (Planned): Prepare clear, structured briefs for the AI coding tool you already use, with secrets removed.
+- Task automation (Planned): Automate repetitive project chores, such as running checks, with you approving anything sensitive.
+- Scheduled automations you choose (Planned): Pick which automations run, and when. Nothing runs on a schedule you didn't set.
+- Workflow management (Planned): Keep track of what you're building, what broke and what's next, across projects.
+- Music and everyday integrations (Exploring): Useful extras for long build sessions, such as music. An idea we are exploring, not a commitment.

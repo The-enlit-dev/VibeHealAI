@@ -2,6 +2,8 @@
 
 This folder holds the marketing plan, the prompts that make drafts, and the draft batches. **Nothing here publishes anything.** Every draft needs the owner's review and approval before it goes anywhere.
 
+> **Note (2026-10-31):** the public website now uses a neutral working title ("Your AI assistant for vibe coders") and a broader positioning. Code safety is one feature, not the whole product. The permanent name is undecided. Drafts and guidelines in this folder still say "BrixoAI" and "safety net". Review them against [docs/website/BRANDING.md](../docs/website/BRANDING.md) before posting.
+
 ## Structure
 
 | Path | What it is |

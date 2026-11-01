@@ -1,0 +1,111 @@
+{
+  "_comment": "Shared page content. Waitlist option ids must match waitlist/validation.ts (a test checks this). Statuses: working-in-development | planned | exploring.",
+  "capabilities": [
+    {
+      "title": "Project understanding and debugging",
+      "body": "Look at your project's setup and explain errors in plain language, so you know where a problem comes from.",
+      "status": "planned"
+    },
+    {
+      "title": "Code safety and recovery",
+      "body": "Back up before changes, review every change file by file, and undo what you don't want to keep.",
+      "status": "planned"
+    },
+    {
+      "title": "Integrations with tools you use",
+      "body": "Bring context from services such as GitHub, deployment platforms and design tools into one place, read-only first.",
+      "status": "working-in-development"
+    },
+    {
+      "title": "AI-assisted coding workflows",
+      "body": "Prepare clear, structured briefs for the AI coding tool you already use, with secrets removed.",
+      "status": "planned"
+    },
+    {
+      "title": "Task automation",
+      "body": "Automate repetitive project chores, such as running checks, with you approving anything sensitive.",
+      "status": "planned"
+    },
+    {
+      "title": "Scheduled automations you choose",
+      "body": "Pick which automations run, and when. Nothing runs on a schedule you didn't set.",
+      "status": "planned"
+    },
+    {
+      "title": "Workflow management",
+      "body": "Keep track of what you're building, what broke and what's next, across projects.",
+      "status": "planned"
+    },
+    {
+      "title": "Music and everyday integrations",
+      "body": "Useful extras for long build sessions, such as music. An idea we are exploring, not a commitment.",
+      "status": "exploring"
+    }
+  ],
+  "statusLabels": {
+    "working-in-development": "In development",
+    "planned": "Planned",
+    "exploring": "Exploring"
+  },
+  "steps": [
+    {
+      "title": "Connect your project and tools",
+      "body": "Choose a project folder and, if you want, connect services you already use. Connections start read-only."
+    },
+    {
+      "title": "Understand what's happening",
+      "body": "See your project's setup, recent changes and errors explained in plain language."
+    },
+    {
+      "title": "Automate the repetitive parts",
+      "body": "Pick the tasks to automate and when they run. You approve anything that changes files or services."
+    },
+    {
+      "title": "Stay in control",
+      "body": "Review every change, keep backups and undo what you don't want. Your own AI tool does the coding."
+    }
+  ],
+  "principles": [
+    {
+      "title": "You approve sensitive actions",
+      "body": "The design requires your explicit approval before anything changes files or acts on a connected service."
+    },
+    {
+      "title": "Honest status",
+      "body": "We label everything as working, in development, planned or exploring. Nothing on this site is a launch promise."
+    },
+    {
+      "title": "Works with your AI tools",
+      "body": "It is designed to sit alongside Claude Code, Cursor and similar tools, not to replace them."
+    },
+    {
+      "title": "Credentials stay server-side",
+      "body": "The architecture keeps service credentials encrypted on a backend, never inside the desktop app."
+    }
+  ],
+  "status": {
+    "working": "An early development foundation: a local backend, an integration platform and a read-only GitHub connection, tested by the developer with automated tests against a simulated GitHub API. Not a public release.",
+    "planned": "Project understanding, debugging help, code safety and recovery, automations, scheduled automations, workflow management and more integrations.",
+    "undecided": "The permanent name, release date, pricing and the final list of integrations."
+  },
+  "waitlist": {
+    "aiTools": [
+      { "id": "claude-code", "label": "Claude Code" },
+      { "id": "cursor", "label": "Cursor" },
+      { "id": "other", "label": "Another AI coding tool" },
+      { "id": "none", "label": "I'm not using one yet" }
+    ],
+    "capabilities": [
+      { "id": "explain-errors", "label": "Plain-language explanations of errors" },
+      { "id": "handoff-brief", "label": "A structured brief to paste into my AI tool" },
+      { "id": "review-changes", "label": "Review every change before I keep it" },
+      { "id": "backups-undo", "label": "Backups and one-click undo" },
+      { "id": "project-inspection", "label": "A safe check of my project's setup" },
+      { "id": "github-context", "label": "Read-only GitHub context (repos, branches, pull requests)" },
+      { "id": "integrations", "label": "Connections to other tools I use (deployment, design, docs, chat)" },
+      { "id": "automations", "label": "Automating repetitive project tasks" },
+      { "id": "scheduled-automations", "label": "Automations that run on a schedule I choose" },
+      { "id": "music", "label": "Music and other everyday integrations" }
+    ]
+  }
+}

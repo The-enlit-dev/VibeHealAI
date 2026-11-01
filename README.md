@@ -86,23 +86,25 @@ server/     Backend API: integration platform, provider adapters, vault, storage
 desktop/    Electron app: main (IPC, backend client), preload (window.brixo), renderer (React UI)
 scripts/    setup-env and the bundle secret check
 docs/       Planning set, decisions and integration setup guides
-website/   Static marketing site and early-access waitlist form (no build step)
-waitlist/  Local waitlist service, demand report and CSV export (Node built-ins only)
+site/      Source for the public website: temporary brand config, content, FAQ and page templates
+website/   Generated public website (static, published as-is) with the early-access waitlist form
+waitlist/  Waitlist service, private admin dashboard (admin-ui/), demand report and CSV export (Node built-ins only)
 marketing/ Marketing plan, prompts and draft batches. Nothing is published automatically
 ```
 
-## Marketing site and waitlist (local preview)
+## Public website, waitlist and admin dashboard (local preview)
 
-The marketing site is a separate static site. It is **not hosted** and nothing is deployed.
+The public website is a separate static site with a temporary, neutral identity (the permanent name is not decided). It is **not hosted** and nothing is deployed.
 
 ```bash
 npm install
-npm run site:dev          # http://127.0.0.1:8790/
+npm run build:site        # regenerate website/ from site/
+npm run site:dev          # http://127.0.0.1:8790/ (and /admin/ once configured)
 npm run waitlist:report   # private demand summary, counts only
 npm run waitlist:export   # private CSV with email addresses, keep local
 ```
 
-Signups are stored in `waitlist-data/` (git-ignored). Details: [website/README.md](./website/README.md). Content workflow: [marketing/README.md](./marketing/README.md).
+Signups are stored in `waitlist-data/` (git-ignored). Details, including admin setup, branding, SEO and Search Console: [docs/website/README.md](./docs/website/README.md). Content workflow: [marketing/README.md](./marketing/README.md).
 
 ## Documentation
 1. [docs/planning/DECISIONS.md](./docs/planning/DECISIONS.md): the owner's decisions. They take precedence over every other document.

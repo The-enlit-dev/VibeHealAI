@@ -1,0 +1,50 @@
+    <section class="page-hero" aria-labelledby="about-title">
+      <div class="container narrow">
+        <p class="section-kicker">About</p>
+        <h1 id="about-title">About the project</h1>
+        <p class="lead">{{ brand.description }}</p>
+      </div>
+    </section>
+
+    <div class="container narrow prose">
+      <section aria-labelledby="about-why">
+        <h2 id="about-why">Why it exists</h2>
+        <p>AI coding tools make it possible to build an app in an afternoon. The hard part is often everything around the code: understanding what changed, working out why something broke, keeping track of hosting, databases and design tools, and repeating the same chores. This project aims to help with that wider workflow, while your own AI tool keeps doing the coding.</p>
+      </section>
+
+      <section aria-labelledby="about-today">
+        <h2 id="about-today">What exists today</h2>
+        <p>{{ content.status.working }}</p>
+        <p>Planned next: {{ content.status.planned }}</p>
+        <p>Not decided yet: {{ content.status.undecided }}</p>
+      </section>
+
+      <section aria-labelledby="about-principles">
+        <h2 id="about-principles">Principles</h2>
+        <ul class="principle-list">
+{{{ blocks.principles }}}
+        </ul>
+      </section>
+
+      <section aria-labelledby="about-built">
+        <h2 id="about-built">How it is being built</h2>
+        <p>The planned product is a desktop app built with Electron, React and TypeScript, with a separate Node.js backend. Connections to other services go through that backend, which stores their credentials encrypted, so the desktop app never holds them. Each service connects through its own adapter and starts with read-only access.</p>
+        <p>The project does not run or bill for its own AI model today. It is designed to work alongside AI coding tools such as Claude Code and Cursor.</p>
+      </section>
+
+      <section aria-labelledby="about-who">
+        <h2 id="about-who">Who is behind it</h2>
+        {{{ blocks.authorLine }}}
+        <p>"{{ brand.siteName }}" is a working title. The permanent name has not been decided.</p>
+      </section>
+
+      <section aria-labelledby="about-next">
+        <h2 id="about-next">Find out more</h2>
+        <ul>
+          <li><a href="/faq/">Read the FAQ</a></li>
+          <li><a href="/#capabilities">See every capability and its status</a></li>
+          <li><a href="/privacy/">Read the waitlist privacy notice</a></li>
+          <li><a href="/#waitlist">Join the waitlist</a></li>
+        </ul>
+      </section>
+    </div>

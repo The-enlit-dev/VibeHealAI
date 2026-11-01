@@ -1,0 +1,192 @@
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="container hero-grid">
+        <div class="hero-copy">
+          <p class="eyebrow"><span class="eyebrow-dot" aria-hidden="true"></span>Early development. Not available yet.</p>
+          <h1 id="hero-title">{{ brand.headline }}</h1>
+          <p class="tagline">{{ brand.tagline }}</p>
+          <p class="lead">A planned assistant for people who build apps, websites and software with AI tools. It aims to help you understand your projects, connect the tools you already use, automate the repetitive parts and recover safely when something breaks.</p>
+          <div class="actions">
+            <a class="button button-primary" href="#waitlist">Join the waitlist</a>
+            <a class="button button-secondary" href="#how-it-works">See how it's meant to work</a>
+          </div>
+          <p class="hero-note">No release date has been set. The waitlist is for early access.</p>
+        </div>
+        <aside class="status-panel" aria-labelledby="status-panel-title">
+          <div class="status-panel-head">
+            <p id="status-panel-title" class="status-panel-title">Status at a glance</p>
+            <p class="status-panel-date">Updated <time datetime="{{ brand.lastUpdated }}">{{ brand.lastUpdated }}</time></p>
+          </div>
+          <ul class="status-rows">
+            <li><span>Integration platform</span><span class="chip chip-working-in-development">In development</span></li>
+            <li><span>Read-only GitHub connection</span><span class="chip chip-working-in-development">In development</span></li>
+            <li><span>Project understanding and debugging</span><span class="chip chip-planned">Planned</span></li>
+            <li><span>Code safety and recovery</span><span class="chip chip-planned">Planned</span></li>
+            <li><span>Automations and schedules</span><span class="chip chip-planned">Planned</span></li>
+          </ul>
+          <p class="status-panel-foot">"In development" means work exists and is tested by the developer, but nothing is released.</p>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="problem-title">
+      <div class="container">
+        <p class="section-kicker">The problem</p>
+        <h2 id="problem-title">Building with AI is fast. Everything around it isn't.</h2>
+        <ul class="problem-grid">
+          <li><h3>Code you didn't write</h3><p>AI tools change files you don't fully understand, and it is hard to tell which change matters.</p></li>
+          <li><h3>Errors without a map</h3><p>When a project breaks, the error message rarely tells a beginner where to start.</p></li>
+          <li><h3>Tools in ten tabs</h3><p>Code, hosting, database, design and chat each live somewhere else, with their own dashboards.</p></li>
+          <li><h3>Chores that eat build time</h3><p>Running checks, keeping track of what changed and repeating the same steps add up.</p></li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="section section-alt" id="capabilities" aria-labelledby="capabilities-title">
+      <div class="container">
+        <p class="section-kicker">Capabilities</p>
+        <h2 id="capabilities-title">What it's designed to do</h2>
+        <p class="section-intro">Each capability shows its real status. Nothing below is available to use yet.</p>
+        <ul class="capability-grid">
+{{{ blocks.capabilities }}}
+        </ul>
+        <p class="callout">Code safety and recovery is one part of the plan, not the whole product.</p>
+      </div>
+    </section>
+
+    <section class="section section-dark" id="how-it-works" aria-labelledby="how-title">
+      <div class="container">
+        <p class="section-kicker">How it works</p>
+        <h2 id="how-title">How it's intended to work</h2>
+        <p class="section-intro">An outline of the planned workflow. Details may change before release.</p>
+        <ol class="step-grid">
+{{{ blocks.steps }}}
+        </ol>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="principles-title">
+      <div class="container">
+        <p class="section-kicker">Principles</p>
+        <h2 id="principles-title">Built around staying in control</h2>
+        <ul class="principle-grid">
+{{{ blocks.principles }}}
+        </ul>
+      </div>
+    </section>
+
+    <section class="section section-alt" id="status" aria-labelledby="status-title">
+      <div class="container">
+        <p class="section-kicker">Status</p>
+        <h2 id="status-title">Where things stand</h2>
+        <div class="status-columns">
+          <div class="status-column">
+            <h3><span class="chip chip-working-in-development">In development</span></h3>
+            <p>{{ content.status.working }}</p>
+          </div>
+          <div class="status-column">
+            <h3><span class="chip chip-planned">Planned</span></h3>
+            <p>{{ content.status.planned }}</p>
+          </div>
+          <div class="status-column">
+            <h3><span class="chip chip-exploring">Not decided</span></h3>
+            <p>{{ content.status.undecided }}</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="audience-title">
+      <div class="container">
+        <p class="section-kicker">Who it's for</p>
+        <h2 id="audience-title">Made for people who build with AI</h2>
+        <div class="audience-grid">
+          <article class="audience-card">
+            <h3>Vibe coders</h3>
+            <p>Especially beginners building with Claude Code, Cursor and similar tools, who want to understand what changed, fix what broke and spend less time on chores. This is the first audience.</p>
+          </article>
+          <article class="audience-card">
+            <h3>Indie hackers and independent developers</h3>
+            <p>People who ship alone and want their project, tools and automations in one calmer place.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-alt" id="waitlist" aria-labelledby="waitlist-title">
+      <div class="container waitlist-grid">
+        <div class="waitlist-copy">
+          <p class="section-kicker">Early access</p>
+          <h2 id="waitlist-title">Join the waitlist</h2>
+          <p class="section-intro">Leave your email and we'll contact you about early access when it is ready. Only your email is required.</p>
+          <div class="why-box">
+            <h3>Why we ask for your email</h3>
+            <p>We use it only to contact you about early access to this project. We won't add you to unrelated marketing. The optional answers help decide what to build first.</p>
+            <p><a href="/privacy/">Read the waitlist privacy notice</a></p>
+          </div>
+        </div>
+
+        <form id="waitlist-form" class="waitlist-form" data-endpoint="/api/waitlist" novalidate>
+          <div class="field">
+            <label for="email">Email address <span class="field-hint">(required)</span></label>
+            <input id="email" name="email" type="email" autocomplete="email" maxlength="254" required aria-describedby="email-help email-error">
+            <p id="email-help" class="help">Used only for early access.</p>
+            <p id="email-error" class="field-error" role="alert" hidden></p>
+          </div>
+
+          <div class="field">
+            <label for="name">Name <span class="field-hint">(optional)</span></label>
+            <input id="name" name="name" type="text" autocomplete="name" maxlength="80" aria-describedby="name-error">
+            <p id="name-error" class="field-error" role="alert" hidden></p>
+          </div>
+
+          <div class="field">
+            <label for="aiTool">Which AI coding tool do you use? <span class="field-hint">(optional)</span></label>
+            <select id="aiTool" name="aiTool" aria-describedby="aiTool-error">
+              <option value="">Choose one</option>
+{{{ blocks.aiToolOptions }}}
+            </select>
+            <p id="aiTool-error" class="field-error" role="alert" hidden></p>
+          </div>
+
+          <div class="field">
+            <label for="frustration">What is your biggest vibe-coding frustration? <span class="field-hint">(optional)</span></label>
+            <textarea id="frustration" name="frustration" rows="3" maxlength="500" aria-describedby="frustration-help frustration-error"></textarea>
+            <p id="frustration-help" class="help"><span id="frustration-count">0</span> / 500 characters</p>
+            <p id="frustration-error" class="field-error" role="alert" hidden></p>
+          </div>
+
+          <fieldset class="field">
+            <legend>Which planned features interest you most? <span class="field-hint">(optional)</span></legend>
+            <p class="help">These are planned, not available yet. Choose as many as you like.</p>
+            <div class="checkbox-grid">
+{{{ blocks.capabilityCheckboxes }}}
+            </div>
+            <p id="capabilities-error" class="field-error" role="alert" hidden></p>
+          </fieldset>
+
+          <div class="field consent">
+            <label><input id="consent" name="consent" type="checkbox" required aria-describedby="consent-error"> I agree to be emailed about early access to this project.</label>
+            <p id="consent-error" class="field-error" role="alert" hidden></p>
+          </div>
+
+          <div class="honeypot" aria-hidden="true">
+            <label for="company">Company (leave this empty)</label>
+            <input id="company" name="company" type="text" tabindex="-1" autocomplete="off">
+          </div>
+
+          <button id="submit-button" class="button button-primary button-block" type="submit">Join the waitlist</button>
+          <p id="form-status" class="form-status" role="status" aria-live="polite" tabindex="-1"></p>
+        </form>
+      </div>
+    </section>
+
+    <section class="section" id="faq" aria-labelledby="faq-title">
+      <div class="container narrow">
+        <p class="section-kicker">FAQ</p>
+        <h2 id="faq-title">Common questions</h2>
+        <div class="faq-preview-list">
+{{{ blocks.faqHome }}}
+        </div>
+        <p class="more-link"><a href="/faq/">See all questions and answers</a></p>
+      </div>
+    </section>

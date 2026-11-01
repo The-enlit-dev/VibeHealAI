@@ -1,8 +1,9 @@
-# Netlify configuration for the BrixoAI marketing site ONLY.
+# Netlify configuration for the public website ONLY.
 # This file does not deploy anything. Connecting the repository to Netlify is an owner decision.
 #
-# The static site has no build step. The waitlist API (waitlist/) is NOT deployed here: when the
-# site is hosted on Netlify, the signup form shows "not reachable" until a hosted endpoint exists.
+# website/ is generated from site/ by `npm run build:site` and committed, so Netlify needs no build
+# step. The waitlist API and the admin dashboard (waitlist/) are NOT deployed here: on Netlify the
+# signup form shows "not reachable" until a hosted endpoint exists, and /admin/ does not exist.
 # The desktop app and the local backend are never published by this configuration.
 
 [build]
