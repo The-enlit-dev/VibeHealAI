@@ -54,9 +54,10 @@ Open http://127.0.0.1:8790/. To enable the admin dashboard, follow [ADMIN.md](./
 
 ## Known limitations and unfinished work
 
-- **Not deployed.** No hosting, domain or production waitlist endpoint exists. On a Netlify deploy, the static pages work, but the signup form shows "not reachable", because the waitlist service is not hosted there.
+- **Waitlist on Netlify uses Netlify Forms** (DEC-29). The form is registered as `waitlist`. It works only after the owner turns on form detection in the Netlify UI (Forms > Enable form detection) and redeploys. Until then the form shows "not reachable". Submissions are viewed and exported in the Netlify dashboard, not in the local admin dashboard. Netlify does not remove duplicate emails.
+- **No custom domain.** The site has no domain of its own yet.
 - **Placeholder domain.** `site/brand.json` uses `https://your-domain.example`. While it is a placeholder, every page is `noindex` and the canonical, sitemap and social URLs point at the placeholder. Set the real domain before launch (see [SEO.md](./SEO.md)).
-- **Storage** is a local JSON file, not encrypted at rest. Hosting the waitlist needs a storage, backup and key-management decision.
+- **Local storage:** the local waitlist service (`npm run site:dev`) stores signups in a local JSON file, not encrypted at rest.
 - **Admin sessions** live in memory: restarting the service signs the admin out. There is one admin account and no password reset flow (create a new hash instead).
 - **Rate limits** are in-memory and keyed by the socket address. Behind a shared proxy every visitor would share one address. Change this before hosting behind a proxy.
 - **External references** in the FAQ (Git documentation and the OWASP cheat sheet) could not be link-checked from the build environment, because its network policy blocks those hosts. Check them in a browser before launch.

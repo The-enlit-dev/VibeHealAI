@@ -2,6 +2,8 @@
 
 **Status:** implemented and tested locally on 2026-10-31 (Linux; automated tests plus a browser check). It is not deployed. It runs inside the waitlist service at `/admin/`.
 
+> **Scope (2026-11-05):** this dashboard reads only signups stored by the local waitlist service. Signups made on the Netlify-hosted site go to Netlify Forms (DEC-29) and are viewed and exported in the Netlify dashboard (Forms > waitlist).
+
 ## What it does
 - **Summary:** total signups, signups in the last 7 and 30 days, how many people answered the frustration question, the time of the latest signup, and "data as of" (when the numbers were generated).
 - **Trend:** signups per day for the last 30 days (UTC), as an SVG chart with a table view. Timestamps are set by the server when a signup is stored, so they are reliable.
