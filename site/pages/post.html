@@ -1,0 +1,19 @@
+    <article class="post" aria-labelledby="post-title">
+      <header class="page-hero">
+        <div class="container narrow">
+          <p class="section-kicker"><a href="/blog/">Blog</a></p>
+          <h1 id="post-title">{{ post.title }}</h1>
+          <p class="lead">{{ post.description }}</p>
+          <p class="meta">{{{ post.byline }}}</p>
+        </div>
+      </header>
+
+      <div class="container narrow prose post-body">
+{{{ post.html }}}
+      </div>
+
+      <footer class="container narrow post-footer">
+        {{{ post.tags }}}
+        <p><a href="/blog/">All posts</a> · <a href="/#waitlist">Join the waitlist</a></p>
+      </footer>
+    </article>

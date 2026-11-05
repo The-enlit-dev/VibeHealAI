@@ -164,6 +164,54 @@
     });
   }
 
+  // Signed-in visitors (Clerk, see auth.js): fill in their details, and remember in their account
+  // (Clerk unsafeMetadata, which the user can edit) that they joined, so the account page can show it.
+  var signedInUser = null;
+
+  function formatJoined(iso) {
+    var date = new Date(iso);
+    return isNaN(date.getTime()) ? "" : date.toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" });
+  }
+
+  if (window.vibehealAuth && typeof window.vibehealAuth.then === "function") {
+    window.vibehealAuth.then(
+      function (clerk) {
+        var user = clerk && clerk.user;
+        if (!user) return;
+        signedInUser = user;
+        var email = user.primaryEmailAddress && user.primaryEmailAddress.emailAddress;
+        var emailInput = document.getElementById("email");
+        var nameInput = document.getElementById("name");
+        if (email && !emailInput.value) emailInput.value = email;
+        if (user.fullName && !nameInput.value) nameInput.value = String(user.fullName).slice(0, 80);
+        var note = document.getElementById("account-note");
+        var joined = user.unsafeMetadata && user.unsafeMetadata.waitlistJoinedAt;
+        if (note) {
+          note.textContent = joined
+            ? "You already joined the waitlist from this account on " + formatJoined(joined) + ". You don't need to join again."
+            : "You're signed in, so your details are filled in. Check them before you join.";
+          note.hidden = false;
+        }
+      },
+      function () {
+        /* Sign-in unavailable: the form works without it. */
+      }
+    );
+  }
+
+  function rememberJoined() {
+    if (!signedInUser || typeof signedInUser.update !== "function") return;
+    var meta = {};
+    var current = signedInUser.unsafeMetadata || {};
+    Object.keys(current).forEach(function (key) {
+      meta[key] = current[key];
+    });
+    meta.waitlistJoinedAt = new Date().toISOString();
+    signedInUser.update({ unsafeMetadata: meta }).catch(function () {
+      /* Not critical: the signup itself already succeeded. */
+    });
+  }
+
   frustration.addEventListener("input", function () {
     frustrationCount.textContent = String(frustration.value.length);
   });
@@ -201,6 +249,7 @@
           // Stop repeat submissions from this page; the server also ignores duplicate emails.
           submitButton.disabled = true;
           setStatus("success", MESSAGES.success);
+          rememberJoined();
           return;
         }
         if (result.status === 400 && result.body && result.body.fields) {

@@ -34,6 +34,7 @@
     "url": ""
   },
   "contactEmail": "",
+  "repository": "https://github.com/The-enlit-dev/VibeHealAI",
   "auth": {
     "_comment": "Clerk sign-in on the public website (DEC-31). The publishable key is public by design (it is in every page's source). NEVER put a secret key (sk_...) here. Empty disables sign-in.",
     "clerkPublishableKey": "pk_live_Y2xlcmsudmliZWhlYWwub25saW5lJA"

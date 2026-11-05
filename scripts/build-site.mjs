@@ -7,9 +7,11 @@
 //   site/faq.json      FAQ (used by the FAQ page, the home page and FAQPage structured data)
 //   site/layout.html   shared <head>, header and footer
 //   site/pages/*.html  page bodies
+//   site/blog/*.md     blog posts (front matter + a safe Markdown subset; see scripts/markdown.mjs)
 //
 // Output (generated, committed, published by Netlify as-is): website/
-//   index.html, faq/index.html, about/index.html, privacy/index.html, 404.html,
+//   index.html, faq/, about/, privacy/, blog/ (index, one folder per post, feed.xml),
+//   account/, members/, studio/ (signed-in pages, noindex), 404.html,
 //   brand.css, sitemap.xml, robots.txt, llms.txt
 //
 // Usage:
@@ -20,9 +22,10 @@
 // Template syntax: {{ path.to.value }} is HTML-escaped; {{{ path }}} inserts trusted, generated HTML.
 // An unknown path is an error, so typos fail the build instead of shipping blank text.
 
-import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
+import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { parsePost } from "./markdown.mjs";
 
 const defaultRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 export const PLACEHOLDER_HOST = "your-domain.example";
@@ -191,6 +194,89 @@ function checkboxesBlock(options) {
     .join("\n");
 }
 
+// ---------- blog ----------
+
+/** Published posts, newest first. Drafts are skipped; any invalid post fails the build. */
+export function loadPosts(root = defaultRoot) {
+  const dir = path.join(root, "site", "blog");
+  if (!existsSync(dir)) return [];
+  const posts = readdirSync(dir)
+    .filter((name) => name.endsWith(".md"))
+    .map((name) => parsePost(name, readFileSync(path.join(dir, name), "utf8")));
+  const slugs = new Set();
+  for (const post of posts) {
+    if (slugs.has(post.slug)) throw new Error(`Two blog posts use the slug "${post.slug}"`);
+    slugs.add(post.slug);
+  }
+  return posts.filter((p) => !p.draft).sort((a, b) => (a.date === b.date ? a.slug.localeCompare(b.slug) : a.date < b.date ? 1 : -1));
+}
+
+export function formatDate(iso) {
+  const [y, m, d] = iso.split("-").map(Number);
+  const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+  return `${d} ${months[m - 1]} ${y}`;
+}
+
+function postCard(post, headingLevel) {
+  return `        <article class="post-card">
+          <h${headingLevel}><a href="/blog/${escapeHtml(post.slug)}/">${escapeHtml(post.title)}</a></h${headingLevel}>
+          <p class="meta"><time datetime="${post.date}">${formatDate(post.date)}</time></p>
+          <p>${escapeHtml(post.description)}</p>
+        </article>`;
+}
+
+function blogListBlock(posts) {
+  if (posts.length === 0) return '        <p class="empty-state">No posts yet.</p>';
+  return `        <div class="post-list">\n${posts.map((p) => postCard(p, 2)).join("\n")}\n        </div>`;
+}
+
+function blogLatestBlock(posts) {
+  if (posts.length === 0) return "          <p>No updates yet.</p>";
+  return `          <ul>\n${posts
+    .slice(0, 5)
+    .map((p) => `            <li><a href="/blog/${escapeHtml(p.slug)}/">${escapeHtml(p.title)}</a> (<time datetime="${p.date}">${formatDate(p.date)}</time>)</li>`)
+    .join("\n")}\n          </ul>`;
+}
+
+function studioPostsBlock(posts, brand) {
+  if (posts.length === 0) return '          <p class="empty-state">No published posts yet.</p>';
+  return `          <ul class="studio-posts">\n${posts
+    .map(
+      (p) =>
+        `            <li><a href="/blog/${escapeHtml(p.slug)}/">${escapeHtml(p.title)}</a> <span class="meta">${formatDate(p.date)}</span> · <a href="${escapeHtml(brand.repository)}/edit/main/site/blog/${escapeHtml(p.file)}" rel="noopener">Edit on GitHub</a></li>`,
+    )
+    .join("\n")}\n          </ul>`;
+}
+
+function rssFeed(brand, base, posts) {
+  const items = posts
+    .map(
+      (p) => `    <item>
+      <title>${escapeXml(p.title)}</title>
+      <link>${escapeXml(`${base}/blog/${p.slug}/`)}</link>
+      <guid isPermaLink="true">${escapeXml(`${base}/blog/${p.slug}/`)}</guid>
+      <pubDate>${new Date(`${p.date}T00:00:00Z`).toUTCString()}</pubDate>
+      <description>${escapeXml(p.description)}</description>
+${p.tags.map((t) => `      <category>${escapeXml(t)}</category>`).join("\n")}
+    </item>`.replace(/\n\n/g, "\n"),
+    )
+    .join("\n");
+  const latest = posts[0] ? new Date(`${posts[0].updated}T00:00:00Z`).toUTCString() : new Date(`${brand.lastUpdated}T00:00:00Z`).toUTCString();
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>${escapeXml(`${brand.siteName} blog`)}</title>
+    <link>${escapeXml(`${base}/blog/`)}</link>
+    <description>${escapeXml(`News and notes from ${brand.siteName}.`)}</description>
+    <language>${escapeXml(brand.language)}</language>
+    <lastBuildDate>${latest}</lastBuildDate>
+    <atom:link href="${escapeXml(`${base}/blog/feed.xml`)}" rel="self" type="application/rss+xml"/>
+${items}
+  </channel>
+</rss>
+`;
+}
+
 // ---------- structured data ----------
 
 // Clerk sign-in (DEC-31). The publishable key encodes the Frontend API host: pk_<env>_<base64("host$")>.
@@ -291,7 +377,7 @@ const PAGES = [
     description: (b) => b.description,
     schemaType: "WebPage",
     indexable: true,
-    script: true,
+    script: "/app.js",
   },
   {
     key: "faq",
@@ -328,6 +414,48 @@ const PAGES = [
     indexable: true,
   },
   {
+    key: "blog",
+    path: "/blog/",
+    file: "blog/index.html",
+    body: "pages/blog.html",
+    title: (b) => `Blog | ${b.siteName}`,
+    description: (b) =>
+      `News and notes from ${b.siteName}: progress updates on the AI assistant for vibe coders, and practical advice for building with AI tools.`,
+    schemaType: "Blog",
+    indexable: true,
+  },
+  {
+    key: "account",
+    path: "/account/",
+    file: "account/index.html",
+    body: "pages/account.html",
+    title: (b) => `Your account | ${b.siteName}`,
+    description: () => "Manage your sign-in details, email address, password and connected accounts.",
+    schemaType: "WebPage",
+    indexable: false,
+  },
+  {
+    key: "members",
+    path: "/members/",
+    file: "members/index.html",
+    body: "pages/members.html",
+    title: (b) => `Members area | ${b.siteName}`,
+    description: () => "Early-access updates for signed-in members, and your waitlist status.",
+    schemaType: "WebPage",
+    indexable: false,
+  },
+  {
+    key: "studio",
+    path: "/studio/",
+    file: "studio/index.html",
+    body: "pages/studio.html",
+    title: (b) => `Content studio | ${b.siteName}`,
+    description: () => "Write and manage blog posts. Only accounts with the admin role can use this page.",
+    schemaType: "WebPage",
+    indexable: false,
+    script: "/studio.js",
+  },
+  {
     key: "notFound",
     path: "/404.html",
     file: "404.html",
@@ -350,7 +478,11 @@ export function buildSite({ root = defaultRoot, siteUrl } = {}) {
   const files = new Map();
 
   const auth = authBlocks(brand);
+  const posts = loadPosts(root);
   const blocks = {
+    blogList: blogListBlock(posts),
+    blogLatest: blogLatestBlock(posts),
+    studioPosts: studioPostsBlock(posts, brand),
     authControls: auth.controls,
     capabilities: capabilitiesBlock(content),
     steps: stepsBlock(content),
@@ -377,40 +509,113 @@ export function buildSite({ root = defaultRoot, siteUrl } = {}) {
       : "<p>To ask for your email to be removed, reply to any email we send you. A direct contact address will be published here before the waitlist opens to the public.</p>",
   };
 
-  for (const page of PAGES) {
-    const canonical = page.path === "/404.html" ? `${base}/404.html` : `${base}${page.path}`;
-    const title = page.title(brand);
-    const description = page.description(brand);
-    const pageInfo = { canonical, title, description, schemaType: page.schemaType };
-
-    const graph = [websiteNode(brand, base), pageNode(brand, base, pageInfo)];
-    if (page.faqPage) graph.push(faqPageNode(faq, pageInfo));
-
-    const robots = !page.indexable || placeholder ? "noindex, nofollow" : "index, follow";
+  const renderPage = ({ key, pagePath, file, bodyTemplate, title, description, schemaType, indexable, script, ogType = "website", graphExtra = [], pageNodeExtra = {}, extra = {} }) => {
+    const canonical = pagePath === "/404.html" ? `${base}/404.html` : `${base}${pagePath}`;
+    const pageInfo = { canonical, title, description, schemaType };
+    const graph = [websiteNode(brand, base), { ...pageNode(brand, base, pageInfo), ...pageNodeExtra }, ...graphExtra];
+    const robots = !indexable || placeholder ? "noindex, nofollow" : "index, follow";
     const context = {
       brand,
       content,
       blocks,
+      ...extra,
       page: {
         title,
         description,
         canonical,
         robots,
+        ogType,
         ogUrl: canonical,
         ogImage: `${base}${brand.socialImage.path}`,
-        key: page.key,
-        canonicalTag: page.indexable ? `<link rel="canonical" href="${escapeHtml(canonical)}">` : "",
-        jsonLd: page.indexable ? jsonLdScript({ "@context": "https://schema.org", "@graph": graph }) : "",
-        script: page.script ? '<script src="/app.js" defer></script>' : "",
-        verificationTags: page.key === "home" ? verificationTags(brand) : "",
+        key,
+        canonicalTag: indexable ? `<link rel="canonical" href="${escapeHtml(canonical)}">` : "",
+        jsonLd: indexable ? jsonLdScript({ "@context": "https://schema.org", "@graph": graph }) : "",
+        script: script ? `<script src="${escapeHtml(script)}" defer></script>` : "",
+        verificationTags: key === "home" ? verificationTags(brand) : "",
         authScripts: auth.scripts,
         socialImageWidth: String(brand.socialImage.width),
         socialImageHeight: String(brand.socialImage.height),
       },
     };
-    const body = render(readText(root, page.body), context);
-    files.set(page.file, render(layout, { ...context, page: { ...context.page, body } }));
+    const body = render(readText(root, bodyTemplate), context);
+    files.set(file, render(layout, { ...context, page: { ...context.page, body } }));
+  };
+
+  for (const page of PAGES) {
+    const canonical = `${base}${page.path}`;
+    renderPage({
+      key: page.key,
+      pagePath: page.path,
+      file: page.file,
+      bodyTemplate: page.body,
+      title: page.title(brand),
+      description: page.description(brand),
+      schemaType: page.schemaType,
+      indexable: page.indexable,
+      script: page.script,
+      graphExtra: page.faqPage ? [faqPageNode(faq, { canonical })] : [],
+      pageNodeExtra:
+        page.key === "blog"
+          ? {
+              dateModified: posts[0]?.updated ?? brand.lastUpdated,
+              blogPost: posts.map((p) => ({ "@id": `${base}/blog/${p.slug}/#article` })),
+            }
+          : {},
+    });
   }
+
+  for (const post of posts) {
+    const url = `${base}/blog/${post.slug}/`;
+    const author = post.author
+      ? { "@type": "Organization", name: post.author }
+      : { "@type": "Organization", name: brand.siteName, url: `${base}/` };
+    renderPage({
+      key: "post",
+      pagePath: `/blog/${post.slug}/`,
+      file: `blog/${post.slug}/index.html`,
+      bodyTemplate: "pages/post.html",
+      title: `${post.title} | ${brand.siteName}`,
+      description: post.description,
+      schemaType: "WebPage",
+      indexable: true,
+      ogType: "article",
+      pageNodeExtra: { dateModified: post.updated, mainEntity: { "@id": `${url}#article` } },
+      graphExtra: [
+        {
+          "@type": "BlogPosting",
+          "@id": `${url}#article`,
+          headline: post.title,
+          description: post.description,
+          datePublished: post.date,
+          dateModified: post.updated,
+          url,
+          mainEntityOfPage: { "@id": `${url}#webpage` },
+          isPartOf: { "@id": `${base}/blog/#webpage` },
+          author,
+          publisher: { "@type": "Organization", name: brand.siteName, url: `${base}/` },
+          image: `${base}${brand.socialImage.path}`,
+          inLanguage: brand.language,
+          wordCount: post.words,
+          ...(post.tags.length ? { keywords: post.tags.join(", ") } : {}),
+        },
+      ],
+      extra: {
+        post: {
+          title: post.title,
+          description: post.description,
+          html: post.html,
+          byline: `<time datetime="${post.date}">${formatDate(post.date)}</time>${
+            post.updated !== post.date ? ` · Updated <time datetime="${post.updated}">${formatDate(post.updated)}</time>` : ""
+          }${post.author ? ` · ${escapeHtml(post.author)}` : ""}`,
+          tags: post.tags.length
+            ? `<ul class="post-tags" aria-label="Tags">${post.tags.map((t) => `<li>${escapeHtml(t)}</li>`).join("")}</ul>`
+            : "",
+        },
+      },
+    });
+  }
+
+  files.set("blog/feed.xml", rssFeed(brand, base, posts));
 
   // Colour tokens: the only place brand colours enter the CSS.
   const c = brand.colors;
@@ -429,13 +634,19 @@ export function buildSite({ root = defaultRoot, siteUrl } = {}) {
 `,
   );
 
-  const indexable = PAGES.filter((p) => p.indexable);
+  const sitemapEntries = [
+    ...PAGES.filter((p) => p.indexable).map((p) => ({
+      loc: `${base}${p.path}`,
+      lastmod: p.key === "blog" && posts[0] && posts[0].updated > brand.lastUpdated ? posts[0].updated : brand.lastUpdated,
+    })),
+    ...posts.map((p) => ({ loc: `${base}/blog/${p.slug}/`, lastmod: p.updated })),
+  ];
   files.set(
     "sitemap.xml",
     `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${indexable
-  .map((p) => `  <url>\n    <loc>${escapeXml(`${base}${p.path}`)}</loc>\n    <lastmod>${escapeXml(brand.lastUpdated)}</lastmod>\n  </url>`)
+${sitemapEntries
+  .map((e) => `  <url>\n    <loc>${escapeXml(e.loc)}</loc>\n    <lastmod>${escapeXml(e.lastmod)}</lastmod>\n  </url>`)
   .join("\n")}
 </urlset>
 `,
@@ -459,7 +670,8 @@ Status: early development, not available to use. ${content.status.working}
 - [FAQ](${base}/faq/): answers to common questions from vibe coders
 - [About](${base}/about/): principles, current status and how the project is built
 - [Waitlist privacy notice](${base}/privacy/): what the waitlist collects and why
-
+- [Blog](${base}/blog/): news and notes ([RSS](${base}/blog/feed.xml))
+${posts.length ? `\n## Blog posts\n${posts.map((p) => `- [${p.title}](${base}/blog/${p.slug}/) (${p.date}): ${p.description}`).join("\n")}\n` : ""}
 ## Planned capabilities
 ${content.capabilities.map((item) => `- ${item.title} (${content.statusLabels[item.status]}): ${item.body}`).join("\n")}
 `,

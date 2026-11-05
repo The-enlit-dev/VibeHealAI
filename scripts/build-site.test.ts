@@ -1,10 +1,10 @@
 // Tests for the static site generator and the SEO, AEO and GEO foundations it produces.
 
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
-import { authBlocks, buildSite, clerkFrontendApi, escapeHtml, isPlaceholderUrl, render, verificationTags } from "./build-site.mjs";
+import { authBlocks, buildSite, clerkFrontendApi, escapeHtml, isPlaceholderUrl, loadPosts, render, verificationTags } from "./build-site.mjs";
 import { AI_TOOLS, PLANNED_CAPABILITIES } from "../waitlist/validation.js";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
@@ -15,7 +15,10 @@ const faq = JSON.parse(readFileSync(path.join(root, "site", "faq.json"), "utf8")
 const committed = buildSite();
 const live = buildSite({ siteUrl: "https://example.org" });
 const pages = [...committed.files.entries()].filter(([name]) => name.endsWith(".html"));
-const indexablePages = pages.filter(([name]) => name !== "404.html");
+// Signed-in pages and the 404 page are noindex and carry no canonical or structured data.
+const NOINDEX = new Set(["404.html", "account/index.html", "members/index.html", "studio/index.html"]);
+const indexablePages = pages.filter(([name]) => !NOINDEX.has(name));
+const posts = loadPosts();
 
 const attr = (html: string, pattern: RegExp) => html.match(pattern)?.[1];
 const metaName = (html: string, name: string) => attr(html, new RegExp(`<meta name="${name}" content="([^"]*)"`));
@@ -108,7 +111,7 @@ describe("SEO metadata", () => {
     }
     for (const [name, html] of live.files) {
       if (!name.endsWith(".html")) continue;
-      expect(metaName(html, "robots"), name).toBe(name === "404.html" ? "noindex, nofollow" : "index, follow");
+      expect(metaName(html, "robots"), name).toBe(NOINDEX.has(name) ? "noindex, nofollow" : "index, follow");
     }
   });
 
@@ -148,10 +151,20 @@ describe("sitemap.xml and robots.txt", () => {
       expect(xml.startsWith('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">')).toBe(true);
       expect(xml.trim().endsWith("</urlset>")).toBe(true);
       const urls = [...xml.matchAll(/<url>\s*<loc>([^<]+)<\/loc>\s*<lastmod>(\d{4}-\d{2}-\d{2})<\/lastmod>\s*<\/url>/g)];
-      expect(urls.map((m) => m[1])).toEqual(["/", "/faq/", "/about/", "/privacy/"].map((p) => `${build.base}${p}`));
+      const expected = [
+        ...["/", "/faq/", "/about/", "/privacy/", "/blog/"].map((p) => `${build.base}${p}`),
+        ...posts.map((p) => `${build.base}/blog/${p.slug}/`),
+      ];
+      expect(urls.map((m) => m[1])).toEqual(expected);
       expect(xml.match(/<url>/g)).toHaveLength(urls.length);
       expect(xml).not.toContain("404");
-      for (const match of urls) expect(match[2]).toBe(brand.lastUpdated);
+      expect(xml).not.toMatch(/account|members|studio/);
+      for (const match of urls) {
+        const post = posts.find((p) => match[1] === `${build.base}/blog/${p.slug}/`);
+        const isBlogIndex = match[1] === `${build.base}/blog/`;
+        const blogLastmod = posts[0] && posts[0].updated > brand.lastUpdated ? posts[0].updated : brand.lastUpdated;
+        expect(match[2], match[1]).toBe(post ? post.updated : isBlogIndex ? blogLastmod : brand.lastUpdated);
+      }
     });
 
     it(`references the sitemap from robots.txt (${label})`, () => {
@@ -173,7 +186,7 @@ describe("sitemap.xml and robots.txt", () => {
 
 describe("structured data", () => {
   const forbidden = /aggregateRating|"review"|"offers"|"price|"award|"ratingValue|"Review"|testimonial/i;
-  const allowedTypes = new Set(["WebSite", "WebPage", "AboutPage", "FAQPage", "Question", "Answer", "Person"]);
+  const allowedTypes = new Set(["WebSite", "WebPage", "AboutPage", "FAQPage", "Question", "Answer", "Person", "Blog", "BlogPosting", "Organization"]);
 
   it("is valid JSON-LD with only relevant schema.org types and no ratings, reviews, prices or awards", () => {
     for (const [name, html] of indexablePages) {
@@ -342,6 +355,49 @@ describe("branding and content accuracy", () => {
     expect(directive("img-src")).toContain("https://img.clerk.com");
     expect(directive("script-src")).not.toContain("'unsafe-inline'");
     expect(directive("script-src")).not.toContain("'unsafe-eval'");
+  });
+
+  it("publishes every non-draft post with BlogPosting data, and lists it on the blog, RSS feed and studio", () => {
+    expect(posts.length).toBeGreaterThan(0);
+    const index = committed.files.get("blog/index.html") ?? "";
+    const feed = committed.files.get("blog/feed.xml") ?? "";
+    const studio = committed.files.get("studio/index.html") ?? "";
+    expect(feed.startsWith('<?xml version="1.0" encoding="UTF-8"?>\n<rss version="2.0"')).toBe(true);
+    expect(feed).toContain(`<atom:link href="${committed.base}/blog/feed.xml" rel="self" type="application/rss+xml"/>`);
+    for (const post of posts) {
+      const html = committed.files.get(`blog/${post.slug}/index.html`) ?? "";
+      expect(html, post.slug).toContain(`<h1 id="post-title">${escapeHtml(post.title)}</h1>`);
+      expect(metaProperty(html, "og:type")).toBe("article");
+      const graph = (jsonLd(html)[0] as { "@graph": Record<string, unknown>[] })["@graph"];
+      const article = graph.find((n) => n["@type"] === "BlogPosting");
+      expect(article).toMatchObject({ headline: post.title, datePublished: post.date, dateModified: post.updated });
+      expect(index).toContain(`href="/blog/${post.slug}/"`);
+      expect(feed).toContain(`<link>${committed.base}/blog/${post.slug}/</link>`);
+      expect(studio).toContain(`${brand.repository}/edit/main/site/blog/${post.file}`);
+    }
+    for (const [, html] of pages) expect(html).toContain('<link rel="alternate" type="application/rss+xml"');
+  });
+
+  it("never publishes drafts", () => {
+    const dir = path.join(root, "site", "blog");
+    const drafts = readdirSync(dir).filter((f) => /^draft:\s*true\s*$/m.test(readFileSync(path.join(dir, f), "utf8")));
+    for (const file of drafts) {
+      const slug = file.replace(/^\d{4}-\d{2}-\d{2}-/, "").replace(/\.md$/, "");
+      expect(committed.files.has(`blog/${slug}/index.html`), file).toBe(false);
+    }
+  });
+
+  it("keeps signed-in pages out of search and gates the studio on the admin role", () => {
+    for (const file of ["account/index.html", "members/index.html", "studio/index.html"]) {
+      const html = committed.files.get(file) ?? "";
+      expect(metaName(html, "robots"), file).toBe("noindex, nofollow");
+      expect(html, file).not.toContain('rel="canonical"');
+      expect(html, file).toMatch(/data-auth-page="(account|members|studio)"/);
+    }
+    const studio = committed.files.get("studio/index.html") ?? "";
+    expect(studio).toMatch(/data-auth-content data-requires-role="admin" hidden/);
+    expect(studio).toContain('<script src="/studio.js" defer></script>');
+    expect(committed.files.get("members/index.html")).toMatch(/data-auth-content hidden/);
   });
 
   it("uses the final product name, not a working title", () => {
