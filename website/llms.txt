@@ -9,6 +9,10 @@ Status: early development, not available to use. An early development foundation
 - [FAQ](https://vibeheal.online/faq/): answers to common questions from vibe coders
 - [About](https://vibeheal.online/about/): principles, current status and how the project is built
 - [Waitlist privacy notice](https://vibeheal.online/privacy/): what the waitlist collects and why
+- [Blog](https://vibeheal.online/blog/): news and notes ([RSS](https://vibeheal.online/blog/feed.xml))
+
+## Blog posts
+- [Introducing VibeHeal](https://vibeheal.online/blog/introducing-vibeheal/) (2026-11-05): The project now has a name, VibeHeal, and a catch line, "Just vibeheal it." Here is what it is meant to do, what exists today and what is still undecided.
 
 ## Planned capabilities
 - Project understanding and debugging (Planned): Look at your project's setup and explain errors in plain language, so you know where a problem comes from.

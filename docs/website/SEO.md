@@ -20,7 +20,8 @@
 | Canonical URLs | `<link rel="canonical">` on indexable pages, built from `siteUrl` | Test: canonical = `og:url` = sitemap entry |
 | Open Graph / Twitter | `og:*` and `twitter:*` with a 1200×630 PNG and alt text | Test |
 | Image alt text | Decorative logo uses `alt=""` next to visible text; the social image has descriptive `og:image:alt` | Test: every `<img>` has `alt` |
-| XML sitemap | `website/sitemap.xml`: home, FAQ, About, Privacy, with `lastmod` from `brand.lastUpdated`. The 404 page is excluded | Test (structure) + browser `DOMParser` (well-formed XML) |
+| XML sitemap | `website/sitemap.xml`: home, FAQ, About, Privacy, Blog and every published post. `lastmod` comes from `brand.lastUpdated`, or from the post's `updated` date for posts and the blog index. The 404 page and the signed-in pages (`/account/`, `/members/`, `/studio/`) are excluded and `noindex` | Test |
+| Blog | `/blog/` (`Blog` structured data) and one page per post with `BlogPosting` (headline, dates, author, publisher, keywords, word count), `og:type=article`, and an RSS feed linked from every page's `<head>` | Test |
 | robots.txt | Allows all crawlers and references the sitemap | Test |
 | Search-friendly URLs | `/faq/`, `/about/`, `/privacy/` (lowercase, trailing-slash folders). The preview server redirects `/faq` to `/faq/`, as Netlify's pretty URLs do | Test + preview check |
 | Internal links | Header, footer and in-page links between all pages | Test: every internal link and `#anchor` resolves |

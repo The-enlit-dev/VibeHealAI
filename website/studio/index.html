@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Content studio | VibeHeal</title>
+  <meta name="description" content="Write and manage blog posts. Only accounts with the admin role can use this page.">
+  <meta name="robots" content="noindex, nofollow">
+  
+  
+  <meta name="theme-color" content="#14213D">
+  <meta name="color-scheme" content="light">
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/brand.css">
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="alternate" type="application/rss+xml" title="VibeHeal blog" href="/blog/feed.xml">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="VibeHeal">
+  <meta property="og:locale" content="en_GB">
+  <meta property="og:title" content="Content studio | VibeHeal">
+  <meta property="og:description" content="Write and manage blog posts. Only accounts with the admin role can use this page.">
+  <meta property="og:url" content="https://vibeheal.online/studio/">
+  <meta property="og:image" content="https://vibeheal.online/assets/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Abstract geometric symbol beside the text: Your AI assistant for vibe coders. Just vibeheal it.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Content studio | VibeHeal">
+  <meta name="twitter:description" content="Write and manage blog posts. Only accounts with the admin role can use this page.">
+  <meta name="twitter:image" content="https://vibeheal.online/assets/og-image.png">
+  <meta name="twitter:image:alt" content="Abstract geometric symbol beside the text: Your AI assistant for vibe coders. Just vibeheal it.">
+  
+</head>
+<body class="page-studio">
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="/">
+        <img class="brand-mark" src="/assets/logo.svg" alt="" width="32" height="32">
+        <span class="brand-name">VibeHeal</span>
+      </a>
+      <nav class="site-nav" aria-label="Main">
+        <a href="/#capabilities">Capabilities</a>
+        <a href="/#how-it-works">How it works</a>
+        <a href="/blog/">Blog</a>
+        <a href="/faq/">FAQ</a>
+        <a href="/about/">About</a>
+        <a class="nav-cta" href="/#waitlist">Join the waitlist</a>
+      </nav>
+      <div id="auth-controls" class="auth-controls" aria-label="Account" role="group" hidden></div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="page-hero" aria-labelledby="studio-title">
+      <div class="container narrow">
+        <p class="section-kicker">Studio</p>
+        <h1 id="studio-title">Content studio</h1>
+        <p class="lead">Write and manage blog posts. Only accounts with the admin role can use this page.</p>
+      </div>
+    </section>
+
+    <div class="container narrow" data-auth-page="studio">
+      <p class="auth-status" data-auth-state="loading">Checking your access…</p>
+      <noscript><p class="auth-status">The studio needs JavaScript to load.</p></noscript>
+      <div class="auth-mount" data-auth-mount></div>
+
+      <div class="studio" data-auth-content data-requires-role="admin" hidden>
+        <section class="studio-card" aria-labelledby="studio-new">
+          <h2 id="studio-new">Write a new post</h2>
+          <p>This opens GitHub's editor with a ready-made post. When you commit, choose <strong>Create a new branch and start a pull request</strong>: Netlify builds a preview you can check before merging.</p>
+          <form class="studio-form" data-studio-new data-repository="https://github.com/The-enlit-dev/VibeHealAI" novalidate>
+            <div class="field">
+              <label for="studio-post-title">Post title</label>
+              <input id="studio-post-title" name="title" type="text" maxlength="90" required>
+            </div>
+            <div class="field">
+              <label for="studio-post-description">Short description (50 to 300 characters)</label>
+              <textarea id="studio-post-description" name="description" rows="2" maxlength="300"></textarea>
+            </div>
+            <p class="field-error" data-studio-error role="alert" hidden></p>
+            <button class="button button-primary" type="submit">Open in the GitHub editor</button>
+          </form>
+        </section>
+
+        <section class="studio-card" aria-labelledby="studio-posts">
+          <h2 id="studio-posts">Published posts</h2>
+          <ul class="studio-posts">
+            <li><a href="/blog/introducing-vibeheal/">Introducing VibeHeal</a> <span class="meta">5 November 2026</span> · <a href="https://github.com/The-enlit-dev/VibeHealAI/edit/main/site/blog/2026-11-05-introducing-vibeheal.md" rel="noopener">Edit on GitHub</a></li>
+          </ul>
+          <p class="help">Drafts (<code>draft: true</code>) stay in the repository and never appear on the site, so they are not listed here.</p>
+        </section>
+
+        <section class="studio-card" aria-labelledby="studio-tools">
+          <h2 id="studio-tools">Other tools</h2>
+          <ul>
+            <li><a href="https://github.com/The-enlit-dev/VibeHealAI/tree/main/site/blog" rel="noopener">All post files on GitHub</a></li>
+            <li><a href="https://app.netlify.com/" rel="noopener">Netlify: waitlist signups (Forms) and deploys</a></li>
+            <li><a href="https://dashboard.clerk.com/" rel="noopener">Clerk: users, roles and sign-in settings</a></li>
+            <li><a href="https://search.google.com/search-console" rel="noopener">Google Search Console</a></li>
+          </ul>
+          <p class="help">How posts work: <code>docs/website/BLOG.md</code> in the repository.</p>
+        </section>
+      </div>
+    </div>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div class="footer-brand">
+        <a class="brand brand-footer" href="/">
+          <img class="brand-mark" src="/assets/logo.svg" alt="" width="28" height="28">
+          <span class="brand-name">VibeHeal</span>
+        </a>
+        <p class="footer-tagline">Just vibeheal it.</p>
+      </div>
+      <nav class="footer-nav" aria-label="Footer">
+        <a href="/blog/">Blog</a>
+        <a href="/faq/">FAQ</a>
+        <a href="/about/">About</a>
+        <a href="/privacy/">Waitlist privacy</a>
+        <a href="/#waitlist">Join the waitlist</a>
+      </nav>
+      <div class="footer-notes">
+        
+        <p class="footer-note">This site describes work in progress. Nothing on it is a launch announcement, a price or a promise of a specific feature.</p>
+      </div>
+    </div>
+  </footer>
+  <script defer crossorigin="anonymous" src="https://clerk.vibeheal.online/npm/@clerk/ui@1/dist/ui.browser.js"></script>
+  <script defer crossorigin="anonymous" data-clerk-publishable-key="pk_live_Y2xlcmsudmliZWhlYWwub25saW5lJA" src="https://clerk.vibeheal.online/npm/@clerk/clerk-js@6/dist/clerk.browser.js"></script>
+  <script defer src="/auth.js"></script>
+  <script src="/studio.js" defer></script>
+</body>
+</html>

@@ -13,6 +13,7 @@
   <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="/brand.css">
   <link rel="stylesheet" href="/styles.css">
+  <link rel="alternate" type="application/rss+xml" title="VibeHeal blog" href="/blog/feed.xml">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="VibeHeal">
   <meta property="og:locale" content="en_GB">
@@ -68,6 +69,7 @@
       <nav class="site-nav" aria-label="Main">
         <a href="/#capabilities">Capabilities</a>
         <a href="/#how-it-works">How it works</a>
+        <a href="/blog/">Blog</a>
         <a href="/faq/">FAQ</a>
         <a href="/about/">About</a>
         <a class="nav-cta" href="/#waitlist">Join the waitlist</a>
@@ -295,6 +297,7 @@
 
         <form id="waitlist-form" class="waitlist-form" name="waitlist" method="POST" action="/" data-netlify="true" netlify-honeypot="company" data-endpoint="/api/waitlist" novalidate>
           <input type="hidden" name="form-name" value="waitlist">
+          <p id="account-note" class="account-note" hidden></p>
           <div class="field">
             <label for="email">Email address <span class="field-hint">(required)</span></label>
             <input id="email" name="email" type="email" autocomplete="email" maxlength="254" required aria-describedby="email-help email-error">
@@ -414,6 +417,7 @@
         <p class="footer-tagline">Just vibeheal it.</p>
       </div>
       <nav class="footer-nav" aria-label="Footer">
+        <a href="/blog/">Blog</a>
         <a href="/faq/">FAQ</a>
         <a href="/about/">About</a>
         <a href="/privacy/">Waitlist privacy</a>

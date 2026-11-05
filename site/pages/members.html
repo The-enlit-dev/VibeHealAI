@@ -1,0 +1,35 @@
+    <section class="page-hero" aria-labelledby="members-title">
+      <div class="container narrow">
+        <p class="section-kicker">Members</p>
+        <h1 id="members-title">Members area</h1>
+        <p class="lead">Early-access updates for people with a {{ brand.siteName }} account.</p>
+      </div>
+    </section>
+
+    <div class="container narrow" data-auth-page="members">
+      <p class="auth-status" data-auth-state="loading">Checking your sign-in…</p>
+      <noscript><p class="auth-status">The members area needs JavaScript to load.</p></noscript>
+      <div class="auth-mount" data-auth-mount></div>
+
+      <div class="prose members-content" data-auth-content hidden>
+        <p class="members-greeting" data-auth-greeting></p>
+        <div class="waitlist-status" data-waitlist-status hidden></div>
+
+        <section aria-labelledby="members-updates">
+          <h2 id="members-updates">Latest updates</h2>
+{{{ blocks.blogLatest }}}
+        </section>
+
+        <section aria-labelledby="members-next">
+          <h2 id="members-next">What members can expect</h2>
+          <ul>
+            <li>Early-access news before it goes on the public site.</li>
+            <li>A chance to try test builds when they are ready. No date has been set.</li>
+            <li>A say in what gets built first, through short surveys.</li>
+          </ul>
+          <p>Nothing here is secret: this page only saves you a few clicks. Product access will come through a separate, secure process when it exists.</p>
+        </section>
+
+        <p><a class="button button-secondary" href="/account/">Manage your account</a></p>
+      </div>
+    </div>

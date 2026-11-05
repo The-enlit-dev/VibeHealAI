@@ -1,15 +1,24 @@
 # Netlify configuration for the public website ONLY.
 # This file does not deploy anything. Connecting the repository to Netlify is an owner decision.
 #
-# website/ is generated from site/ by `npm run build:site` and committed, so Netlify needs no build
-# step. On Netlify, the waitlist form submits to Netlify Forms (form "waitlist"); form detection must be
+# website/ is generated from site/ by `npm run build:site` and committed; Netlify also regenerates it
+# on each deploy (see [build]). On Netlify, the waitlist form submits to Netlify Forms (form "waitlist"); form detection must be
 # enabled once in the Netlify UI (Forms > Enable form detection). The local waitlist service and its
 # admin dashboard (waitlist/) are NOT deployed here, and /admin/ does not exist on Netlify.
 # The desktop app and the local backend are never published by this configuration.
 
 [build]
   publish = "website"
-  command = ""
+  # Regenerate website/ from site/ on every deploy, so a blog post added from GitHub's web editor
+  # (the content studio, DEC-32) goes live without a local build. The generator has no dependencies.
+  # Netlify bills a production deploy at a flat rate, so building costs no extra credits.
+  command = "node scripts/build-site.mjs"
+
+[build.environment]
+  NODE_VERSION = "22"
+  # Netlify installs package.json dependencies automatically; the site build needs none of them,
+  # and the desktop app's Electron binary is a large download.
+  ELECTRON_SKIP_BINARY_DOWNLOAD = "1"
 
 # The canonical site is https://vibeheal.online (DEC-31). Send visitors and search engines from the
 # free Netlify addresses there, so only one copy appears in search results. These rules match only
@@ -36,5 +45,8 @@
     Permissions-Policy = "camera=(), microphone=(), geolocation=()"
     # Clerk sign-in (DEC-31) needs its Frontend API host (clerk.vibeheal.online), Cloudflare's bot check,
     # Clerk's fraud-protection hosts and inline styles (Clerk's components use runtime CSS-in-JS).
+    # The sha256 hash allows the one inline script Clerk's fraud-protection frame (about:srcdoc) runs;
+    # observed on the live site 2026-11-05. If Clerk changes that script, the browser console reports a
+    # new hash: replace it here. No 'unsafe-inline' is ever allowed for scripts.
     # scripts/build-site.test.ts checks that this host matches the publishable key in site/brand.json.
-    Content-Security-Policy = "default-src 'self'; script-src 'self' https://clerk.vibeheal.online https://challenges.cloudflare.com https://*.protect.clerk.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://img.clerk.com; connect-src 'self' https://clerk.vibeheal.online https://*.protect.clerk.com:*; frame-src https://challenges.cloudflare.com https://*.protect.clerk.com; worker-src 'self' blob:; form-action 'self'; base-uri 'none'; frame-ancestors 'none'"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' https://clerk.vibeheal.online https://challenges.cloudflare.com https://*.protect.clerk.com 'sha256-BkKP2XO6WOEc3kXOiLr2ZoY83hamalKjPY9xBcbXVuw='; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://img.clerk.com; connect-src 'self' https://clerk.vibeheal.online https://*.protect.clerk.com:*; frame-src https://challenges.cloudflare.com https://*.protect.clerk.com; worker-src 'self' blob:; form-action 'self'; base-uri 'none'; frame-ancestors 'none'"
