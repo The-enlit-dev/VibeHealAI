@@ -219,7 +219,9 @@ describe("branding and content accuracy", () => {
     expect(brand.headline).toBe("Your AI assistant for vibe coders");
     expect(brand.tagline).toBe("Just vibeheal it.");
     const home = committed.files.get("index.html") ?? "";
-    expect(home).toContain(`<h1 id="hero-title">${escapeHtml(brand.headline)}</h1>`);
+    expect(home).toMatch(/<h1 id="hero-title" class="hero-title">/);
+    expect(home).toContain(`<span class="sr-only">${escapeHtml(content.hero.headline)}</span>`);
+    expect(home).not.toMatch(/<script>(?!\s*<\/script>)/);
     expect(home).toContain(escapeHtml(brand.tagline));
     expect(committed.files.get("brand.css")).toContain(`--color-primary: ${brand.colors.primary};`);
   });
