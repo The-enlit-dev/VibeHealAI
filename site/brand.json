@@ -5,7 +5,7 @@
   "headline": "Your AI assistant for vibe coders",
   "tagline": "Just vibeheal it.",
   "description": "VibeHeal is a planned AI assistant for vibe coders: people who build apps, websites and software with AI tools. It aims to help with project understanding, debugging, integrations, automations and code safety. It is in early development and not available yet.",
-  "siteUrl": "https://vibehealai.netlify.app",
+  "siteUrl": "https://vibeheal.online",
   "language": "en",
   "locale": "en_GB",
   "lastUpdated": "2026-11-05",
@@ -34,6 +34,10 @@
     "url": ""
   },
   "contactEmail": "",
+  "auth": {
+    "_comment": "Clerk sign-in on the public website (DEC-31). The publishable key is public by design (it is in every page's source). NEVER put a secret key (sk_...) here. Empty disables sign-in.",
+    "clerkPublishableKey": "pk_live_Y2xlcmsudmliZWhlYWwub25saW5lJA"
+  },
   "verification": {
     "_comment": "Optional search-engine ownership tokens (not secrets). Paste only the content value of the meta tag each tool gives you. See docs/website/SEARCH_CONSOLE.md.",
     "google": "",

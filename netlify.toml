@@ -11,12 +11,19 @@
   publish = "website"
   command = ""
 
-# The same repository also builds an older Netlify project (brixoai.netlify.app). Send its visitors
-# and search engines to the canonical site so the two copies do not compete in search results.
-# On the vibehealai project this rule never matches. Deploy previews are unaffected.
+# The canonical site is https://vibeheal.online (DEC-31). Send visitors and search engines from the
+# free Netlify addresses there, so only one copy appears in search results. These rules match only
+# those exact hosts: deploy previews (deploy-preview-N--...) are unaffected.
+[[redirects]]
+  from = "https://vibehealai.netlify.app/*"
+  to = "https://vibeheal.online/:splat"
+  status = 301
+  force = true
+
+# The same repository also builds an older Netlify project (brixoai.netlify.app).
 [[redirects]]
   from = "https://brixoai.netlify.app/*"
-  to = "https://vibehealai.netlify.app/:splat"
+  to = "https://vibeheal.online/:splat"
   status = 301
   force = true
 
@@ -27,4 +34,7 @@
     Referrer-Policy = "no-referrer"
     X-Frame-Options = "DENY"
     Permissions-Policy = "camera=(), microphone=(), geolocation=()"
-    Content-Security-Policy = "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; form-action 'self'; base-uri 'none'; frame-ancestors 'none'"
+    # Clerk sign-in (DEC-31) needs its Frontend API host (clerk.vibeheal.online), Cloudflare's bot check,
+    # Clerk's fraud-protection hosts and inline styles (Clerk's components use runtime CSS-in-JS).
+    # scripts/build-site.test.ts checks that this host matches the publishable key in site/brand.json.
+    Content-Security-Policy = "default-src 'self'; script-src 'self' https://clerk.vibeheal.online https://challenges.cloudflare.com https://*.protect.clerk.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://img.clerk.com; connect-src 'self' https://clerk.vibeheal.online https://*.protect.clerk.com:*; frame-src https://challenges.cloudflare.com https://*.protect.clerk.com; worker-src 'self' blob:; form-action 'self'; base-uri 'none'; frame-ancestors 'none'"

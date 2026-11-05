@@ -5,10 +5,10 @@
 Status: early development, not available to use. An early development foundation: a local backend, an integration platform and a read-only GitHub connection, tested by the developer with automated tests against a simulated GitHub API. Not a public release.
 
 ## Key pages
-- [Home](https://vibehealai.netlify.app/): what the project is designed to do, with an honest status for each capability
-- [FAQ](https://vibehealai.netlify.app/faq/): answers to common questions from vibe coders
-- [About](https://vibehealai.netlify.app/about/): principles, current status and how the project is built
-- [Waitlist privacy notice](https://vibehealai.netlify.app/privacy/): what the waitlist collects and why
+- [Home](https://vibeheal.online/): what the project is designed to do, with an honest status for each capability
+- [FAQ](https://vibeheal.online/faq/): answers to common questions from vibe coders
+- [About](https://vibeheal.online/about/): principles, current status and how the project is built
+- [Waitlist privacy notice](https://vibeheal.online/privacy/): what the waitlist collects and why
 
 ## Planned capabilities
 - Project understanding and debugging (Planned): Look at your project's setup and explain errors in plain language, so you know where a problem comes from.

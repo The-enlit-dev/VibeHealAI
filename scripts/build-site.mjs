@@ -193,6 +193,31 @@ function checkboxesBlock(options) {
 
 // ---------- structured data ----------
 
+// Clerk sign-in (DEC-31). The publishable key encodes the Frontend API host: pk_<env>_<base64("host$")>.
+export function clerkFrontendApi(publishableKey) {
+  if (!publishableKey) return null;
+  const match = /^pk_(test|live)_([A-Za-z0-9+/=]+)$/.exec(publishableKey);
+  if (!match) throw new Error("brand.auth.clerkPublishableKey must be a Clerk publishable key (pk_test_... or pk_live_...)");
+  const decoded = Buffer.from(match[2], "base64").toString("utf8");
+  const host = decoded.endsWith("$") ? decoded.slice(0, -1) : "";
+  if (!/^[a-z0-9-]+(\.[a-z0-9-]+)+$/.test(host)) throw new Error("brand.auth.clerkPublishableKey does not contain a valid Frontend API host");
+  return host;
+}
+
+export function authBlocks(brand) {
+  const key = brand.auth?.clerkPublishableKey ?? "";
+  const host = clerkFrontendApi(key);
+  if (!host) return { controls: "", scripts: "" };
+  return {
+    controls: '<div id="auth-controls" class="auth-controls" aria-label="Account" role="group" hidden></div>',
+    scripts: [
+      `<script defer crossorigin="anonymous" src="https://${host}/npm/@clerk/ui@1/dist/ui.browser.js"></script>`,
+      `<script defer crossorigin="anonymous" data-clerk-publishable-key="${escapeHtml(key)}" src="https://${host}/npm/@clerk/clerk-js@6/dist/clerk.browser.js"></script>`,
+      '<script defer src="/auth.js"></script>',
+    ].join("\n  "),
+  };
+}
+
 // Search-engine ownership tokens from brand.verification. Only the home page carries them.
 const VERIFICATION_META = { google: "google-site-verification", bing: "msvalidate.01" };
 
@@ -324,7 +349,9 @@ export function buildSite({ root = defaultRoot, siteUrl } = {}) {
   const placeholder = isPlaceholderUrl(base);
   const files = new Map();
 
+  const auth = authBlocks(brand);
   const blocks = {
+    authControls: auth.controls,
     capabilities: capabilitiesBlock(content),
     steps: stepsBlock(content),
     principles: principlesBlock(content),
@@ -376,6 +403,7 @@ export function buildSite({ root = defaultRoot, siteUrl } = {}) {
         jsonLd: page.indexable ? jsonLdScript({ "@context": "https://schema.org", "@graph": graph }) : "",
         script: page.script ? '<script src="/app.js" defer></script>' : "",
         verificationTags: page.key === "home" ? verificationTags(brand) : "",
+        authScripts: auth.scripts,
         socialImageWidth: String(brand.socialImage.width),
         socialImageHeight: String(brand.socialImage.height),
       },

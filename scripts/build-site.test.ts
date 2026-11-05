@@ -4,7 +4,7 @@ import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
-import { buildSite, escapeHtml, isPlaceholderUrl, render, verificationTags } from "./build-site.mjs";
+import { authBlocks, buildSite, clerkFrontendApi, escapeHtml, isPlaceholderUrl, render, verificationTags } from "./build-site.mjs";
 import { AI_TOOLS, PLANNED_CAPABILITIES } from "../waitlist/validation.js";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
@@ -308,11 +308,40 @@ describe("branding and content accuracy", () => {
     }
   });
 
-  it("redirects the duplicate brixoai.netlify.app project to the canonical site", () => {
+  it("redirects the free Netlify addresses to the canonical domain", () => {
     const toml = readFileSync(path.join(root, "netlify.toml"), "utf8");
-    expect(toml).toContain('from = "https://brixoai.netlify.app/*"');
-    expect(toml).toContain(`to = "${brand.siteUrl}/:splat"`);
-    expect(toml).toMatch(/status = 301\s+force = true/);
+    expect(brand.siteUrl).toBe("https://vibeheal.online");
+    for (const host of ["vibehealai.netlify.app", "brixoai.netlify.app"]) {
+      expect(toml).toMatch(new RegExp(`from = "https://${host.replace(/\./g, "\\.")}/\\*"\\s+to = "${brand.siteUrl.replace(/\./g, "\\.")}/:splat"\\s+status = 301\\s+force = true`));
+    }
+  });
+
+  it("derives Clerk's Frontend API host from the publishable key and rejects anything else", () => {
+    expect(clerkFrontendApi("")).toBeNull();
+    expect(clerkFrontendApi("pk_live_Y2xlcmsudmliZWhlYWwub25saW5lJA")).toBe("clerk.vibeheal.online");
+    expect(clerkFrontendApi(`pk_test_${Buffer.from("happy-cat-1.clerk.accounts.dev$").toString("base64")}`)).toBe("happy-cat-1.clerk.accounts.dev");
+    expect(() => clerkFrontendApi("sk_live_abc")).toThrow();
+    expect(() => clerkFrontendApi(`pk_test_${Buffer.from("evil.com/x$").toString("base64")}`)).toThrow();
+    expect(authBlocks({})).toEqual({ controls: "", scripts: "" });
+  });
+
+  it("loads Clerk on every page, from the host the CSP in netlify.toml allows", () => {
+    const host = clerkFrontendApi(brand.auth?.clerkPublishableKey ?? "");
+    if (!host) return;
+    for (const [name, html] of pages) {
+      expect(html, name).toContain('id="auth-controls"');
+      expect(html, name).toContain(`src="https://${host}/npm/@clerk/clerk-js@6/dist/clerk.browser.js"`);
+      expect(html, name).toContain(`src="https://${host}/npm/@clerk/ui@1/dist/ui.browser.js"`);
+      expect(html, name).toContain('<script defer src="/auth.js"></script>');
+    }
+    const csp = readFileSync(path.join(root, "netlify.toml"), "utf8").match(/Content-Security-Policy = "([^"]+)"/)?.[1] ?? "";
+    const directive = (name: string) => csp.split(";").map((d) => d.trim()).find((d) => d.startsWith(`${name} `)) ?? "";
+    expect(directive("script-src")).toContain(`https://${host}`);
+    expect(directive("connect-src")).toContain(`https://${host}`);
+    expect(directive("frame-src")).toContain("https://challenges.cloudflare.com");
+    expect(directive("img-src")).toContain("https://img.clerk.com");
+    expect(directive("script-src")).not.toContain("'unsafe-inline'");
+    expect(directive("script-src")).not.toContain("'unsafe-eval'");
   });
 
   it("uses the final product name, not a working title", () => {
