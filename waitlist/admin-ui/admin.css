@@ -99,7 +99,7 @@ h2 {
   padding: 8px 14px;
   border-radius: 6px;
   border: 1px solid var(--color-text-primary);
-  background: var(--color-arctic);
+  background: var(--color-primary);
   color: var(--color-obsidian);
   font: inherit;
   font-weight: 600;
@@ -223,7 +223,7 @@ label {
 }
 
 .chart .bar-rect {
-  fill: var(--color-arctic);
+  fill: var(--color-primary);
 }
 
 .chart .axis {
@@ -263,7 +263,7 @@ label {
   grid-column: 1 / -1;
   width: 100%;
   height: 8px;
-  accent-color: var(--color-arctic);
+  accent-color: var(--color-primary);
 }
 
 .breakdown .count {

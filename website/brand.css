@@ -3,11 +3,13 @@
   --color-obsidian: #080B10;
   --color-graphite: #111923;
   --color-elevated: #17212D;
-  --color-arctic: #2684FF;
+  --color-sidebar: #0D131C;
+  --color-input: #0D1520;
+  --color-primary: #2684FF;
   --color-ice: #38BDF8;
-  --color-amber: #F5A742;
   --color-text-primary: #F4F6F8;
   --color-text-secondary: #9AA5B1;
   --color-text-muted: #657181;
   --color-border: #283442;
+  --color-warm-neutral: #DCE3EA;
 }

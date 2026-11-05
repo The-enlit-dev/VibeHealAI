@@ -214,13 +214,14 @@ describe("structured data", () => {
 
 describe("branding and content accuracy", () => {
   it("uses the requested palette, headline and tagline", () => {
-    expect(brand.colors).toMatchObject({ navy: "#14213D", teal: "#1B998B", ivory: "#F6F4EF", slate: "#667085", amber: "#F4B942" });
+    expect(brand.colors).toMatchObject({ obsidian: "#080B10", graphite: "#111923", elevated: "#17212D", primary: "#2684FF", ice: "#38BDF8", textPrimary: "#F4F6F8", textSecondary: "#9AA5B1", textMuted: "#657181", border: "#283442", warmNeutral: "#DCE3EA" });
+    expect(brand.colors).not.toHaveProperty("amber");
     expect(brand.headline).toBe("Your AI assistant for vibe coders");
     expect(brand.tagline).toBe("Just vibeheal it.");
     const home = committed.files.get("index.html") ?? "";
     expect(home).toContain(`<h1 id="hero-title">${escapeHtml(brand.headline)}</h1>`);
     expect(home).toContain(escapeHtml(brand.tagline));
-    expect(committed.files.get("brand.css")).toContain(`--color-navy: ${brand.colors.navy};`);
+    expect(committed.files.get("brand.css")).toContain(`--color-primary: ${brand.colors.primary};`);
   });
 
   it("meets WCAG AA contrast for every text colour pair the CSS uses", () => {
@@ -235,23 +236,23 @@ describe("branding and content accuracy", () => {
     };
     const c = brand.colors;
     const normalText: [string, string][] = [
-      [c.navy, c.ivory],
-      [c.navy, c.white],
-      [c.slate, c.ivory],
-      [c.slate, c.white],
-      [c.tealInk, c.ivory],
-      [c.tealInk, c.white],
-      [c.ivory, c.navy],
-      [c.navy, c.amber],
-      [c.amber, c.navy],
-      ["#C8CDD6", c.navy],
-      ["#A3271F", "#FBEDEB"],
-      ["#0E6F64", "#E5F3F0"],
+      [c.textPrimary, c.obsidian],
+      [c.textPrimary, c.graphite],
+      [c.textPrimary, c.elevated],
+      [c.textSecondary, c.obsidian],
+      [c.textSecondary, c.graphite],
+      [c.textSecondary, c.elevated],
+      [c.obsidian, c.primary],
+      [c.ice, c.obsidian],
+      [c.warmNeutral, c.elevated],
+      ["#F87171", c.obsidian],
+      ["#4ADE80", c.obsidian],
     ];
     for (const [fg, bg] of normalText) expect(ratio(fg, bg), `${fg} on ${bg}`).toBeGreaterThanOrEqual(4.5);
-    // Teal is used only for large text, borders and graphics, which need 3:1.
-    expect(ratio(c.teal, c.ivory)).toBeGreaterThanOrEqual(3);
-    expect(ratio(c.teal, c.navy)).toBeGreaterThanOrEqual(3);
+    // Primary blue is for large text, borders and focus rings, which need 3:1 on obsidian.
+    expect(ratio(c.primary, c.obsidian)).toBeGreaterThanOrEqual(3);
+    // Muted text is decorative only (placeholders, large labels); it is below 4.5:1 by design.
+    expect(ratio(c.textMuted, c.obsidian)).toBeGreaterThanOrEqual(3);
   });
 
   it("keeps the public form options identical to the server's validation lists", () => {
