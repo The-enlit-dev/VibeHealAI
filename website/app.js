@@ -1,6 +1,8 @@
-/* global document */
+/* global document, window */
 // Waitlist form behaviour for the public website.
-// The server validates everything again; this script only improves feedback.
+// On the hosted site, signups go to Netlify Forms (form "waitlist", URL-encoded POST).
+// On the local preview (npm run site:dev on localhost), they go to the waitlist
+// service's JSON API, which validates everything again.
 // All text is set with textContent.
 
 (function () {
@@ -10,6 +12,10 @@
   if (!form) return;
 
   var endpoint = form.getAttribute("data-endpoint") || "/api/waitlist";
+  var netlifyAction = form.getAttribute("action") || "/";
+  var formName = form.getAttribute("name") || "waitlist";
+  var LOCAL_HOSTS = ["localhost", "127.0.0.1", "[::1]"];
+  var useLocalApi = LOCAL_HOSTS.indexOf(window.location.hostname) !== -1;
   var submitButton = document.getElementById("submit-button");
   var statusBox = document.getElementById("form-status");
   var frustration = document.getElementById("frustration");
@@ -117,6 +123,47 @@
     });
   }
 
+  // Netlify Forms takes one value per field, so the chosen features are joined with commas.
+  function netlifyBody(values) {
+    var params = new URLSearchParams();
+    params.append("form-name", formName);
+    params.append("email", values.email);
+    params.append("name", values.name);
+    params.append("aiTool", values.aiTool);
+    params.append("frustration", values.frustration);
+    params.append("capabilities", values.capabilities.join(", "));
+    params.append("consent", values.consent ? "yes" : "");
+    params.append("company", values.company);
+    return params.toString();
+  }
+
+  function submit(values) {
+    if (useLocalApi) {
+      return fetch(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        credentials: "same-origin",
+        cache: "no-store",
+        body: JSON.stringify(values)
+      });
+    }
+    return fetch(netlifyAction, {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      credentials: "same-origin",
+      cache: "no-store",
+      body: netlifyBody(values)
+    }).then(function (response) {
+      // Netlify answers a successful submission with an HTML page, not JSON.
+      return {
+        status: response.ok ? 200 : response.status,
+        json: function () {
+          return Promise.resolve(response.ok ? { status: "ok" } : null);
+        }
+      };
+    });
+  }
+
   frustration.addEventListener("input", function () {
     frustrationCount.textContent = String(frustration.value.length);
   });
@@ -140,13 +187,7 @@
     }
 
     setBusy(true);
-    fetch(endpoint, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", Accept: "application/json" },
-      credentials: "same-origin",
-      cache: "no-store",
-      body: JSON.stringify(values)
-    })
+    submit(values)
       .then(function (response) {
         return parseJsonSafely(response).then(function (body) {
           return { status: response.status, body: body };

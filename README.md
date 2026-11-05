@@ -96,7 +96,7 @@ marketing/ Marketing plan, prompts and draft batches. Nothing is published autom
 
 ## Public website, waitlist and admin dashboard (local preview)
 
-The public website is a separate static site. Its name and catch line ("VibeHeal. Just vibeheal it.") are set in `site/brand.json`. It is **not hosted** and nothing is deployed.
+The public website is a separate static site. Its name and catch line ("VibeHeal. Just vibeheal it.") are set in `site/brand.json`. On Netlify, the waitlist form submits to **Netlify Forms** (form `waitlist`). The owner must turn on form detection once in the Netlify UI. On the local preview below, the same form submits to the local waitlist service instead.
 
 ```bash
 npm install
@@ -106,7 +106,7 @@ npm run waitlist:report   # private demand summary, counts only
 npm run waitlist:export   # private CSV with email addresses, keep local
 ```
 
-Signups are stored in `waitlist-data/` (git-ignored). Details, including admin setup, branding, SEO and Search Console: [docs/website/README.md](./docs/website/README.md). Content workflow: [marketing/README.md](./marketing/README.md).
+Local-preview signups are stored in `waitlist-data/` (git-ignored); Netlify signups are in the Netlify dashboard (Forms). Details, including admin setup, branding, SEO and Search Console: [docs/website/README.md](./docs/website/README.md). Content workflow: [marketing/README.md](./marketing/README.md).
 
 ## Documentation
 1. [docs/planning/DECISIONS.md](./docs/planning/DECISIONS.md): the owner's decisions. They take precedence over every other document.

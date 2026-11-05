@@ -263,6 +263,21 @@ describe("branding and content accuracy", () => {
     }
   });
 
+  it("registers the waitlist form with Netlify Forms and posts every field the script sends", () => {
+    const home = committed.files.get("index.html") ?? "";
+    const formTag = home.match(/<form\b[^>]*id="waitlist-form"[^>]*>/)?.[0] ?? "";
+    expect(formTag).toContain('name="waitlist"');
+    expect(formTag).toContain('method="POST"');
+    expect(formTag).toContain('data-netlify="true"');
+    expect(formTag).toContain('netlify-honeypot="company"');
+    expect(home).toContain('<input type="hidden" name="form-name" value="waitlist">');
+    // Netlify only stores fields that exist in the deployed form, so each name app.js sends must be in it.
+    const appJs = readFileSync(path.join(root, "website", "app.js"), "utf8");
+    const sent = [...appJs.matchAll(/params\.append\("([^"]+)"/g)].map((m) => m[1]);
+    expect(sent.length).toBeGreaterThan(0);
+    for (const field of sent) expect(home, field).toContain(`name="${field}"`);
+  });
+
   it("labels every capability with a status and never claims the product is available", () => {
     const allowed = new Set(Object.keys(content.statusLabels));
     for (const item of content.capabilities) expect(allowed.has(item.status), item.title).toBe(true);

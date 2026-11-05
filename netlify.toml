@@ -2,8 +2,9 @@
 # This file does not deploy anything. Connecting the repository to Netlify is an owner decision.
 #
 # website/ is generated from site/ by `npm run build:site` and committed, so Netlify needs no build
-# step. The waitlist API and the admin dashboard (waitlist/) are NOT deployed here: on Netlify the
-# signup form shows "not reachable" until a hosted endpoint exists, and /admin/ does not exist.
+# step. On Netlify, the waitlist form submits to Netlify Forms (form "waitlist"); form detection must be
+# enabled once in the Netlify UI (Forms > Enable form detection). The local waitlist service and its
+# admin dashboard (waitlist/) are NOT deployed here, and /admin/ does not exist on Netlify.
 # The desktop app and the local backend are never published by this configuration.
 
 [build]
