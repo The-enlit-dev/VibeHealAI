@@ -6,14 +6,14 @@
 
 body {
   margin: 0;
-  background: var(--color-ivory);
-  color: var(--color-navy);
+  background: var(--color-obsidian);
+  color: var(--color-text-primary);
   font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
   line-height: 1.5;
 }
 
 :focus-visible {
-  outline: 3px solid var(--color-teal-ink);
+  outline: 3px solid var(--color-ice);
   outline-offset: 2px;
 }
 
@@ -29,7 +29,7 @@ h2 {
 }
 
 .muted {
-  color: var(--color-slate);
+  color: var(--color-text-secondary);
 }
 
 .small {
@@ -46,8 +46,8 @@ h2 {
 }
 
 .bar {
-  background: var(--color-navy);
-  color: var(--color-ivory);
+  background: var(--color-elevated);
+  color: var(--color-text-primary);
 }
 
 .bar-inner,
@@ -82,8 +82,8 @@ h2 {
 }
 
 .account .button-quiet {
-  color: var(--color-ivory);
-  border-color: rgba(246, 244, 239, 0.5);
+  color: var(--color-text-primary);
+  border-color: var(--color-border);
 }
 
 .wrap {
@@ -98,9 +98,9 @@ h2 {
   min-height: 40px;
   padding: 8px 14px;
   border-radius: 6px;
-  border: 1px solid var(--color-navy);
-  background: var(--color-navy);
-  color: var(--color-ivory);
+  border: 1px solid var(--color-text-primary);
+  background: var(--color-arctic);
+  color: var(--color-obsidian);
   font: inherit;
   font-weight: 600;
   text-decoration: none;
@@ -109,7 +109,7 @@ h2 {
 
 .button-quiet {
   background: transparent;
-  color: var(--color-navy);
+  color: var(--color-text-primary);
 }
 
 .button:disabled {
@@ -123,10 +123,10 @@ select {
   width: 100%;
   min-height: 40px;
   padding: 8px 10px;
-  border: 1px solid #C9C4B7;
+  border: 1px solid #3A4A5C;
   border-radius: 6px;
-  background: var(--color-white);
-  color: var(--color-navy);
+  background: var(--color-graphite);
+  color: var(--color-text-primary);
 }
 
 label {
@@ -137,9 +137,9 @@ label {
 }
 
 .notice {
-  background: #FBEDEB;
-  color: #A3271F;
-  border: 1px solid #E8C2BD;
+  background: rgba(248, 113, 113, 0.1);
+  color: #F87171;
+  border: 1px solid #5A2A2A;
   padding: 10px 14px;
   border-radius: 6px;
   font-weight: 600;
@@ -148,8 +148,8 @@ label {
 .login {
   max-width: 400px;
   margin: 40px auto;
-  background: var(--color-white);
-  border: 1px solid #DEDAD0;
+  background: var(--color-graphite);
+  border: 1px solid var(--color-border);
   border-radius: 6px;
   padding: 28px;
 }
@@ -166,7 +166,7 @@ label {
   min-height: 1.5em;
   margin: 12px 0 0;
   font-weight: 600;
-  color: #A3271F;
+  color: #F87171;
 }
 
 .dash-head {
@@ -193,8 +193,8 @@ label {
 
 .stats li,
 .panel {
-  background: var(--color-white);
-  border: 1px solid #DEDAD0;
+  background: var(--color-graphite);
+  border: 1px solid var(--color-border);
   border-radius: 6px;
   padding: 16px;
 }
@@ -202,7 +202,7 @@ label {
 .stat-label {
   display: block;
   font-size: 0.85rem;
-  color: var(--color-slate);
+  color: var(--color-text-secondary);
 }
 
 .stat-value {
@@ -223,16 +223,16 @@ label {
 }
 
 .chart .bar-rect {
-  fill: var(--color-teal);
+  fill: var(--color-arctic);
 }
 
 .chart .axis {
-  fill: var(--color-slate);
+  fill: var(--color-text-secondary);
   font-size: 11px;
 }
 
 .chart .baseline {
-  stroke: #C9C4B7;
+  stroke: #3A4A5C;
 }
 
 .breakdowns {
@@ -263,7 +263,7 @@ label {
   grid-column: 1 / -1;
   width: 100%;
   height: 8px;
-  accent-color: var(--color-teal);
+  accent-color: var(--color-arctic);
 }
 
 .breakdown .count {
@@ -300,13 +300,13 @@ label {
 .table td {
   text-align: left;
   padding: 8px 10px;
-  border-bottom: 1px solid #DEDAD0;
+  border-bottom: 1px solid var(--color-border);
   vertical-align: top;
 }
 
 .table th {
   font-size: 0.8rem;
-  color: var(--color-slate);
+  color: var(--color-text-secondary);
   font-weight: 600;
   white-space: nowrap;
 }
@@ -323,8 +323,8 @@ label {
 .empty {
   padding: 24px;
   text-align: center;
-  color: var(--color-slate);
-  border: 1px dashed #C9C4B7;
+  color: var(--color-text-secondary);
+  border: 1px dashed #3A4A5C;
   border-radius: 6px;
 }
 
@@ -338,14 +338,14 @@ label {
 dialog {
   max-width: 640px;
   width: calc(100% - 32px);
-  border: 1px solid #C9C4B7;
+  border: 1px solid #3A4A5C;
   border-radius: 6px;
   padding: 24px;
-  color: var(--color-navy);
+  color: var(--color-text-primary);
 }
 
 dialog::backdrop {
-  background: rgba(20, 33, 61, 0.45);
+  background: rgba(8, 11, 16, 0.6);
 }
 
 .detail {
@@ -357,7 +357,7 @@ dialog::backdrop {
 
 .detail dt {
   font-weight: 600;
-  color: var(--color-slate);
+  color: var(--color-text-secondary);
 }
 
 .detail dd {

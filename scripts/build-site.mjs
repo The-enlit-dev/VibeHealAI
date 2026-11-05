@@ -418,13 +418,16 @@ export function buildSite({ root = defaultRoot, siteUrl } = {}) {
     "brand.css",
     `/* Generated from site/brand.json by scripts/build-site.mjs. Do not edit by hand. */
 :root {
-  --color-navy: ${c.navy};
-  --color-teal: ${c.teal};
-  --color-ivory: ${c.ivory};
-  --color-slate: ${c.slate};
+  --color-obsidian: ${c.obsidian};
+  --color-graphite: ${c.graphite};
+  --color-elevated: ${c.elevated};
+  --color-arctic: ${c.arctic};
+  --color-ice: ${c.ice};
   --color-amber: ${c.amber};
-  --color-teal-ink: ${c.tealInk};
-  --color-white: ${c.white};
+  --color-text-primary: ${c.textPrimary};
+  --color-text-secondary: ${c.textSecondary};
+  --color-text-muted: ${c.textMuted};
+  --color-border: ${c.border};
 }
 `,
   );

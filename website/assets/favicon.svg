@@ -1,7 +1,12 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48" role="img" aria-label="Abstract geometric symbol">
-  <rect width="48" height="48" rx="8" fill="#14213D"/>
-  <rect x="10" y="10" width="12.5" height="12.5" rx="2" fill="#1B998B"/>
-  <rect x="10" y="25.5" width="12.5" height="12.5" rx="2" fill="#1B998B"/>
-  <rect x="25.5" y="25.5" width="12.5" height="12.5" rx="2" fill="#1B998B"/>
-  <circle cx="31.75" cy="16.25" r="6.25" fill="#F4B942"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48" role="img" aria-label="VibeHeal mark">
+  <defs>
+    <linearGradient id="vh-stroke" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#2684FF"/>
+      <stop offset="1" stop-color="#38BDF8"/>
+    </linearGradient>
+  </defs>
+  <rect width="48" height="48" rx="10" fill="#080B10"/>
+  <rect x="0.5" y="0.5" width="47" height="47" rx="9.5" fill="none" stroke="#283442"/>
+  <path d="M12 14 L24 35 L36 14" fill="none" stroke="url(#vh-stroke)" stroke-width="5" stroke-linejoin="miter" stroke-linecap="square"/>
+  <rect x="34.5" y="8.5" width="5" height="5" rx="1" fill="#F5A742"/>
 </svg>
