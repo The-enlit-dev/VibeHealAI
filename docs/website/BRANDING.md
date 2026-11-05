@@ -17,7 +17,8 @@ All in `site/brand.json`:
 | `logo.path` | `/assets/logo.svg` | Header and footer mark |
 | `favicon` | `/assets/favicon.svg` | Browser tab icon |
 | `socialImage` | `/assets/og-image.png`, 1200×630, plus alt text | Open Graph and Twitter cards |
-| `siteUrl` | `https://your-domain.example` (placeholder) | Canonical URLs, sitemap, robots.txt, social URLs |
+| `siteUrl` | `https://vibehealai.netlify.app` (free Netlify address) | Canonical URLs, sitemap, robots.txt, social URLs |
+| `verification` | empty | Optional Google and Bing ownership tokens, home page only |
 | `author` | empty | Optional author line on About and in structured data |
 | `contactEmail` | empty | Optional removal contact on the privacy page |
 

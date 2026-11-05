@@ -11,6 +11,15 @@
   publish = "website"
   command = ""
 
+# The same repository also builds an older Netlify project (brixoai.netlify.app). Send its visitors
+# and search engines to the canonical site so the two copies do not compete in search results.
+# On the vibehealai project this rule never matches. Deploy previews are unaffected.
+[[redirects]]
+  from = "https://brixoai.netlify.app/*"
+  to = "https://vibehealai.netlify.app/:splat"
+  status = 301
+  force = true
+
 [[headers]]
   for = "/*"
   [headers.values]

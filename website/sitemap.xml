@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://your-domain.example/</loc>
+    <loc>https://vibehealai.netlify.app/</loc>
     <lastmod>2026-11-05</lastmod>
   </url>
   <url>
-    <loc>https://your-domain.example/faq/</loc>
+    <loc>https://vibehealai.netlify.app/faq/</loc>
     <lastmod>2026-11-05</lastmod>
   </url>
   <url>
-    <loc>https://your-domain.example/about/</loc>
+    <loc>https://vibehealai.netlify.app/about/</loc>
     <lastmod>2026-11-05</lastmod>
   </url>
   <url>
-    <loc>https://your-domain.example/privacy/</loc>
+    <loc>https://vibehealai.netlify.app/privacy/</loc>
     <lastmod>2026-11-05</lastmod>
   </url>
 </urlset>
