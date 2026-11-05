@@ -1,6 +1,6 @@
-# BrixoAI — Security and Privacy Requirements (Planning v3)
+# VibeHeal — Security and Privacy Requirements (Planning v3)
 
-**Status:** Starting specification [Decision DEC-08], last updated 2026-10-31. Requirements are _Proposed_ unless §6 says otherwise. §2.12 to §2.15 were added on 2026-10-31 for the backend-managed integration marketplace [Decision DEC-18, DEC-20, DEC-21]. Some of them are now implemented and tested on Linux; see §6. BrixoAI is not "secure" because this document exists. A control counts only when it has been built, tested and its status updated in §6. Labels are defined in [DECISIONS.md](./DECISIONS.md).
+**Status:** Starting specification [Decision DEC-08], last updated 2026-10-31. Requirements are _Proposed_ unless §6 says otherwise. §2.12 to §2.15 were added on 2026-10-31 for the backend-managed integration marketplace [Decision DEC-18, DEC-20, DEC-21]. Some of them are now implemented and tested on Linux; see §6. VibeHeal is not "secure" because this document exists. A control counts only when it has been built, tested and its status updated in §6. Labels are defined in [DECISIONS.md](./DECISIONS.md).
 
 The older baseline in [../SECURITY.md](../SECURITY.md) still states valid principles (least privilege, untrusted repository content, no fabricated results, approval before consequential actions). This document turns them into testable requirements for the local desktop MVP.
 
@@ -14,8 +14,8 @@ The older baseline in [../SECURITY.md](../SECURITY.md) still states valid princi
 | **Unwanted or destructive file changes** | Overwriting or deleting files without the user realising |
 | **Running untrusted code** | `package.json` scripts and install scripts are code written by whoever made the project. They run with the user's permissions |
 | **Secrets leaking** | `.env` values, API keys or tokens appearing in the UI, logs, session summaries, backups or the handoff brief |
-| **Prompt injection, indirectly** | Text in project files or error logs written to trick an AI tool. BrixoAI has no built-in AI, but the handoff brief and the user's own AI tool can still be targeted |
-| **Actions by the user's external AI tool** | Claude Code (run by the user) may edit or delete files or run commands. BrixoAI cannot prevent this. It can detect and undo **file changes inside the project folder** |
+| **Prompt injection, indirectly** | Text in project files or error logs written to trick an AI tool. VibeHeal has no built-in AI, but the handoff brief and the user's own AI tool can still be targeted |
+| **Actions by the user's external AI tool** | Claude Code (run by the user) may edit or delete files or run commands. VibeHeal cannot prevent this. It can detect and undo **file changes inside the project folder** |
 | **Tampered app or updates** | A modified installer or update |
 | **Stolen provider credentials** (added 2026-10-31) | Tokens leaking through the desktop app, logs, errors, the data folder, Git or the bundle. Addressed by CR-1 to CR-6 and BK-9 |
 | **Forged or replayed authorization callbacks** (added 2026-10-31) | An attacker completing a connection with their own account, or a spoofed GitHub `installation_id`. Addressed by IN-5 and IN-10 |
@@ -23,7 +23,7 @@ The older baseline in [../SECURITY.md](../SECURITY.md) still states valid princi
 | **Over-privileged integrations** (added 2026-10-31) | An integration that can push code, deploy or move money. Addressed by IN-2, IN-4, IN-11 and DEC-21 |
 | **Malicious provider content** (added 2026-10-31) | Commit messages or PR titles crafted to mislead a user or an AI tool. Addressed by IN-7: rendered as plain text, never treated as instructions |
 
-**Core principle [Decision DEC-08]:** enforcement lives in BrixoAI's application code: path checks, approval gates, process control and redaction. It never relies on instructions to an AI.
+**Core principle [Decision DEC-08]:** enforcement lives in VibeHeal's application code: path checks, approval gates, process control and redaction. It never relies on instructions to an AI.
 
 **Stages:** **P** = must be in place before the first prototype touches a real project · **B** = before a public beta · **L** = can safely wait.
 
@@ -32,7 +32,7 @@ The older baseline in [../SECURITY.md](../SECURITY.md) still states valid princi
 ### 2.1 Project boundaries (PB)
 | ID | Requirement | Stage |
 |---|---|---|
-| PB-1 | Every path BrixoAI reads or writes is resolved (following symlinks) and must sit inside the selected project folder. Reject `..` segments, absolute paths, UNC/network paths (`\\server\share`), Windows device names (`CON`, `NUL`, `COM1`…), reserved characters, and names ending in a dot or space. | P |
+| PB-1 | Every path VibeHeal reads or writes is resolved (following symlinks) and must sit inside the selected project folder. Reject `..` segments, absolute paths, UNC/network paths (`\\server\share`), Windows device names (`CON`, `NUL`, `COM1`…), reserved characters, and names ending in a dot or space. | P |
 | PB-2 | Don't follow symlinks or Windows junctions found inside the project when reading or writing. Report them instead. | P |
 | PB-3 | Writes resist swap attacks: open relative to an already-opened folder handle and re-check the final path after opening (a pattern exists in Rakazo, see [REUSE.md](./REUSE.md)). | B |
 | PB-4 | Normalise Windows paths (backslashes, letter case, short `8.3` names, trailing separators) **before** any check. | P |
@@ -44,18 +44,18 @@ The older baseline in [../SECURITY.md](../SECURITY.md) still states valid princi
 | FC-1 | Before a protected fix session, snapshot the files that could change, stored locally with a manifest (path, size, hash). Excluded: `node_modules`, `.git`, build outputs, and secret files (see SE-1; changes to those are detected and warned, not backed up). | P |
 | FC-2 | Change review shows every added, modified and deleted file, with a plain-language summary and a line-by-line diff. Deletions and overwrites are prominent. | P |
 | FC-3 | Undo restores the snapshot exactly (verified by hash) per file or for the whole session. | P |
-| FC-4 | Every write BrixoAI itself makes (undo, restore) is atomic: write a temporary file, then replace. It refuses if the file changed unexpectedly since review. | P |
-| FC-5 | BrixoAI never changes project files except on an explicit user action (undo or restore), and records each change in a local audit log. | P |
+| FC-4 | Every write VibeHeal itself makes (undo, restore) is atomic: write a temporary file, then replace. It refuses if the file changed unexpectedly since review. | P |
+| FC-5 | VibeHeal never changes project files except on an explicit user action (undo or restore), and records each change in a local audit log. | P |
 | FC-6 | Handle files locked by another program (common on Windows) with a clear message and retry. | B |
 | FC-7 | Warn about risky diff content: new dependencies, install scripts, network calls, obfuscated code. | L |
 
 ### 2.3 Command execution (CE)
 | ID | Requirement | Stage |
 |---|---|---|
-| CE-1 | BrixoAI runs only scripts listed in the project's `package.json`, chosen by exact name, after explicit approval that shows the script's real command text. No arbitrary commands. | P |
+| CE-1 | VibeHeal runs only scripts listed in the project's `package.json`, chosen by exact name, after explicit approval that shows the script's real command text. No arbitrary commands. | P |
 | CE-2 | No shell. On Windows, run npm through `node` and npm's own JavaScript entry point, not through `cmd.exe`, to avoid argument-injection problems (unknown U4). | P |
 | CE-3 | Every run has a timeout. Cancel stops the **whole process tree**. On Windows this uses a Job Object configured to kill everything when closed (a Rakazo candidate, see [REUSE.md](./REUSE.md)). | P |
-| CE-4 | Commands get a minimal allowlisted environment, never BrixoAI's own variables. | P |
+| CE-4 | Commands get a minimal allowlisted environment, never VibeHeal's own variables. | P |
 | CE-5 | `npm install` is a separate action with a plain warning that install scripts run code from the internet. | P |
 | CE-6 | Output is size-capped and redacted (SE-2) before display or storage. | P |
 | CE-7 | Only one command runs at a time per project, and its live status (running, cancelled, timed out, exit code) is shown honestly. | P |
@@ -67,7 +67,7 @@ The older baseline in [../SECURITY.md](../SECURITY.md) still states valid princi
 | SN-1 | Change detection compares the project against the snapshot, not just file-watcher events (unknown U3). | P |
 | SN-2 | Changes to secret files or files outside the snapshot scope are reported as "changed, not backed up". | P |
 | SN-3 | Ending a protected session without reviewing changes requires confirmation. | P |
-| SN-4 | The UI and docs state plainly that BrixoAI **cannot** stop, inspect or undo commands an external tool ran, or changes it made outside the project folder. | P |
+| SN-4 | The UI and docs state plainly that VibeHeal **cannot** stop, inspect or undo commands an external tool ran, or changes it made outside the project folder. | P |
 
 ### 2.5 Secrets (SE)
 | ID | Requirement | Stage |
@@ -75,19 +75,19 @@ The older baseline in [../SECURITY.md](../SECURITY.md) still states valid princi
 | SE-1 | Secret files are never read for display, briefs or summaries: `.env*` (except `.env.example`, whose variable **names** may be read), `*.pem`, `*.key`, `*.pfx`, `.npmrc`, `.pypirc`, credential JSON files, plus a user-editable list. | P |
 | SE-2 | Redaction runs on everything shown, stored or copied. It catches common key and token formats (Anthropic, OpenAI-style `sk-…`, GitHub, AWS, Stripe, JWTs, Bearer tokens, private-key blocks), `KEY=value` lines with sensitive names, and exact values from `.env` files (matched in memory, never stored). | P |
 | SE-3 | Warn if a reviewed change would add a likely secret to a tracked file. | B |
-| SE-4 | ~~BrixoAI stores no credentials in the MVP. It has no accounts and no API keys.~~ **Superseded 2026-10-31 by CR-1 to CR-6:** provider credentials are now stored, by the backend only, encrypted. The desktop app still stores no credentials. | — |
+| SE-4 | ~~VibeHeal stores no credentials in the MVP. It has no accounts and no API keys.~~ **Superseded 2026-10-31 by CR-1 to CR-6:** provider credentials are now stored, by the backend only, encrypted. The desktop app still stores no credentials. | — |
 
 ### 2.6 Handoff brief (HB)
 | ID | Requirement | Stage |
 |---|---|---|
 | HB-1 | The brief is built only from redacted data: error output, project facts, file paths. It contains no secret file contents. | P |
-| HB-2 | The user sees the full brief before copying. BrixoAI only places it on the clipboard. It never sends it anywhere. | P |
+| HB-2 | The user sees the full brief before copying. VibeHeal only places it on the clipboard. It never sends it anywhere. | P |
 | HB-3 | The brief tells the external AI tool to treat project content as untrusted, propose minimal changes, explain each change and avoid secret files. **This is guidance, not enforcement**, and the UI says so. | P |
 
 ### 2.7 Network and privacy (NP)
 | ID | Requirement | Stage |
 |---|---|---|
-| NP-1 | **Amended 2026-10-31:** the *core safety workflow* still makes no network connections. Integration features connect only to the BrixoAI backend and, through it, to providers the user has chosen to connect (DEC-18). Original text: The MVP makes **no network connections**: no telemetry, no crash reporting, no update checks, no cloud. Only commands the user approves (for example `npm install`) can reach the network, and the approval says so. | P |
+| NP-1 | **Amended 2026-10-31:** the *core safety workflow* still makes no network connections. Integration features connect only to the VibeHeal backend and, through it, to providers the user has chosen to connect (DEC-18). Original text: The MVP makes **no network connections**: no telemetry, no crash reporting, no update checks, no cloud. Only commands the user approves (for example `npm install`) can reach the network, and the approval says so. | P |
 | NP-2 | Any future network feature needs informed consent that names the recipient, the data, the purpose and any cost. Declining keeps all local features working. | B (if any network feature is added) |
 | NP-3 | A test confirms the app makes no unexpected outbound connections during a full session. | P |
 
@@ -120,7 +120,7 @@ The older baseline in [../SECURITY.md](../SECURITY.md) still states valid princi
 ### 2.12 Backend and API (BK)
 | ID | Requirement | Stage |
 |---|---|---|
-| BK-1 | The backend listens on `127.0.0.1` by default and **refuses** a non-loopback address unless `BRIXO_ALLOW_NON_LOOPBACK=true` is set (reserved for a future deployment behind TLS). | P |
+| BK-1 | The backend listens on `127.0.0.1` by default and **refuses** a non-loopback address unless `VIBEHEAL_ALLOW_NON_LOOPBACK=true` is set (reserved for a future deployment behind TLS). | P |
 | BK-2 | Every route except `/v1/health` and the provider callback requires `Authorization: Bearer <local access token>`. The token is at least 32 random bytes, generated on the developer's machine, and compared in constant time. | P |
 | BK-3 | The `Host` header must match the configured address (DNS-rebinding protection). Authenticated routes reject requests that carry a browser `Origin` header. | P |
 | BK-4 | Input is validated at the boundary: route parameters against strict patterns, JSON bodies only, body size capped (64 KiB), unknown fields rejected, capability inputs validated by each capability. | P |
@@ -150,7 +150,7 @@ The older baseline in [../SECURITY.md](../SECURITY.md) still states valid princi
 |---|---|---|
 | CR-1 | Provider credentials (client secrets, private keys, access and refresh tokens) exist only on the backend. The desktop app never receives them. | P |
 | CR-2 | Credentials are encrypted at rest with AES-256-GCM: a random IV per record, AAD binding the record id and provider, and a key id. Tampered or mismatched records fail closed. | P |
-| CR-3 | The encryption key comes from `BRIXO_ENCRYPTION_KEY` (32 random bytes, base64), is never stored with the data, and is generated locally by `npm run setup:env`. | P |
+| CR-3 | The encryption key comes from `VIBEHEAL_ENCRYPTION_KEY` (32 random bytes, base64), is never stored with the data, and is generated locally by `npm run setup:env`. | P |
 | CR-4 | In-memory secret values are wrapped so serialisation, string conversion and inspection print `[REDACTED]`. | P |
 | CR-5 | Disconnect deletes the stored credential and attempts provider-side revocation. The result is reported honestly; a failed revocation is shown, not hidden. | P |
 | CR-6 | No secrets in source code, Git history, frontend bundles or test fixtures. Tests generate keys at runtime. The build fails if the renderer bundle contains secret-like strings or backend-only variable names. | P |
@@ -164,7 +164,7 @@ The older baseline in [../SECURITY.md](../SECURITY.md) still states valid princi
 
 ### 2.11 Deferred: built-in AI agent requirements
 Only relevant if a permitted, zero-cost embedded-AI path is ever approved ([INTEGRATIONS.md §3](./INTEGRATIONS.md#3-ai-options-and-their-status)). The earlier design notes still apply as starting points [Verified 2026-10-25 against Claude Agent SDK docs]:
-- remove all built-in tools (`tools: []`) and expose only BrixoAI's own mediated tools;
+- remove all built-in tools (`tools: []`) and expose only VibeHeal's own mediated tools;
 - don't load project settings (`settingSources: []`);
 - don't persist sessions (`persistSession: false`);
 - deny-by-default `PreToolUse` hooks;
@@ -172,12 +172,12 @@ Only relevant if a permitted, zero-cost embedded-AI path is ever approved ([INTE
 - telemetry off.
 
 ## 3. Prompt injection: how the MVP limits it
-- BrixoAI never acts on instructions found in project files or logs. It has no AI to follow them.
+- VibeHeal never acts on instructions found in project files or logs. It has no AI to follow them.
 - The handoff brief marks project content as untrusted (HB-3), but the user's AI tool may still be influenced. The safety net makes resulting file changes **visible and undoable** (FC-2, FC-3, SN-1), and the UI is honest that external commands are out of reach (SN-4).
 
 ## 4. Release gates
 
-**Prototype gate (P):** before BrixoAI touches any real project, all **P** requirements are **implemented and tested** on Windows: PB-1/2/4/5, FC-1 to FC-5, CE-1 to CE-7, SN-1 to SN-4, SE-1/2/4, HB-1 to HB-3, NP-1/3, LD-1 to LD-3, WN-1/2/3/6, VR-1 to VR-3.
+**Prototype gate (P):** before VibeHeal touches any real project, all **P** requirements are **implemented and tested** on Windows: PB-1/2/4/5, FC-1 to FC-5, CE-1 to CE-7, SN-1 to SN-4, SE-1/2/4, HB-1 to HB-3, NP-1/3, LD-1 to LD-3, WN-1/2/3/6, VR-1 to VR-3.
 
 **Integration gate (IM, added 2026-10-31):** before any provider is used with a real account, BK-1 to BK-9, IN-1 to IN-10, CR-1 to CR-6 and AU-1/2 are implemented and tested. Before the backend is hosted anywhere: P-9 (identity), P-12 (key management) and a documented security review.
 
@@ -187,7 +187,7 @@ Only relevant if a permitted, zero-cost embedded-AI path is ever approved ([INTE
 - **Added 2026-10-31:** whoever can read the developer's `.env` file can decrypt stored credentials. That is acceptable for local development only. Hosting needs a key-management decision (P-12).
 - **Added 2026-10-31:** the local access token protects the backend from other local users and from websites. It does not protect against malware already running as the same user.
 - Approved scripts run with the user's own permissions. There is no operating-system sandbox on native Windows.
-- The user's external AI tool can act outside the project folder or run commands BrixoAI never sees.
+- The user's external AI tool can act outside the project folder or run commands VibeHeal never sees.
 - Redaction can miss unusual secret formats.
 - Without a signed installer (U9), Windows will show security warnings and users can't easily verify the download.
 

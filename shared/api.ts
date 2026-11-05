@@ -1,4 +1,4 @@
-// Data shapes returned by the BrixoAI backend API (/v1). Shared with the desktop app.
+// Data shapes returned by the VibeHeal backend API (/v1). Shared with the desktop app.
 // None of these types may ever carry a credential (CR-1).
 
 import type {

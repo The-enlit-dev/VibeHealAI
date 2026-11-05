@@ -90,7 +90,7 @@ export class GitHubAdapter implements ProviderAdapter {
     const code = input.query.get("code") ?? "";
 
     if (setupAction === "request") {
-      throw new IntegrationError("invalid_state", "An organisation owner must approve the BrixoAI app before it can be connected.");
+      throw new IntegrationError("invalid_state", "An organisation owner must approve the VibeHeal app before it can be connected.");
     }
     if (!INSTALLATION_ID.test(installationId)) {
       throw new IntegrationError("bad_request", "GitHub did not return a valid installation.");
@@ -139,7 +139,7 @@ export class GitHubAdapter implements ProviderAdapter {
     }
     return {
       outcome: "manual_required",
-      message: "BrixoAI has forgotten this installation and revoked its current token. To remove the app completely, uninstall it in your GitHub settings.",
+      message: "VibeHeal has forgotten this installation and revoked its current token. To remove the app completely, uninstall it in your GitHub settings.",
     };
   }
 
@@ -209,8 +209,8 @@ export class GitHubAdapter implements ProviderAdapter {
 }
 
 /**
- * Maps the installation's permissions to BrixoAI permission ids. Refuses anything above
- * read access: the BrixoAI GitHub App must be read-only (IN-2, DEC-21).
+ * Maps the installation's permissions to VibeHeal permission ids. Refuses anything above
+ * read access: the VibeHeal GitHub App must be read-only (IN-2, DEC-21).
  */
 export function mapPermissions(permissions: Readonly<Record<string, string>>): string[] {
   const granted: string[] = [];
@@ -218,7 +218,7 @@ export function mapPermissions(permissions: Readonly<Record<string, string>>): s
     if (level !== "read") {
       throw new IntegrationError(
         "forbidden",
-        "The BrixoAI GitHub App has more than read-only permissions. Change it to read-only before connecting.",
+        "The VibeHeal GitHub App has more than read-only permissions. Change it to read-only before connecting.",
       );
     }
     const mapped = GITHUB_APP_PERMISSION_MAP[name];

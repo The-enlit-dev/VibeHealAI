@@ -38,7 +38,7 @@ export function ErrorNotice({ error, onRetry }: { error: SafeError; onRetry?: ()
       <p>{error.message}</p>
       {unreachable ? (
         <p className="muted">
-          The marketplace needs the local BrixoAI backend. In a terminal, run <code>npm run dev:server</code>. See README, "Local setup".
+          The marketplace needs the local VibeHeal backend. In a terminal, run <code>npm run dev:server</code>. See README, "Local setup".
         </p>
       ) : null}
       {onRetry ? (

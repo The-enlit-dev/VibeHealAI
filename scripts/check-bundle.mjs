@@ -10,8 +10,8 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const bundleDir = path.join(root, "dist", "desktop", "renderer");
 
 const FORBIDDEN = [
-  /BRIXO_ENCRYPTION_KEY/,
-  /BRIXO_CLIENT_TOKEN/,
+  /VIBEHEAL_ENCRYPTION_KEY/,
+  /VIBEHEAL_CLIENT_TOKEN/,
   /GITHUB_APP_CLIENT_SECRET/,
   /GITHUB_APP_PRIVATE_KEY/,
   /-----BEGIN [A-Z ]*PRIVATE KEY-----/,

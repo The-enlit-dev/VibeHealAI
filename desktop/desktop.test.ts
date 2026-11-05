@@ -51,14 +51,14 @@ describe("external link guard (IN-6)", () => {
 describe("desktop config (CR-1)", () => {
   it("defaults to the loopback backend and accepts only loopback http or https", () => {
     expect(parseDesktopConfig({}).backendUrl.origin).toBe("http://127.0.0.1:8787");
-    expect(() => parseDesktopConfig({ BRIXO_BACKEND_URL: "http://example.com" })).toThrow();
-    expect(parseDesktopConfig({ BRIXO_BACKEND_URL: "https://brixo.example" }).backendUrl.protocol).toBe("https:");
+    expect(() => parseDesktopConfig({ VIBEHEAL_BACKEND_URL: "http://example.com" })).toThrow();
+    expect(parseDesktopConfig({ VIBEHEAL_BACKEND_URL: "https://vibeheal.example" }).backendUrl.protocol).toBe("https:");
   });
 
   it("treats a missing or malformed token as not set up", () => {
     expect(parseDesktopConfig({}).clientToken).toBeNull();
-    expect(parseDesktopConfig({ BRIXO_CLIENT_TOKEN: "short" }).clientToken).toBeNull();
-    expect(parseDesktopConfig({ BRIXO_CLIENT_TOKEN: TOKEN }).clientToken).toBe(TOKEN);
+    expect(parseDesktopConfig({ VIBEHEAL_CLIENT_TOKEN: "short" }).clientToken).toBeNull();
+    expect(parseDesktopConfig({ VIBEHEAL_CLIENT_TOKEN: TOKEN }).clientToken).toBe(TOKEN);
   });
 });
 
@@ -72,7 +72,7 @@ describe("bridge handlers", () => {
       if (!(key in responses)) return new Response(JSON.stringify({ error: { code: "not_found", message: "Not found." } }), { status: 404 });
       return new Response(JSON.stringify(responses[key]), { status: 200 });
     };
-    const client = new BackendClient(parseDesktopConfig({ BRIXO_CLIENT_TOKEN: TOKEN }), fetchImpl);
+    const client = new BackendClient(parseDesktopConfig({ VIBEHEAL_CLIENT_TOKEN: TOKEN }), fetchImpl);
     const handlers = createBridgeHandlers({ client, openExternal: async (url) => void opened.push(url) });
     return { handlers, requests, opened };
   };
@@ -118,7 +118,7 @@ describe("bridge handlers", () => {
   });
 
   it("reports an unreachable backend with a safe message", async () => {
-    const client = new BackendClient(parseDesktopConfig({ BRIXO_CLIENT_TOKEN: TOKEN }), async () => {
+    const client = new BackendClient(parseDesktopConfig({ VIBEHEAL_CLIENT_TOKEN: TOKEN }), async () => {
       throw new Error("ECONNREFUSED");
     });
     const handlers = createBridgeHandlers({ client, openExternal: async () => {} });

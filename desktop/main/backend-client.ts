@@ -6,7 +6,7 @@ import type { DesktopConfig } from "./desktop-config.js";
 type FetchLike = (input: string, init: RequestInit) => Promise<Response>;
 
 /**
- * Calls the BrixoAI backend from the main process. The access token stays here; the
+ * Calls the VibeHeal backend from the main process. The access token stays here; the
  * renderer only ever receives plain results (CR-1). Errors are reduced to safe codes.
  */
 export class BackendClient {
@@ -25,7 +25,7 @@ export class BackendClient {
 
   async request<T>(method: "GET" | "POST" | "DELETE", path: string, body?: unknown): Promise<BridgeResult<T>> {
     if (!this.config.clientToken) {
-      return fail("unauthorized", "The desktop app is not set up yet. Run `npm run setup:env`, then restart BrixoAI.");
+      return fail("unauthorized", "The desktop app is not set up yet. Run `npm run setup:env`, then restart VibeHeal.");
     }
     let response: Response;
     try {
@@ -41,7 +41,7 @@ export class BackendClient {
         ...(body === undefined ? {} : { body: JSON.stringify(body) }),
       });
     } catch {
-      return fail("backend_unreachable", `The BrixoAI backend is not reachable at ${this.backendUrl}. Start it with \`npm run dev:server\`.`);
+      return fail("backend_unreachable", `The VibeHeal backend is not reachable at ${this.backendUrl}. Start it with \`npm run dev:server\`.`);
     }
     let parsed: unknown;
     try {

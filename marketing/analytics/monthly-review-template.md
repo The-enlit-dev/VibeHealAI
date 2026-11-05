@@ -31,7 +31,7 @@ Run `npm run waitlist:report` locally. Copy the totals here. Do not copy email a
 ## 4. Quality, not just quantity
 - Which posts started real discussion? Why?
 - Which questions came up again and again? (These are candidates for future posts or product decisions.)
-- Did any reply or message ask for something BrixoAI does not do? Record it.
+- Did any reply or message ask for something VibeHeal does not do? Record it.
 
 ## 5. What went wrong
 - Claims that needed correcting after publication:

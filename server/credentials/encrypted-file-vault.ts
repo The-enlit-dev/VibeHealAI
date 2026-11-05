@@ -5,7 +5,7 @@ import { Mutex, readJsonFile, writeJsonFileAtomic } from "../storage/json-file.j
 import { type CredentialMaterial, type CredentialVault, VaultIntegrityError } from "./vault.js";
 
 // AES-256-GCM envelope per record (CR-2):
-//   - 256-bit key from BRIXO_ENCRYPTION_KEY, never stored with the data (CR-3);
+//   - 256-bit key from VIBEHEAL_ENCRYPTION_KEY, never stored with the data (CR-3);
 //   - fresh random 96-bit IV for every encryption (GCM's recommended IV size);
 //   - 128-bit authentication tag; any change to ciphertext, IV or tag fails closed;
 //   - additional authenticated data binds the ciphertext to its record id and provider,
@@ -129,5 +129,7 @@ export class EncryptedFileVault implements CredentialVault {
 }
 
 function aad(id: string, providerId: string): Buffer {
+  // Frozen format identifier from before the VibeHeal rename. It is bound into every
+  // encrypted record, so changing it would make existing credentials unreadable.
   return Buffer.from(`brixoai-credential:v${FORMAT_VERSION}:${providerId}:${id}`, "utf8");
 }

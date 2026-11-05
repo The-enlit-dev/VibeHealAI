@@ -1,24 +1,24 @@
-// Sandboxed preload: exposes a fixed, typed API as window.brixo (WN-3).
+// Sandboxed preload: exposes a fixed, typed API as window.vibeheal (WN-3).
 // Sandboxed preloads cannot require local files, so the channel names are repeated
 // here and type-checked against shared/ipc.ts.
 
 import electron = require("electron");
-import type { BrixoBridge, IPC_CHANNELS } from "../../shared/ipc.js";
+import type { VibeHealBridge, IPC_CHANNELS } from "../../shared/ipc.js";
 
 const channels = {
-  backendStatus: "brixo:backend-status",
-  listProviders: "brixo:list-providers",
-  getProvider: "brixo:get-provider",
-  connect: "brixo:connect",
-  disconnect: "brixo:disconnect",
-  runAction: "brixo:run-action",
-  listActivity: "brixo:list-activity",
-  openProviderLink: "brixo:open-provider-link",
+  backendStatus: "vibeheal:backend-status",
+  listProviders: "vibeheal:list-providers",
+  getProvider: "vibeheal:get-provider",
+  connect: "vibeheal:connect",
+  disconnect: "vibeheal:disconnect",
+  runAction: "vibeheal:run-action",
+  listActivity: "vibeheal:list-activity",
+  openProviderLink: "vibeheal:open-provider-link",
 } as const satisfies typeof IPC_CHANNELS;
 
 const { contextBridge, ipcRenderer } = electron;
 
-const bridge: BrixoBridge = {
+const bridge: VibeHealBridge = {
   backendStatus: () => ipcRenderer.invoke(channels.backendStatus),
   listProviders: () => ipcRenderer.invoke(channels.listProviders),
   getProvider: (providerId) => ipcRenderer.invoke(channels.getProvider, providerId),
@@ -29,4 +29,4 @@ const bridge: BrixoBridge = {
   openProviderLink: (providerId, url) => ipcRenderer.invoke(channels.openProviderLink, providerId, url),
 };
 
-contextBridge.exposeInMainWorld("brixo", Object.freeze(bridge));
+contextBridge.exposeInMainWorld("vibeheal", Object.freeze(bridge));

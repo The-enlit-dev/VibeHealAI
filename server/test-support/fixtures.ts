@@ -14,7 +14,7 @@ import { Secret } from "../security/secret.js";
 // the repository, not even a test one (CR-6).
 
 export async function tempDir(): Promise<{ dir: string; cleanup: () => Promise<void> }> {
-  const dir = await mkdtemp(path.join(tmpdir(), "brixoai-test-"));
+  const dir = await mkdtemp(path.join(tmpdir(), "vibeheal-test-"));
   return { dir, cleanup: () => rm(dir, { recursive: true, force: true }) };
 }
 

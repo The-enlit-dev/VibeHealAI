@@ -35,7 +35,7 @@ export interface ServerConfig {
 
 export class ConfigError extends Error {
   constructor(readonly problems: readonly string[]) {
-    super(`Invalid BrixoAI backend configuration:\n- ${problems.join("\n- ")}`);
+    super(`Invalid VibeHeal backend configuration:\n- ${problems.join("\n- ")}`);
     this.name = "ConfigError";
   }
 }
@@ -57,52 +57,52 @@ function present(env: Env, name: string): string | undefined {
 export function loadConfig(env: Env, cwd = process.cwd()): ServerConfig {
   const problems: string[] = [];
 
-  const host = env.BRIXO_HOST?.trim() || "127.0.0.1";
-  const allowNonLoopback = env.BRIXO_ALLOW_NON_LOOPBACK === "true";
+  const host = env.VIBEHEAL_HOST?.trim() || "127.0.0.1";
+  const allowNonLoopback = env.VIBEHEAL_ALLOW_NON_LOOPBACK === "true";
   if (!isLoopbackHost(host) && !allowNonLoopback) {
-    problems.push("BRIXO_HOST must be a loopback address (127.0.0.1) unless BRIXO_ALLOW_NON_LOOPBACK=true (BK-1).");
+    problems.push("VIBEHEAL_HOST must be a loopback address (127.0.0.1) unless VIBEHEAL_ALLOW_NON_LOOPBACK=true (BK-1).");
   }
 
-  const port = Number(env.BRIXO_PORT?.trim() || "8787");
-  if (!Number.isInteger(port) || port < 1 || port > 65535) problems.push("BRIXO_PORT must be an integer between 1 and 65535.");
+  const port = Number(env.VIBEHEAL_PORT?.trim() || "8787");
+  if (!Number.isInteger(port) || port < 1 || port > 65535) problems.push("VIBEHEAL_PORT must be an integer between 1 and 65535.");
 
   let publicUrl = new URL(`http://127.0.0.1:${Number.isInteger(port) ? port : 8787}`);
-  if (env.BRIXO_PUBLIC_URL?.trim()) {
+  if (env.VIBEHEAL_PUBLIC_URL?.trim()) {
     try {
-      publicUrl = new URL(env.BRIXO_PUBLIC_URL.trim());
+      publicUrl = new URL(env.VIBEHEAL_PUBLIC_URL.trim());
       const loopback = isLoopbackHost(publicUrl.hostname.replace(/^\[|\]$/g, ""));
       if (publicUrl.protocol !== "https:" && !(publicUrl.protocol === "http:" && loopback)) {
-        problems.push("BRIXO_PUBLIC_URL must use https, or http on a loopback address.");
+        problems.push("VIBEHEAL_PUBLIC_URL must use https, or http on a loopback address.");
       }
     } catch {
-      problems.push("BRIXO_PUBLIC_URL must be a valid URL.");
+      problems.push("VIBEHEAL_PUBLIC_URL must be a valid URL.");
     }
   }
 
-  const clientToken = present(env, "BRIXO_CLIENT_TOKEN");
-  if (!clientToken) problems.push("BRIXO_CLIENT_TOKEN is required. Run `npm run setup:env` to generate one.");
-  else if (clientToken.length < 43) problems.push("BRIXO_CLIENT_TOKEN must be at least 43 characters (32 random bytes).");
+  const clientToken = present(env, "VIBEHEAL_CLIENT_TOKEN");
+  if (!clientToken) problems.push("VIBEHEAL_CLIENT_TOKEN is required. Run `npm run setup:env` to generate one.");
+  else if (clientToken.length < 43) problems.push("VIBEHEAL_CLIENT_TOKEN must be at least 43 characters (32 random bytes).");
 
   let encryptionKey = Buffer.alloc(0);
-  const rawKey = present(env, "BRIXO_ENCRYPTION_KEY");
+  const rawKey = present(env, "VIBEHEAL_ENCRYPTION_KEY");
   if (!rawKey) {
-    problems.push("BRIXO_ENCRYPTION_KEY is required. Run `npm run setup:env` to generate one.");
+    problems.push("VIBEHEAL_ENCRYPTION_KEY is required. Run `npm run setup:env` to generate one.");
   } else {
     encryptionKey = Buffer.from(rawKey, "base64");
     if (encryptionKey.length !== 32 || encryptionKey.toString("base64") !== rawKey) {
-      problems.push("BRIXO_ENCRYPTION_KEY must be exactly 32 bytes encoded as standard base64 (CR-3).");
+      problems.push("VIBEHEAL_ENCRYPTION_KEY must be exactly 32 bytes encoded as standard base64 (CR-3).");
     } else if (new Set(encryptionKey).size < 8) {
-      problems.push("BRIXO_ENCRYPTION_KEY does not look random. Generate it with `npm run setup:env`.");
+      problems.push("VIBEHEAL_ENCRYPTION_KEY does not look random. Generate it with `npm run setup:env`.");
     }
   }
 
-  const encryptionKeyId = env.BRIXO_ENCRYPTION_KEY_ID?.trim() || "local-1";
-  if (!/^[A-Za-z0-9._-]{1,32}$/.test(encryptionKeyId)) problems.push("BRIXO_ENCRYPTION_KEY_ID has an invalid format.");
+  const encryptionKeyId = env.VIBEHEAL_ENCRYPTION_KEY_ID?.trim() || "local-1";
+  if (!/^[A-Za-z0-9._-]{1,32}$/.test(encryptionKeyId)) problems.push("VIBEHEAL_ENCRYPTION_KEY_ID has an invalid format.");
 
-  const logLevel = (env.BRIXO_LOG_LEVEL?.trim() || "info") as LogLevel;
-  if (!["debug", "info", "warn", "error"].includes(logLevel)) problems.push("BRIXO_LOG_LEVEL must be debug, info, warn or error.");
+  const logLevel = (env.VIBEHEAL_LOG_LEVEL?.trim() || "info") as LogLevel;
+  if (!["debug", "info", "warn", "error"].includes(logLevel)) problems.push("VIBEHEAL_LOG_LEVEL must be debug, info, warn or error.");
 
-  const dataDir = path.resolve(cwd, env.BRIXO_DATA_DIR?.trim() || ".brixo-data");
+  const dataDir = path.resolve(cwd, env.VIBEHEAL_DATA_DIR?.trim() || ".vibeheal-data");
 
   const github = loadGitHubConfig(env, cwd, problems);
 

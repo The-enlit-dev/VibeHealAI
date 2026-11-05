@@ -1,14 +1,14 @@
 {
-  "_comment": "Temporary public identity. The permanent name is NOT decided. Change values here, then run `npm run build:site`. See docs/website/BRANDING.md.",
-  "siteName": "AI assistant for vibe coders",
-  "nameIsTemporary": true,
+  "_comment": "Public identity. The product name is VibeHeal (decided 2026-11-05). Change values here, then run `npm run build:site`. See docs/website/BRANDING.md.",
+  "siteName": "VibeHeal",
+  "nameIsTemporary": false,
   "headline": "Your AI assistant for vibe coders",
-  "tagline": "Build more. Automate more. Stay in control.",
-  "description": "A planned AI assistant for vibe coders: people who build apps, websites and software with AI tools. It aims to help with project understanding, debugging, integrations, automations and code safety. It is in early development and not available yet.",
+  "tagline": "Just vibeheal it.",
+  "description": "VibeHeal is a planned AI assistant for vibe coders: people who build apps, websites and software with AI tools. It aims to help with project understanding, debugging, integrations, automations and code safety. It is in early development and not available yet.",
   "siteUrl": "https://your-domain.example",
   "language": "en",
   "locale": "en_GB",
-  "lastUpdated": "2026-10-31",
+  "lastUpdated": "2026-11-05",
   "colors": {
     "navy": "#14213D",
     "teal": "#1B998B",
@@ -27,7 +27,7 @@
     "path": "/assets/og-image.png",
     "width": 1200,
     "height": 630,
-    "alt": "Abstract geometric symbol beside the text: Your AI assistant for vibe coders. Build more. Automate more. Stay in control."
+    "alt": "Abstract geometric symbol beside the text: Your AI assistant for vibe coders. Just vibeheal it."
   },
   "author": {
     "name": "",

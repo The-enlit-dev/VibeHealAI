@@ -107,7 +107,7 @@ interface Harness {
 }
 
 async function start(adminOverrides: Partial<AdminOptions> | null = {}): Promise<Harness> {
-  const dir = await mkdtemp(path.join(tmpdir(), "brixo-admin-"));
+  const dir = await mkdtemp(path.join(tmpdir(), "vibeheal-admin-"));
   tempDirs.push(dir);
   const websiteDir = path.join(dir, "site");
   await mkdir(websiteDir);

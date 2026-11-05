@@ -1,14 +1,14 @@
-# BrixoAI — Beginner's Guide (Planning v3)
+# VibeHeal — Beginner's Guide (Planning v3)
 
-**Who this is for:** you, the project owner, and anyone new to building software. It explains what BrixoAI will be, how its parts fit together, what it costs, and what to set up.
+**Who this is for:** you, the project owner, and anyone new to building software. It explains what VibeHeal will be, how its parts fit together, what it costs, and what to set up.
 
 **Status:** updated 2026-10-31. The **integration marketplace** now exists as early software you can run on your own computer (see §8). The **broken-project safety workflow** in §1 is still a plan. Labels are defined in [DECISIONS.md](./DECISIONS.md).
 
 ---
 
-## 1. BrixoAI in one minute
+## 1. VibeHeal in one minute
 
-You built a website or app with AI help, and now it's broken. BrixoAI is a free Windows program that:
+You built a website or app with AI help, and now it's broken. VibeHeal is a free Windows program that:
 1. looks at **one** project folder you choose, and nothing else on your computer;
 2. runs the check you approve (for example "build") and shows the error;
 3. explains common errors in plain English;
@@ -18,9 +18,9 @@ You built a website or app with AI help, and now it's broken. BrixoAI is a free 
 7. lets you **undo** any change;
 8. re-runs the check and tells you honestly whether it now passes.
 
-BrixoAI has **no built-in AI** in its first version. That keeps it free and within Anthropic's rules ([INTEGRATIONS.md](./INTEGRATIONS.md)).
+VibeHeal has **no built-in AI** in its first version. That keeps it free and within Anthropic's rules ([INTEGRATIONS.md](./INTEGRATIONS.md)).
 
-**New (2026-10-31): integrations.** BrixoAI can also connect to services you use, such as GitHub, to show helpful context. For example: which branch you're on and what changed recently. To do this safely, BrixoAI has two parts:
+**New (2026-10-31): integrations.** VibeHeal can also connect to services you use, such as GitHub, to show helpful context. For example: which branch you're on and what changed recently. To do this safely, VibeHeal has two parts:
 - the **desktop app**, which you look at;
 - a small **backend**, which holds the keys to your connected services. The desktop app never sees those keys.
 
@@ -28,12 +28,12 @@ For now the backend runs only on your own computer.
 
 ## 2. An analogy: the garage
 
-| Garage | BrixoAI |
+| Garage | VibeHeal |
 |---|---|
-| The **inspection bay** where the car is examined and photographed before work starts | BrixoAI captures the error and takes a backup snapshot |
+| The **inspection bay** where the car is examined and photographed before work starts | VibeHeal captures the error and takes a backup snapshot |
 | The **mechanic** you already pay for | Claude Code, on your existing subscription, which you run yourself |
 | The **work order** you hand the mechanic | The handoff brief (redacted, previewed, copied by you) |
-| The **after-photos** compared with the before-photos | BrixoAI's change review (the diff) |
+| The **after-photos** compared with the before-photos | VibeHeal's change review (the diff) |
 | "Put that part back the way it was" | Undo |
 | The **test drive** | Re-running the check |
 
@@ -48,41 +48,41 @@ For now the backend runs only on your own computer.
 | **Diff** | A view showing exactly which lines were added or removed |
 | **Undo / restore** | Putting files back exactly as they were in the snapshot |
 | **Redaction** | Hiding secrets (passwords, API keys) before anything is shown, saved or copied |
-| **Secret file** | A file such as `.env` that holds passwords or keys. BrixoAI never shows or copies its contents |
+| **Secret file** | A file such as `.env` that holds passwords or keys. VibeHeal never shows or copies its contents |
 | **Electron** | A free toolkit for building desktop apps with web technologies |
 | **React / Vite / TypeScript** | Free tools for building the app's screens and catching coding mistakes early |
 | **Local-first** | Everything happens and is stored on your computer, not on the internet |
-| **WSL2** | A Linux system inside Windows. BrixoAI **doesn't** require it |
-| **API key** | A paid credential for programs to use an AI service directly. BrixoAI's first version doesn't use one |
+| **WSL2** | A Linux system inside Windows. VibeHeal **doesn't** require it |
+| **API key** | A paid credential for programs to use an AI service directly. VibeHeal's first version doesn't use one |
 | **Claude Code** | Anthropic's coding assistant, which you already subscribe to |
 | **Prompt injection** | Hidden text in files that tries to trick an AI into doing something harmful |
 | **Pull request (PR)** | A proposed change on GitHub, waiting for review before it's merged |
-| **Backend** | A program that runs behind the scenes. BrixoAI's backend stores connection keys and talks to GitHub and other services for the desktop app |
-| **Integration / provider** | A service BrixoAI can connect to, such as GitHub or Vercel |
-| **Marketplace** | The list of integrations inside BrixoAI, with what each can access and whether it's ready |
+| **Backend** | A program that runs behind the scenes. VibeHeal's backend stores connection keys and talks to GitHub and other services for the desktop app |
+| **Integration / provider** | A service VibeHeal can connect to, such as GitHub or Vercel |
+| **Marketplace** | The list of integrations inside VibeHeal, with what each can access and whether it's ready |
 | **GitHub App** | GitHub's official way for a tool to access only the repositories you pick, with only the permissions it needs |
-| **OAuth / authorization** | The "Allow BrixoAI to access…" screen a service shows you. You approve there, not inside BrixoAI |
-| **Access token** | A temporary key a service gives BrixoAI after you approve. BrixoAI keeps it on the backend, encrypted |
+| **OAuth / authorization** | The "Allow VibeHeal to access…" screen a service shows you. You approve there, not inside VibeHeal |
+| **Access token** | A temporary key a service gives VibeHeal after you approve. VibeHeal keeps it on the backend, encrypted |
 | **Encryption at rest** | Stored data is scrambled with a secret key, so the file is useless without that key |
-| **Read-only** | BrixoAI can look but not change anything |
+| **Read-only** | VibeHeal can look but not change anything |
 
 ## 4. What it costs
 
 | Item | Cost |
 |---|---|
-| BrixoAI itself | **$0.** Free, open-source tools, no servers |
+| VibeHeal itself | **$0.** Free, open-source tools, no servers |
 | AI help | **$0 extra.** You use your existing Claude Code subscription directly in Claude Code. Its normal usage limits apply |
-| Accounts or sign-up for BrixoAI | **None needed** |
+| Accounts or sign-up for VibeHeal | **None needed** |
 | Cloud storage, hosting, domains | **None** |
 | GitHub | **$0** within free limits for a private repository. Check that no paid overage is enabled ([TECH_STACK.md §4](./TECH_STACK.md#4-zero-extra-cost-conflicts)) |
-| BrixoAI backend | **$0.** It runs on your computer. Nothing is hosted, and no domain or database service is used |
+| VibeHeal backend | **$0.** It runs on your computer. Nothing is hosted, and no domain or database service is used |
 | Registering a GitHub App (optional, for live GitHub testing) | **$0.** Don't add a payment method |
 | Other providers (later) | Usually $0 for read-only developer access, but **each is checked before it's built** ([TECH_STACK.md §4](./TECH_STACK.md#4-zero-extra-cost-conflicts)). Stripe is test mode only |
 
 Things that *would* cost money, such as built-in AI via an API key, code-signing certificates or paid security reviews, are excluded or replaced with free alternatives.
 
 ## 5. Safety rules to remember
-- BrixoAI works only inside the folder you choose.
+- VibeHeal works only inside the folder you choose.
 - It never shows or copies the contents of `.env` or other secret files.
 - It asks before running any script. Scripts are project code and run with your permissions.
 - It takes a backup before a fix session, and you can always undo **file changes inside the project folder**.
@@ -97,16 +97,16 @@ Things that *would* cost money, such as built-in AI via an API key, code-signing
 
 ## 6. Who does what
 
-| Task | You | Claude Code (helping build BrixoAI) |
+| Task | You | Claude Code (helping build VibeHeal) |
 |---|---|---|
 | Decide scope, approve plans and changes | ✅ | Explains options, recommends, flags costs |
 | Talk to potential users (validation interviews) | ✅ | Prepares interview questions |
-| Write BrixoAI's code and tests (after approval) | Review | ✅ in small milestones |
+| Write VibeHeal's code and tests (after approval) | Review | ✅ in small milestones |
 | Run tests and report results | Read the results | ✅ reports **actual** output only |
 | Approve installs, merges, publishing | ✅ always | Asks first |
 | Keep the repository private (DEC-12) | ✅ | Never changes visibility |
 
-## 7. Setup checklist (for developing BrixoAI)
+## 7. Setup checklist (for developing VibeHeal)
 
 **Now (no cost)**
 - [ ] Read [DECISIONS.md](./DECISIONS.md) and [PRODUCT.md](./PRODUCT.md).
@@ -132,7 +132,7 @@ You need **Node.js 22 LTS or newer** and **Git**. Then, in the project folder:
 1. `npm install`: downloads the free tools (one time).
 2. `npm run setup:env`: creates two private settings files with new random secrets: `.env` for the backend and `.env.desktop` for the app. They are never committed to Git.
 3. `npm run dev:server`: starts the backend. Leave this window open.
-4. In a second window, run `npm run dev:desktop` to open the BrixoAI desktop app.
+4. In a second window, run `npm run dev:desktop` to open the VibeHeal desktop app.
 
 You'll see nine integrations:
 - **GitHub** says **Not configured**. That's expected until a GitHub App is registered ([GitHub App setup](../integrations/GITHUB_APP_SETUP.md)).

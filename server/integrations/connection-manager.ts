@@ -130,7 +130,7 @@ export class ConnectionManager {
         providerId,
         message: "Callback rejected: missing, expired or unknown authorization state.",
       });
-      throw new IntegrationError("invalid_state", "This authorization link is invalid or has expired. Start again from BrixoAI.");
+      throw new IntegrationError("invalid_state", "This authorization link is invalid or has expired. Start again from VibeHeal.");
     }
 
     const params = new URLSearchParams(query);

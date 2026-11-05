@@ -1,16 +1,18 @@
-# BrixoAI
+# VibeHeal
 
-BrixoAI helps vibe coders, especially beginners, safely understand, fix and manage a **broken JavaScript/TypeScript project**:
+**Just vibeheal it.**
+
+VibeHeal helps vibe coders, especially beginners, safely understand, fix and manage a **broken JavaScript/TypeScript project**:
 - understand the error and capture failing output safely;
 - back up files before trying a fix;
 - review every change;
 - undo changes and re-run checks to see whether the fix really worked.
 
-There is **no built-in AI**. Users run their own AI tool, such as Claude Code, and BrixoAI is the careful, honest safety net around that work.
+There is **no built-in AI**. Users run their own AI tool, such as Claude Code, and VibeHeal is the careful, honest safety net around that work.
 
-**Integration marketplace (new, 2026-10-31).** BrixoAI connects to services you already use, with first-party integrations maintained by BrixoAI, to bring relevant context into that workflow:
+**Integration marketplace (new, 2026-10-31).** VibeHeal connects to services you already use, with first-party integrations maintained by VibeHeal, to bring relevant context into that workflow:
 - **Providers:** GitHub, Vercel, Netlify, Supabase, Figma, Stripe, Shopify, Notion and Slack.
-- **Credentials:** a BrixoAI backend holds them, encrypted. The desktop app never sees them.
+- **Credentials:** a VibeHeal backend holds them, encrypted. The desktop app never sees them.
 - **Access:** every integration starts read-only.
 
 ## Status (2026-10-31)
@@ -83,7 +85,7 @@ server/     Backend API: integration platform, provider adapters, vault, storage
   credentials/   CredentialVault + AES-256-GCM file implementation
   storage/       repository interfaces, JSON-file storage, audit log
   http/          /v1 routes (Node http module, no framework)
-desktop/    Electron app: main (IPC, backend client), preload (window.brixo), renderer (React UI)
+desktop/    Electron app: main (IPC, backend client), preload (window.vibeheal), renderer (React UI)
 scripts/    setup-env and the bundle secret check
 docs/       Planning set, decisions and integration setup guides
 site/      Source for the public website: temporary brand config, content, FAQ and page templates
@@ -94,7 +96,7 @@ marketing/ Marketing plan, prompts and draft batches. Nothing is published autom
 
 ## Public website, waitlist and admin dashboard (local preview)
 
-The public website is a separate static site with a temporary, neutral identity (the permanent name is not decided). It is **not hosted** and nothing is deployed.
+The public website is a separate static site. Its name and catch line ("VibeHeal. Just vibeheal it.") are set in `site/brand.json`. It is **not hosted** and nothing is deployed.
 
 ```bash
 npm install

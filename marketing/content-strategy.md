@@ -1,9 +1,9 @@
-# BrixoAI content strategy
+# VibeHeal content strategy
 
 **Status:** draft for owner review. Last updated 2026-10-31.
 
 ## Goal
-Build a small, genuine audience of beginner vibe coders and indie developers, and learn whether they want what BrixoAI is designed to do. Growth is secondary. Every post should either help someone right now or teach them something about working safely with AI-generated code.
+Build a small, genuine audience of beginner vibe coders and indie developers, and learn whether they want what VibeHeal is designed to do. Growth is secondary. Every post should either help someone right now or teach them something about working safely with AI-generated code.
 
 ## Constraints that shape the plan
 - The owner is a student with hackathons and cricket. Content is **batched**: one session prepares about two weeks of drafts, and the owner reviews them in short sittings.
@@ -61,4 +61,4 @@ Never publish signup numbers, follower counts or engagement figures that have no
 - Overpromising. The product is not built. Keep every claim tied to the status.
 - Burnout. Skip a week if school or a hackathon needs it. The calendar can slip.
 - Sharing private data. Never include a student's personal details, school details, or any real user's data in a post.
-- Community platform. WhatsApp is preferred for "Brixo Builders", but the platform is not chosen. Do not promise a community date or link.
+- Community platform. WhatsApp is preferred for "VibeHeal Builders", but the platform is not chosen. Do not promise a community date or link.

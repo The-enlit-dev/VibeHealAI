@@ -91,7 +91,7 @@ describe("validateSignup", () => {
 
 const tempDirs: string[] = [];
 async function tempDir(): Promise<string> {
-  const dir = await mkdtemp(path.join(tmpdir(), "brixo-waitlist-"));
+  const dir = await mkdtemp(path.join(tmpdir(), "vibeheal-waitlist-"));
   tempDirs.push(dir);
   return dir;
 }
@@ -161,7 +161,7 @@ async function startService(overrides: Partial<WaitlistAppOptions> = {}): Promis
   const dir = await tempDir();
   const websiteDir = path.join(dir, "site");
   await mkdir(websiteDir);
-  await writeFile(path.join(websiteDir, "index.html"), "<!doctype html><title>BrixoAI</title>");
+  await writeFile(path.join(websiteDir, "index.html"), "<!doctype html><title>VibeHeal</title>");
   await writeFile(path.join(websiteDir, "app.js"), "console.log('ok');");
   await writeFile(path.join(websiteDir, "config.env"), "SECRET=1");
   const store = await openJsonFileStore(path.join(dir, "signups.json"));
@@ -268,12 +268,12 @@ describe("POST /api/waitlist", () => {
   });
 
   it("answers CORS preflight only for allowed origins", async () => {
-    harness = await startService({ allowedOrigins: ["https://brixo.example"] });
+    harness = await startService({ allowedOrigins: ["https://vibeheal.example"] });
     const allowed = await fetch(`${harness.base}/api/waitlist`, {
       method: "OPTIONS",
-      headers: { Origin: "https://brixo.example" },
+      headers: { Origin: "https://vibeheal.example" },
     });
-    expect(allowed.headers.get("access-control-allow-origin")).toBe("https://brixo.example");
+    expect(allowed.headers.get("access-control-allow-origin")).toBe("https://vibeheal.example");
     const other = await fetch(`${harness.base}/api/waitlist`, {
       method: "OPTIONS",
       headers: { Origin: "https://evil.example" },
@@ -296,7 +296,7 @@ describe("static site serving", () => {
     expect(response.headers.get("content-type")).toContain("text/html");
     expect(response.headers.get("x-content-type-options")).toBe("nosniff");
     expect(response.headers.get("x-frame-options")).toBe("DENY");
-    expect(await response.text()).toContain("BrixoAI");
+    expect(await response.text()).toContain("VibeHeal");
   });
 
   it("serves allowed asset types only", async () => {

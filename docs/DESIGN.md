@@ -1,6 +1,8 @@
 # BrixoAI — Design Handoff
 
 > **Update (2026-10-29): superseded.** The Stitch design has been **rejected** (see `docs/planning/DECISIONS.md`, DEC-10). Stitch screens are **not** the source of truth and no new design work is planned for the MVP. Keep UI minimal and functional. The screen-state checklist at the end of this file (loading, empty, error, permission and keyboard states) still applies. The rest of this file is kept for history only.
+>
+> **Name (2026-11-05):** the product was renamed from BrixoAI to **VibeHeal** (see DEC-28 in `docs/planning/DECISIONS.md`). The old name below is kept as written.
 
 **Status: PENDING — finished Stitch screens have not yet been supplied in this repository.**
 

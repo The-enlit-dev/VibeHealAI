@@ -1,16 +1,16 @@
-# BrixoAI — Data Design (Planning v4)
+# VibeHeal — Data Design (Planning v4)
 
 **Status:** Last updated 2026-10-31.
 - §1 to §7 describe the **desktop app's local data** for the core safety workflow. That design is proposed, and none of it is implemented yet.
 - §8 is new and describes the **backend's integration data** [Decision DEC-18, DEC-20], which is **implemented** for local development.
-- History: the earlier cloud (Supabase) database design is still not used. BrixoAI does not use Supabase or any hosted database for its own data (DEC-22). Supabase appears only as a provider users may connect.
+- History: the earlier cloud (Supabase) database design is still not used. VibeHeal does not use Supabase or any hosted database for its own data (DEC-22). Supabase appears only as a provider users may connect.
 
 Labels are defined in [DECISIONS.md](./DECISIONS.md).
 
 ---
 
 ## 1. Principles
-- **Local only.** All data lives in BrixoAI's app data folder on the user's computer. No cloud storage, sync or accounts.
+- **Local only.** All data lives in VibeHeal's app data folder on the user's computer. No cloud storage, sync or accounts.
 - **Minimal.** Store only what the workflow needs: settings, short session summaries, snapshots for undo, and an audit log.
 - **Redacted.** Anything derived from project output is redacted before it is stored ([SECURITY.md](./SECURITY.md) SE-2, LD-3).
 - **Deletable.** 30-day default retention, plus "delete this session" and "delete all history" [Decision DEC-09].
@@ -18,10 +18,10 @@ Labels are defined in [DECISIONS.md](./DECISIONS.md).
 
 ## 2. Where data lives
 
-[Assumption, unknown U6] Electron's per-user data folder, expected at `%APPDATA%\BrixoAI\` on Windows. Exact path and default permissions to be confirmed.
+[Assumption, unknown U6] Electron's per-user data folder, expected at `%APPDATA%\VibeHeal\` on Windows. Exact path and default permissions to be confirmed.
 
 ```text
-%APPDATA%\BrixoAI\
+%APPDATA%\VibeHeal\
   settings.json                 user preferences
   projects.json                 recently opened project folders (local paths)
   sessions\
@@ -32,7 +32,7 @@ Labels are defined in [DECISIONS.md](./DECISIONS.md).
         manifest.json           path, size, SHA-256 hash for each backed-up file
         files\...               copies of in-scope project files
   logs\
-    audit.log                   BrixoAI's own actions (redacted, rotated)
+    audit.log                   VibeHeal's own actions (redacted, rotated)
 ```
 
 ## 3. Records
@@ -50,7 +50,7 @@ Labels are defined in [DECISIONS.md](./DECISIONS.md).
 
 ## 4. What is never stored
 - Contents of secret files (`.env*` values, keys, certificates); see SE-1.
-- API keys, tokens or passwords. BrixoAI has none to store.
+- API keys, tokens or passwords. VibeHeal has none to store.
 - Anything belonging to the user's external AI tool (Claude Code keeps its own local data separately).
 
 ## 5. Snapshot scope [Recommendation]
@@ -69,10 +69,10 @@ For the core workflow there are no server routes (the backend API in [ARCHITECTU
 ## 8. Backend integration data (implemented 2026-10-31, local development)
 
 ### 8.1 Where it lives
-The backend stores everything under `BRIXO_DATA_DIR` (default `./.brixo-data/`, git-ignored). The directory is created with owner-only permissions and every file is written atomically with mode `0600` (on Windows the user profile's default permissions apply; see U6).
+The backend stores everything under `VIBEHEAL_DATA_DIR` (default `./.vibeheal-data/`, git-ignored). The directory is created with owner-only permissions and every file is written atomically with mode `0600` (on Windows the user profile's default permissions apply; see U6).
 
 ```text
-.brixo-data/
+.vibeheal-data/
   connections.json            connection records (no secrets)
   authorization-states.json   pending authorizations, keyed by SHA-256 of the state value
   approvals.json              pending/approved approvals for non-read actions
@@ -100,11 +100,11 @@ Only the API views in `shared/api.ts`:
 The desktop keeps the local access token for the backend in `.env.desktop`, in the main process only. It holds no provider credentials.
 
 ### 8.4 GitHub specifically
-- BrixoAI stores the installation id, the account login and the granted permissions.
+- VibeHeal stores the installation id, the account login and the granted permissions.
 - **No GitHub token is stored on disk.** Installation tokens last 1 hour, are minted on demand and are cached in memory only. The temporary user token from the install flow is revoked immediately.
 - Commit author email addresses are not returned or stored.
 
 ### 8.5 Deleting
 - **Disconnect** deletes the connection record and its vault entry, and attempts provider-side revocation.
-- Deleting `.brixo-data/` removes all backend data.
-- Changing `BRIXO_ENCRYPTION_KEY` makes existing credentials unreadable. They fail closed, and the provider must be reconnected.
+- Deleting `.vibeheal-data/` removes all backend data.
+- Changing `VIBEHEAL_ENCRYPTION_KEY` makes existing credentials unreadable. They fail closed, and the provider must be reconnected.

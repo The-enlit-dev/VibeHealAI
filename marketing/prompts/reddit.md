@@ -1,6 +1,6 @@
 # Prompt: Reddit discussion ideas
 
-Reddit is for **discussion and learning**, not promotion. Most posts should not mention BrixoAI at all.
+Reddit is for **discussion and learning**, not promotion. Most posts should not mention VibeHeal at all.
 
 ## Prompt
 
@@ -10,7 +10,7 @@ Reddit is for **discussion and learning**, not promotion. Most posts should not 
 >
 > Rules:
 > - Each post asks one honest question or shares one specific lesson. Write it in a way that invites replies.
-> - Do not mention BrixoAI in the title. Mention it in the body only if the owner decides it is appropriate and the subreddit allows it. Otherwise leave it out.
+> - Do not mention VibeHeal in the title. Mention it in the body only if the owner decides it is appropriate and the subreddit allows it. Otherwise leave it out.
 > - No links to the waitlist or any site. No "check out my project".
 > - No invented stories, stats or claims about other people's experiences.
 > - Drafts only. Do not post.
@@ -24,7 +24,7 @@ Reddit is for **discussion and learning**, not promotion. Most posts should not 
 - Topic:
 - Post body:
 - Expected kind of replies:
-- Mention BrixoAI? (yes / no, with reason):
+- Mention VibeHeal? (yes / no, with reason):
 - Rules to check on the day:
 - Factual claims to verify: none, or list them
 - Status: draft

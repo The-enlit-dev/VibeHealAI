@@ -66,12 +66,12 @@ export function GitHubContext({ provider, connectionId }: ContextViewProps) {
   return (
     <section className="section context" aria-label="Repository context">
       <h3>Repository context</h3>
-      <p className="muted small">Read-only. Fetched live through the BrixoAI backend.</p>
+      <p className="muted small">Read-only. Fetched live through the VibeHeal backend.</p>
       {repos.status === "loading" ? <Loading label="Loading repositories" /> : null}
       {repos.status === "error" ? <ErrorNotice error={repos.error} onRetry={reloadRepos} /> : null}
       {repos.status === "ready" && repos.data ? (
         repos.data.repositories.length === 0 ? (
-          <p className="muted">No repositories are shared with the BrixoAI app. Add some in your GitHub installation settings.</p>
+          <p className="muted">No repositories are shared with the VibeHeal app. Add some in your GitHub installation settings.</p>
         ) : (
           <label className="field">
             <span className="field-label">Repository ({repos.data.totalCount})</span>

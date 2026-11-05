@@ -1,4 +1,4 @@
-# BrixoAI — Implementation Roadmap (Planning v4)
+# VibeHeal — Implementation Roadmap (Planning v4)
 
 **Status:** Last updated 2026-10-31. Two tracks now run side by side (DEC-16, DEC-26):
 - the **core safety-workflow track** (S0, M1–M6) has not started. Starting M1 needs separate approval (P-15).
@@ -102,8 +102,8 @@ P-9 (identity), P-10 (host and cost), P-12 (key management), AU-3 and a document
 
 ## M5: Prototype with 5–10 testers
 - **Objective:** learn whether the MVP solves the real problem.
-- **Includes:** testers use BrixoAI with **their own** AI tools on their own broken projects (U11); builds shared privately (U10); metrics from [PRODUCT.md §6](./PRODUCT.md#6-success-measures).
-- **Done when:** results are recorded, there were zero safety incidents caused by BrixoAI, and the owner decides to continue, narrow or change direction.
+- **Includes:** testers use VibeHeal with **their own** AI tools on their own broken projects (U11); builds shared privately (U10); metrics from [PRODUCT.md §6](./PRODUCT.md#6-success-measures).
+- **Done when:** results are recorded, there were zero safety incidents caused by VibeHeal, and the owner decides to continue, narrow or change direction.
 - **Risk:** small sample size. Treat results as signals, not proof.
 
 ## M6: Beta hardening at $0

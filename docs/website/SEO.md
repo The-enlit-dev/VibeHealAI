@@ -37,7 +37,7 @@
 
 ## Structured data (JSON-LD)
 Each indexable page has one `<script type="application/ld+json">` with an `@graph`:
-- **`WebSite`:** name = working title, description, language.
+- **`WebSite`:** name = the product name (`brand.siteName`), description, language.
 - **`WebPage` or `AboutPage`:** URL, name, description, `dateModified` and `isPartOf`. It includes `author` only if `brand.author.name` is set.
 - **`FAQPage`:** only on `/faq/`, with exactly the questions and answers that are visible on that page (a test enforces this).
 

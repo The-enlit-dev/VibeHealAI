@@ -1,6 +1,8 @@
 # BrixoAI — Security Baseline
 
 > **Update (2026-10-29).** The principles below still apply. The detailed, testable requirements for the current local desktop MVP are in `docs/planning/SECURITY.md`. Statements here about isolated cloud workers and server-side credentials reflect the earlier cloud design: the MVP has no server and stores no credentials. `docs/planning/DECISIONS.md` takes precedence over this file.
+>
+> **Name (2026-11-05):** the product was renamed from BrixoAI to **VibeHeal** (see DEC-28 in `docs/planning/DECISIONS.md`). The old name below is kept as written.
 
 **Status:** required design and implementation principles, not a claim of security certification or completed controls.
 

@@ -1,8 +1,8 @@
-# BrixoAI marketing workspace
+# VibeHeal marketing workspace
 
 This folder holds the marketing plan, the prompts that make drafts, and the draft batches. **Nothing here publishes anything.** Every draft needs the owner's review and approval before it goes anywhere.
 
-> **Note (2026-10-31):** the public website now uses a neutral working title ("Your AI assistant for vibe coders") and a broader positioning. Code safety is one feature, not the whole product. The permanent name is undecided. Drafts and guidelines in this folder still say "BrixoAI" and "safety net". Review them against [docs/website/BRANDING.md](../docs/website/BRANDING.md) before posting.
+> **Note (2026-11-05):** the product name is now **VibeHeal**, with the catch line "Just vibeheal it." The public website uses the headline "Your AI assistant for vibe coders" and a broader positioning: code safety is one feature, not the whole product. Some drafts in this folder still describe VibeHeal only as a "safety net". Review them against [docs/website/BRANDING.md](../docs/website/BRANDING.md) before posting.
 
 ## Structure
 

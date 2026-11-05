@@ -33,7 +33,7 @@ export type ImplementationStatus = "implemented" | "planned";
 export type RoadmapMilestone = "IM2" | "IM3" | "IM4";
 
 export interface PermissionDescriptor {
-  /** Stable BrixoAI permission id, for example "github.contents.read". */
+  /** Stable VibeHeal permission id, for example "github.contents.read". */
   readonly id: string;
   readonly title: string;
   /** Plain-English explanation shown to the user. */

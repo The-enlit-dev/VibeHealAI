@@ -14,15 +14,15 @@ export interface DesktopConfig {
 const LOOPBACK = new Set(["127.0.0.1", "localhost", "[::1]"]);
 
 export function parseDesktopConfig(values: Readonly<Record<string, string | undefined>>): DesktopConfig {
-  const rawUrl = values.BRIXO_BACKEND_URL?.trim() || "http://127.0.0.1:8787";
+  const rawUrl = values.VIBEHEAL_BACKEND_URL?.trim() || "http://127.0.0.1:8787";
   const backendUrl = new URL(rawUrl);
   if (backendUrl.protocol !== "https:" && !(backendUrl.protocol === "http:" && LOOPBACK.has(backendUrl.hostname))) {
-    throw new Error("BRIXO_BACKEND_URL must use https, or http on a loopback address.");
+    throw new Error("VIBEHEAL_BACKEND_URL must use https, or http on a loopback address.");
   }
   if (backendUrl.username || backendUrl.password || backendUrl.search || backendUrl.hash) {
-    throw new Error("BRIXO_BACKEND_URL must not contain credentials, a query or a fragment.");
+    throw new Error("VIBEHEAL_BACKEND_URL must not contain credentials, a query or a fragment.");
   }
-  const token = values.BRIXO_CLIENT_TOKEN?.trim();
+  const token = values.VIBEHEAL_CLIENT_TOKEN?.trim();
   return { backendUrl, clientToken: token && /^[A-Za-z0-9_-]{43,256}$/.test(token) ? token : null };
 }
 
@@ -32,7 +32,7 @@ export function loadDesktopConfig(file: string): DesktopConfig {
   try {
     values = parseEnv(readFileSync(file, "utf8"));
   } catch {
-    values = { BRIXO_BACKEND_URL: process.env.BRIXO_BACKEND_URL, BRIXO_CLIENT_TOKEN: process.env.BRIXO_CLIENT_TOKEN };
+    values = { VIBEHEAL_BACKEND_URL: process.env.VIBEHEAL_BACKEND_URL, VIBEHEAL_CLIENT_TOKEN: process.env.VIBEHEAL_CLIENT_TOKEN };
   }
-  return parseDesktopConfig({ BRIXO_BACKEND_URL: values.BRIXO_BACKEND_URL, BRIXO_CLIENT_TOKEN: values.BRIXO_CLIENT_TOKEN });
+  return parseDesktopConfig({ VIBEHEAL_BACKEND_URL: values.VIBEHEAL_BACKEND_URL, VIBEHEAL_CLIENT_TOKEN: values.VIBEHEAL_CLIENT_TOKEN });
 }

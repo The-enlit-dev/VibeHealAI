@@ -212,11 +212,11 @@ describe("structured data", () => {
   });
 });
 
-describe("temporary branding and content accuracy", () => {
+describe("branding and content accuracy", () => {
   it("uses the requested palette, headline and tagline", () => {
     expect(brand.colors).toMatchObject({ navy: "#14213D", teal: "#1B998B", ivory: "#F6F4EF", slate: "#667085", amber: "#F4B942" });
     expect(brand.headline).toBe("Your AI assistant for vibe coders");
-    expect(brand.tagline).toBe("Build more. Automate more. Stay in control.");
+    expect(brand.tagline).toBe("Just vibeheal it.");
     const home = committed.files.get("index.html") ?? "";
     expect(home).toContain(`<h1 id="hero-title">${escapeHtml(brand.headline)}</h1>`);
     expect(home).toContain(escapeHtml(brand.tagline));
@@ -274,9 +274,12 @@ describe("temporary branding and content accuracy", () => {
     expect(home).toContain("Not available yet.");
   });
 
-  it("states that the name is a working title", () => {
-    expect(brand.nameIsTemporary).toBe(true);
-    expect(committed.files.get("index.html")).toContain("is a working title");
+  it("uses the final product name, not a working title", () => {
+    expect(brand.nameIsTemporary).toBe(false);
+    for (const [name, html] of pages) {
+      expect(html, name).not.toContain("is a working title");
+      expect(html, name).toContain(brand.siteName);
+    }
   });
 });
 

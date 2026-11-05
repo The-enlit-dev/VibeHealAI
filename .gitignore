@@ -5,6 +5,8 @@ coverage/
 .env
 .env.*
 !.env.example
+.vibeheal-data/
+# Data folder name used before the VibeHeal rename.
 .brixo-data/
 # Waitlist signups and exports contain personal data: never commit.
 waitlist-data/

@@ -1,13 +1,13 @@
 import type { ActionResult, ActivityEntry, ConnectStartResult, DisconnectResult, ProviderDetail, ProviderSummary } from "../../shared/api.js";
-import type { BackendStatus, BridgeResult, BrixoBridge } from "../../shared/ipc.js";
+import type { BackendStatus, BridgeResult, VibeHealBridge } from "../../shared/ipc.js";
 import { CAPABILITY_ID_PATTERN, PROVIDER_ID_PATTERN, RESOURCE_ID_PATTERN } from "../../shared/validation.js";
 import type { BackendClient } from "./backend-client.js";
 import { isAllowedAuthorizationUrl, isAllowedProviderLink } from "./links.js";
 
-// Main-process implementations of window.brixo. Every argument from the renderer is
+// Main-process implementations of window.vibeheal. Every argument from the renderer is
 // validated here before it is used, because the renderer is treated as untrusted.
 
-type Handlers = { [K in keyof BrixoBridge]: (...args: unknown[]) => ReturnType<BrixoBridge[K]> };
+type Handlers = { [K in keyof VibeHealBridge]: (...args: unknown[]) => ReturnType<VibeHealBridge[K]> };
 
 const invalid = <T>(): BridgeResult<T> => ({ ok: false, error: { code: "bad_request", message: "Invalid request from the window." } });
 const isString = (value: unknown, pattern: RegExp): value is string => typeof value === "string" && pattern.test(value);

@@ -10,7 +10,7 @@ export function App() {
   return (
     <div className="shell">
       <nav className="sidebar" aria-label="Main">
-        <div className="brand">BrixoAI</div>
+        <div className="brand">VibeHeal</div>
         <ul className="nav">
           <li>
             <button type="button" className="nav-item" aria-current={page === "integrations" ? "page" : undefined} onClick={() => setPage("integrations")}>

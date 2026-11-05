@@ -134,7 +134,7 @@ export function ProviderDetails({ providerId, onChanged, onClose }: { providerId
       ) : null}
       {flow.kind === "confirm-disconnect" ? (
         <Notice tone="warning" title={`Disconnect ${provider.name}?`}>
-          <p>BrixoAI will delete its stored access and try to revoke it at {provider.name}.</p>
+          <p>VibeHeal will delete its stored access and try to revoke it at {provider.name}.</p>
           <div className="actions">
             <button type="button" className="button button-danger" onClick={() => void disconnect()}>
               Disconnect
@@ -172,7 +172,7 @@ export function ProviderDetails({ providerId, onChanged, onClose }: { providerId
       </section>
 
       <section className="section" aria-label="Capabilities">
-        <h3>{provider.implementation === "planned" ? "Planned capabilities" : "What BrixoAI can do"}</h3>
+        <h3>{provider.implementation === "planned" ? "Planned capabilities" : "What VibeHeal can do"}</h3>
         <ul className="plain-list">
           {provider.capabilities.map((capability) => (
             <li key={capability.id}>
@@ -228,7 +228,7 @@ function AvailabilityNotice({ provider }: { provider: ProviderDetail }) {
     case "error":
       return (
         <Notice tone="error" title="Connection needs attention">
-          <p>{provider.connection?.lastError?.message ?? "The provider rejected BrixoAI's access."} Reconnect to fix it.</p>
+          <p>{provider.connection?.lastError?.message ?? "The provider rejected VibeHeal's access."} Reconnect to fix it.</p>
         </Notice>
       );
     default:

@@ -96,7 +96,7 @@ export function createApp(options: AppOptions): RequestListener {
       handle: async ({ response, params, url }) => {
         try {
           const connection = await options.connections.completeCallback(params.providerId as string, url.searchParams);
-          sendCallbackPage(response, 200, "Connected", `BrixoAI is now connected (${connection.accountLabel}). You can close this window and return to BrixoAI.`);
+          sendCallbackPage(response, 200, "Connected", `VibeHeal is now connected (${connection.accountLabel}). You can close this window and return to VibeHeal.`);
         } catch (error) {
           const failure = error instanceof IntegrationError ? error : errorOf("internal_error", "Something went wrong.");
           sendCallbackPage(response, 400, "Connection not completed", `${failure.message} You can close this window.`);
