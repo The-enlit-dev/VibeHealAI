@@ -11,6 +11,7 @@
 | [SEO.md](./SEO.md) | SEO, AEO and GEO implementation, structured data and the canonical URL |
 | [SEARCH_CONSOLE.md](./SEARCH_CONSOLE.md) | Submitting the site to Google Search Console and Bing (owner steps) |
 | [ADMIN.md](./ADMIN.md) | Admin dashboard setup, security model and operations |
+| [AUTH.md](./AUTH.md) | Clerk sign-in on the public website: setup, DNS, security and owner steps |
 
 ## How the pieces fit
 
@@ -55,7 +56,8 @@ Open http://127.0.0.1:8790/. To enable the admin dashboard, follow [ADMIN.md](./
 ## Known limitations and unfinished work
 
 - **Waitlist on Netlify uses Netlify Forms** (DEC-29). The form is registered as `waitlist`. It works only after the owner turns on form detection in the Netlify UI (Forms > Enable form detection) and redeploys. Until then the form shows "not reachable". Submissions are viewed and exported in the Netlify dashboard, not in the local admin dashboard. Netlify does not remove duplicate emails.
-- **Free Netlify address, no custom domain.** The canonical URL is `https://vibehealai.netlify.app` (DEC-30) and pages are indexable. The site is not yet submitted to Google or Bing; see [SEARCH_CONSOLE.md](./SEARCH_CONSOLE.md).
+- **Domain:** the canonical URL is `https://vibeheal.online` (DEC-31); the `*.netlify.app` addresses redirect there. Not yet submitted to Google or Bing; see [SEARCH_CONSOLE.md](./SEARCH_CONSOLE.md).
+- **Sign-in (Clerk)** does not work until the owner adds Clerk's DNS records; until then the header shows no account controls. See [AUTH.md](./AUTH.md).
 - **Local storage:** the local waitlist service (`npm run site:dev`) stores signups in a local JSON file, not encrypted at rest.
 - **Admin sessions** live in memory: restarting the service signs the admin out. There is one admin account and no password reset flow (create a new hash instead).
 - **Rate limits** are in-memory and keyed by the socket address. Behind a shared proxy every visitor would share one address. Change this before hosting behind a proxy.

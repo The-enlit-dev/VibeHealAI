@@ -7,7 +7,7 @@
   <meta name="description" content="About VibeHeal, an early-stage AI assistant for vibe coders: its principles, what exists today, what is planned and how it is being built.">
   <meta name="robots" content="index, follow">
   
-  <link rel="canonical" href="https://vibehealai.netlify.app/about/">
+  <link rel="canonical" href="https://vibeheal.online/about/">
   <meta name="theme-color" content="#14213D">
   <meta name="color-scheme" content="light">
   <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
@@ -18,15 +18,15 @@
   <meta property="og:locale" content="en_GB">
   <meta property="og:title" content="About VibeHeal: an AI assistant for vibe coders">
   <meta property="og:description" content="About VibeHeal, an early-stage AI assistant for vibe coders: its principles, what exists today, what is planned and how it is being built.">
-  <meta property="og:url" content="https://vibehealai.netlify.app/about/">
-  <meta property="og:image" content="https://vibehealai.netlify.app/assets/og-image.png">
+  <meta property="og:url" content="https://vibeheal.online/about/">
+  <meta property="og:image" content="https://vibeheal.online/assets/og-image.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:alt" content="Abstract geometric symbol beside the text: Your AI assistant for vibe coders. Just vibeheal it.">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="About VibeHeal: an AI assistant for vibe coders">
   <meta name="twitter:description" content="About VibeHeal, an early-stage AI assistant for vibe coders: its principles, what exists today, what is planned and how it is being built.">
-  <meta name="twitter:image" content="https://vibehealai.netlify.app/assets/og-image.png">
+  <meta name="twitter:image" content="https://vibeheal.online/assets/og-image.png">
   <meta name="twitter:image:alt" content="Abstract geometric symbol beside the text: Your AI assistant for vibe coders. Just vibeheal it.">
   <script type="application/ld+json">
 {
@@ -34,21 +34,21 @@
   "@graph": [
     {
       "@type": "WebSite",
-      "@id": "https://vibehealai.netlify.app/#website",
-      "url": "https://vibehealai.netlify.app/",
+      "@id": "https://vibeheal.online/#website",
+      "url": "https://vibeheal.online/",
       "name": "VibeHeal",
       "description": "VibeHeal is a planned AI assistant for vibe coders: people who build apps, websites and software with AI tools. It aims to help with project understanding, debugging, integrations, automations and code safety. It is in early development and not available yet.",
       "inLanguage": "en"
     },
     {
       "@type": "AboutPage",
-      "@id": "https://vibehealai.netlify.app/about/#webpage",
-      "url": "https://vibehealai.netlify.app/about/",
+      "@id": "https://vibeheal.online/about/#webpage",
+      "url": "https://vibeheal.online/about/",
       "name": "About VibeHeal: an AI assistant for vibe coders",
       "description": "About VibeHeal, an early-stage AI assistant for vibe coders: its principles, what exists today, what is planned and how it is being built.",
       "inLanguage": "en",
       "isPartOf": {
-        "@id": "https://vibehealai.netlify.app/#website"
+        "@id": "https://vibeheal.online/#website"
       },
       "dateModified": "2026-11-05"
     }
@@ -72,6 +72,7 @@
         <a href="/about/">About</a>
         <a class="nav-cta" href="/#waitlist">Join the waitlist</a>
       </nav>
+      <div id="auth-controls" class="auth-controls" aria-label="Account" role="group" hidden></div>
     </div>
   </header>
 
@@ -165,6 +166,9 @@
       </div>
     </div>
   </footer>
+  <script defer crossorigin="anonymous" src="https://clerk.vibeheal.online/npm/@clerk/ui@1/dist/ui.browser.js"></script>
+  <script defer crossorigin="anonymous" data-clerk-publishable-key="pk_live_Y2xlcmsudmliZWhlYWwub25saW5lJA" src="https://clerk.vibeheal.online/npm/@clerk/clerk-js@6/dist/clerk.browser.js"></script>
+  <script defer src="/auth.js"></script>
   
 </body>
 </html>

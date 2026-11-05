@@ -17,7 +17,8 @@ All in `site/brand.json`:
 | `logo.path` | `/assets/logo.svg` | Header and footer mark |
 | `favicon` | `/assets/favicon.svg` | Browser tab icon |
 | `socialImage` | `/assets/og-image.png`, 1200×630, plus alt text | Open Graph and Twitter cards |
-| `siteUrl` | `https://vibehealai.netlify.app` (free Netlify address) | Canonical URLs, sitemap, robots.txt, social URLs |
+| `siteUrl` | `https://vibeheal.online` | Canonical URLs, sitemap, robots.txt, social URLs |
+| `auth.clerkPublishableKey` | Clerk production key for vibeheal.online | Sign-in controls in the header ([AUTH.md](./AUTH.md)). Empty turns sign-in off |
 | `verification` | empty | Optional Google and Bing ownership tokens, home page only |
 | `author` | empty | Optional author line on About and in structured data |
 | `contactEmail` | empty | Optional removal contact on the privacy page |

@@ -1,10 +1,10 @@
 # SEO, AEO and GEO implementation
 
-**Status:** technical foundations implemented and tested 2026-10-31. Since 2026-11-05 the canonical URL is **https://vibehealai.netlify.app** (DEC-30), and every page except the 404 page is `index, follow`. Submission to Google and Bing is an owner step ([SEARCH_CONSOLE.md](./SEARCH_CONSOLE.md)).
+**Status:** technical foundations implemented and tested 2026-10-31. Since 2026-11-05 the canonical URL is **https://vibeheal.online** (DEC-30, DEC-31), and every page except the 404 page is `index, follow`. Submission to Google and Bing is an owner step ([SEARCH_CONSOLE.md](./SEARCH_CONSOLE.md)).
 
 ## Canonical production URL
-- **Current value:** `https://vibehealai.netlify.app`, the free Netlify address of the `vibehealai` project. If a custom domain is bought later, change `siteUrl` and add a Netlify domain redirect.
-- **Duplicate project:** the older `brixoai` Netlify project builds the same repository. `netlify.toml` redirects `https://brixoai.netlify.app/*` to the canonical site with a 301, so search engines see one copy.
+- **Current value:** `https://vibeheal.online`, the owner's domain on Netlify DNS. `www.vibeheal.online` redirects to it (Netlify primary domain).
+- **Duplicate addresses:** `netlify.toml` 301-redirects `https://vibehealai.netlify.app/*` and the older `https://brixoai.netlify.app/*` to the canonical domain, so search engines see one copy.
 - **Deploy previews** are not indexed: Netlify sends `X-Robots-Tag: noindex` on them (checked 2026-11-05 on deploy-preview-6), and their canonical tags point at the production URL.
 - **Verification tokens:** `brand.verification.google` and `brand.verification.bing` add ownership meta tags to the home page only. Only a plain token is accepted.
 - Set `siteUrl` in `site/brand.json` to the real origin, for example `https://www.example.org` (HTTPS, no trailing slash), then run `npm run build:site`.

@@ -42,6 +42,15 @@ function textFiles(dir: string): { name: string; text: string }[] {
     .map((file) => ({ name: path.relative(dir, file), text: readFileSync(file, "utf8") }));
 }
 
+// The only allowed third-party scripts are Clerk's, from the Frontend API host encoded in the
+// publishable key in site/brand.json (DEC-31). Everything else must be served by the site itself.
+const brand = JSON.parse(readFileSync(path.resolve(here, "..", "site", "brand.json"), "utf8"));
+const clerkKey: string = brand.auth?.clerkPublishableKey ?? "";
+const clerkHost = clerkKey ? Buffer.from(clerkKey.split("_")[2] ?? "", "base64").toString("utf8").replace(/\$$/, "") : "";
+const ALLOWED_SCRIPT_SRC = clerkHost
+  ? new RegExp(`\\ssrc="https://${clerkHost.replace(/\./g, "\\.")}/npm/@clerk/(?:ui@1/dist/ui|clerk-js@6/dist/clerk)\\.browser\\.js"`, "g")
+  : null;
+
 const site = textFiles(siteDir);
 const admin = textFiles(adminDir);
 const htmlPages = site.filter((f) => f.name.endsWith(".html"));
@@ -67,9 +76,11 @@ describe("public website files", () => {
     }
   });
 
-  it("loads no third-party scripts, styles, fonts or images (text links to references are allowed)", () => {
+  it("loads no third-party scripts, styles, fonts or images except Clerk's sign-in scripts (text links are allowed)", () => {
     for (const file of [...site, ...admin]) {
-      expect(/\ssrc\s*=\s*["']\s*(?:https?:)?\/\//i.test(file.text), `${file.name}: external src`).toBe(false);
+      const isAdmin = admin.includes(file);
+      const text = !isAdmin && ALLOWED_SCRIPT_SRC ? file.text.replace(ALLOWED_SCRIPT_SRC, "") : file.text;
+      expect(/\ssrc\s*=\s*["']\s*(?:https?:)?\/\//i.test(text), `${file.name}: external src`).toBe(false);
       // <link rel="canonical"> legitimately points at the site's own absolute URL; asset links must be local.
       for (const tag of file.text.match(/<link\b[^>]*>/gi) ?? []) {
         if (/rel="(?:canonical|alternate)"/i.test(tag)) continue;
@@ -104,6 +115,12 @@ describe("public website files", () => {
     for (const file of site) {
       expect(/brixo/i.test(file.text), file.name).toBe(false);
     }
+  });
+
+  it("never ships a Clerk secret key and never loads Clerk in the admin dashboard", () => {
+    for (const file of [...site, ...admin]) expect(/\bsk_(?:live|test)_/.test(file.text), file.name).toBe(false);
+    for (const file of admin) expect(/clerk/i.test(file.text), file.name).toBe(false);
+    if (clerkKey) expect(clerkKey).toMatch(/^pk_(?:live|test)_/);
   });
 
   it("does not ship the admin dashboard with the public site", () => {

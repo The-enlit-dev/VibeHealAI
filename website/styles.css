@@ -997,3 +997,45 @@ textarea:focus {
     align-items: flex-start;
   }
 }
+
+/* ---------- account controls (Clerk sign-in, DEC-31) ---------- */
+
+.auth-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.auth-controls[hidden] {
+  display: none;
+}
+
+.auth-button {
+  font: inherit;
+  font-size: 0.95rem;
+  cursor: pointer;
+  background: transparent;
+  color: var(--color-navy);
+  border: 1px solid var(--color-navy);
+  border-radius: var(--radius);
+  padding: 6px 12px;
+}
+
+.auth-button:hover {
+  background: var(--color-line);
+}
+
+.auth-button:focus-visible {
+  outline: 3px solid var(--color-teal);
+  outline-offset: 2px;
+}
+
+.auth-button-primary {
+  background: var(--color-teal-ink);
+  border-color: var(--color-teal-ink);
+  color: var(--color-white);
+}
+
+.auth-button-primary:hover {
+  background: #0B5A51;
+}

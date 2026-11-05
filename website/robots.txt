@@ -2,4 +2,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://vibehealai.netlify.app/sitemap.xml
+Sitemap: https://vibeheal.online/sitemap.xml
