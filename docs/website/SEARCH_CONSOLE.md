@@ -1,6 +1,21 @@
-# Google Search Console setup (owner steps)
+# Google Search Console and Bing Webmaster Tools (owner steps)
 
-**Nothing here has been done.** The site has not been submitted to Google Search Console, and no account, property or DNS record has been created. These are the steps for the owner once a domain is chosen and the site is approved for deployment. Google's interface changes over time, so follow the current on-screen wording if it differs. This guide could not be checked against Google's live documentation from the build environment.
+**Status (2026-11-05):** the site's canonical address is the free Netlify address **https://vibehealai.netlify.app** (DEC-30). Pages are indexable, and `robots.txt` and `sitemap.xml` point at that address. Nothing has been submitted to Google or Bing yet: that needs the owner's own Google and Microsoft accounts. Both tools are free.
+
+## Quick path for vibehealai.netlify.app (no domain needed)
+A `netlify.app` address has no DNS you control, so use a **URL prefix** property with the **HTML tag** method.
+
+1. Sign in at https://search.google.com/search-console and choose **Add property** > **URL prefix**. Enter `https://vibehealai.netlify.app/`.
+2. Choose **HTML tag**. Google shows a tag like `<meta name="google-site-verification" content="AbC123...">`. Copy **only** the `content` value.
+3. Paste it into `site/brand.json` as `verification.google`, then run `npm run build:site` and `npm run check`. The tag is added to the home page only. The token is not a secret.
+4. Merge and let Netlify deploy, then press **Verify** in Search Console.
+5. Open **Sitemaps**, submit `sitemap.xml`, and check the status becomes **Success** with 4 pages.
+6. Use **URL inspection** on `https://vibehealai.netlify.app/` and choose **Request indexing** (see section 4 below).
+7. **Bing:** at https://www.bing.com/webmasters you can import the verified site from Search Console (no token needed). Or choose the meta tag method and paste its `content` value into `verification.bing`. Then submit the same sitemap. Bing also feeds DuckDuckGo and several AI answer engines.
+
+Indexing is never guaranteed and usually takes days to weeks for a new site. If you later buy a domain, follow the full guide below and change `siteUrl`.
+
+## Full guide for a custom domain (later, costs money)
 
 ## 0. Before you start
 1. Choose and register the domain (a separate cost decision).
@@ -57,4 +72,5 @@ The verification token is not a secret, but it belongs in DNS, not in this repos
 ## What not to do
 - Don't buy SEO tools or paid indexing services. Search Console is free.
 - Don't submit the placeholder domain or Netlify deploy-preview URLs.
-- Don't add verification meta tags or files with tokens to the repository unless you choose that method deliberately. DNS verification needs no code change.
+- Don't paste a whole meta tag into `brand.json`: only the token. The build refuses anything else.
+- Don't submit `brixoai.netlify.app`: it redirects to the canonical site.

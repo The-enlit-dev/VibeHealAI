@@ -1,8 +1,12 @@
 # SEO, AEO and GEO implementation
 
-**Status:** technical foundations implemented and tested 2026-10-31. Nothing is indexed: there is no production domain, and every page is `noindex` while the placeholder URL is set.
+**Status:** technical foundations implemented and tested 2026-10-31. Since 2026-11-05 the canonical URL is **https://vibehealai.netlify.app** (DEC-30), and every page except the 404 page is `index, follow`. Submission to Google and Bing is an owner step ([SEARCH_CONSOLE.md](./SEARCH_CONSOLE.md)).
 
-## Canonical production URL (must be set before launch)
+## Canonical production URL
+- **Current value:** `https://vibehealai.netlify.app`, the free Netlify address of the `vibehealai` project. If a custom domain is bought later, change `siteUrl` and add a Netlify domain redirect.
+- **Duplicate project:** the older `brixoai` Netlify project builds the same repository. `netlify.toml` redirects `https://brixoai.netlify.app/*` to the canonical site with a 301, so search engines see one copy.
+- **Deploy previews** are not indexed: Netlify sends `X-Robots-Tag: noindex` on them (checked 2026-11-05 on deploy-preview-6), and their canonical tags point at the production URL.
+- **Verification tokens:** `brand.verification.google` and `brand.verification.bing` add ownership meta tags to the home page only. Only a plain token is accepted.
 - Set `siteUrl` in `site/brand.json` to the real origin, for example `https://www.example.org` (HTTPS, no trailing slash), then run `npm run build:site`.
 - For a one-off build against another URL without editing the file: `SITE_URL=https://www.example.org npm run build:site` (do not commit that output unless the URL is final).
 - **While the URL is a placeholder** (`*.example`, `localhost` or invalid), the generator marks every page `noindex, nofollow` and prints a warning. This stops a preview deploy from being indexed under a wrong canonical. Netlify deploy previews of this repository are therefore not indexable.
@@ -11,7 +15,7 @@
 
 | Requirement | Implementation | Checked by |
 |---|---|---|
-| Unique titles and descriptions | Per-page `title()`/`description()` in `scripts/build-site.mjs` | Test: unique, title ≤ 70 chars, description 50–320 |
+| Unique titles and descriptions | Per-page `title()`/`description()` in `scripts/build-site.mjs`. Every indexable title includes the product name | Test: unique, title ≤ 70 chars, description 50–320, name in title |
 | Heading hierarchy | One `<h1>` per page, no skipped levels | Test parses every heading |
 | Canonical URLs | `<link rel="canonical">` on indexable pages, built from `siteUrl` | Test: canonical = `og:url` = sitemap entry |
 | Open Graph / Twitter | `og:*` and `twitter:*` with a 1200×630 PNG and alt text | Test |
@@ -42,7 +46,7 @@ Each indexable page has one `<script type="application/ld+json">` with an `@grap
 - **`FAQPage`:** only on `/faq/`, with exactly the questions and answers that are visible on that page (a test enforces this).
 
 Not used, on purpose:
-- **`Organization`:** there is no decided organisation or product name yet.
+- **`Organization`:** the product name is decided (DEC-28), but there is no organisation, legal entity or official profile to describe. Add it once one exists.
 - **`SoftwareApplication`:** there is no released software, and Google's rich result for it expects offers or ratings, which would have to be invented.
 - **Fabricated `Review`, `AggregateRating`, `Offer`, price or award data:** never added (a test enforces this).
 

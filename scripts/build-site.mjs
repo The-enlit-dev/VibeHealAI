@@ -193,6 +193,23 @@ function checkboxesBlock(options) {
 
 // ---------- structured data ----------
 
+// Search-engine ownership tokens from brand.verification. Only the home page carries them.
+const VERIFICATION_META = { google: "google-site-verification", bing: "msvalidate.01" };
+
+export function verificationTags(brand) {
+  const tokens = brand.verification ?? {};
+  return Object.entries(VERIFICATION_META)
+    .filter(([key]) => typeof tokens[key] === "string" && tokens[key].trim() !== "")
+    .map(([key, name]) => {
+      const token = tokens[key].trim();
+      if (!/^[A-Za-z0-9_-]{8,128}$/.test(token)) {
+        throw new Error(`brand.verification.${key} must be only the token (letters, digits, - and _), not a whole tag`);
+      }
+      return `<meta name="${name}" content="${token}">`;
+    })
+    .join("\n  ");
+}
+
 function websiteNode(brand, base) {
   return {
     "@type": "WebSite",
@@ -245,7 +262,7 @@ const PAGES = [
     path: "/",
     file: "index.html",
     body: "pages/home.html",
-    title: (b) => `${b.headline}: early access`,
+    title: (b) => `${b.siteName}: ${b.headline}`,
     description: (b) => b.description,
     schemaType: "WebPage",
     indexable: true,
@@ -257,8 +274,8 @@ const PAGES = [
     file: "faq/index.html",
     body: "pages/faq.html",
     title: (b) => `Questions vibe coders ask | ${b.siteName}`,
-    description: () =>
-      "Answers for vibe coders: what this AI assistant is designed to do, what is available today, how automations and integrations are planned to work, and what to do when an AI tool breaks your project.",
+    description: (b) =>
+      `Answers for vibe coders about ${b.siteName}: what this AI assistant is designed to do, what is available today, how automations and integrations are planned to work, and what to do when an AI tool breaks your project.`,
     schemaType: "WebPage",
     faqPage: true,
     indexable: true,
@@ -268,9 +285,9 @@ const PAGES = [
     path: "/about/",
     file: "about/index.html",
     body: "pages/about.html",
-    title: (b) => `About the project | ${b.siteName}`,
-    description: () =>
-      "About this early-stage project: an AI assistant for vibe coders, its principles, what exists today, what is planned and how it is being built.",
+    title: (b) => `About ${b.siteName}: an AI assistant for vibe coders`,
+    description: (b) =>
+      `About ${b.siteName}, an early-stage AI assistant for vibe coders: its principles, what exists today, what is planned and how it is being built.`,
     schemaType: "AboutPage",
     indexable: true,
   },
@@ -358,6 +375,7 @@ export function buildSite({ root = defaultRoot, siteUrl } = {}) {
         canonicalTag: page.indexable ? `<link rel="canonical" href="${escapeHtml(canonical)}">` : "",
         jsonLd: page.indexable ? jsonLdScript({ "@context": "https://schema.org", "@graph": graph }) : "",
         script: page.script ? '<script src="/app.js" defer></script>' : "",
+        verificationTags: page.key === "home" ? verificationTags(brand) : "",
         socialImageWidth: String(brand.socialImage.width),
         socialImageHeight: String(brand.socialImage.height),
       },

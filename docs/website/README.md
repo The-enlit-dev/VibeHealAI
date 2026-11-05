@@ -9,7 +9,7 @@
 | [DESIGN.md](./DESIGN.md) | Visual direction, palette, contrast rules, layout and component decisions |
 | [BRANDING.md](./BRANDING.md) | Where the VibeHeal identity is set and how to change it |
 | [SEO.md](./SEO.md) | SEO, AEO and GEO implementation, structured data and the canonical URL |
-| [SEARCH_CONSOLE.md](./SEARCH_CONSOLE.md) | Google Search Console setup the owner completes after a domain is chosen |
+| [SEARCH_CONSOLE.md](./SEARCH_CONSOLE.md) | Submitting the site to Google Search Console and Bing (owner steps) |
 | [ADMIN.md](./ADMIN.md) | Admin dashboard setup, security model and operations |
 
 ## How the pieces fit
@@ -55,8 +55,7 @@ Open http://127.0.0.1:8790/. To enable the admin dashboard, follow [ADMIN.md](./
 ## Known limitations and unfinished work
 
 - **Waitlist on Netlify uses Netlify Forms** (DEC-29). The form is registered as `waitlist`. It works only after the owner turns on form detection in the Netlify UI (Forms > Enable form detection) and redeploys. Until then the form shows "not reachable". Submissions are viewed and exported in the Netlify dashboard, not in the local admin dashboard. Netlify does not remove duplicate emails.
-- **No custom domain.** The site has no domain of its own yet.
-- **Placeholder domain.** `site/brand.json` uses `https://your-domain.example`. While it is a placeholder, every page is `noindex` and the canonical, sitemap and social URLs point at the placeholder. Set the real domain before launch (see [SEO.md](./SEO.md)).
+- **Free Netlify address, no custom domain.** The canonical URL is `https://vibehealai.netlify.app` (DEC-30) and pages are indexable. The site is not yet submitted to Google or Bing; see [SEARCH_CONSOLE.md](./SEARCH_CONSOLE.md).
 - **Local storage:** the local waitlist service (`npm run site:dev`) stores signups in a local JSON file, not encrypted at rest.
 - **Admin sessions** live in memory: restarting the service signs the admin out. There is one admin account and no password reset flow (create a new hash instead).
 - **Rate limits** are in-memory and keyed by the socket address. Behind a shared proxy every visitor would share one address. Change this before hosting behind a proxy.

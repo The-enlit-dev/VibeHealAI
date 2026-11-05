@@ -2,4 +2,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://your-domain.example/sitemap.xml
+Sitemap: https://vibehealai.netlify.app/sitemap.xml

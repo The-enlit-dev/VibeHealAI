@@ -5,7 +5,7 @@
   "headline": "Your AI assistant for vibe coders",
   "tagline": "Just vibeheal it.",
   "description": "VibeHeal is a planned AI assistant for vibe coders: people who build apps, websites and software with AI tools. It aims to help with project understanding, debugging, integrations, automations and code safety. It is in early development and not available yet.",
-  "siteUrl": "https://your-domain.example",
+  "siteUrl": "https://vibehealai.netlify.app",
   "language": "en",
   "locale": "en_GB",
   "lastUpdated": "2026-11-05",
@@ -33,5 +33,10 @@
     "name": "",
     "url": ""
   },
-  "contactEmail": ""
+  "contactEmail": "",
+  "verification": {
+    "_comment": "Optional search-engine ownership tokens (not secrets). Paste only the content value of the meta tag each tool gives you. See docs/website/SEARCH_CONSOLE.md.",
+    "google": "",
+    "bing": ""
+  }
 }

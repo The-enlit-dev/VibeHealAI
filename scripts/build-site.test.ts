@@ -4,7 +4,7 @@ import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
-import { buildSite, escapeHtml, isPlaceholderUrl, render } from "./build-site.mjs";
+import { buildSite, escapeHtml, isPlaceholderUrl, render, verificationTags } from "./build-site.mjs";
 import { AI_TOOLS, PLANNED_CAPABILITIES } from "../waitlist/validation.js";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
@@ -287,6 +287,32 @@ describe("branding and content accuracy", () => {
       expect(/available now|now available|download now|sign up now to start|trusted by|\d+\+? (users|customers|developers) use/i.test(html), name).toBe(false);
     }
     expect(home).toContain("Not available yet.");
+  });
+
+  it("puts the product name in every indexable page title", () => {
+    for (const [name, html] of pages) {
+      if (name === "404.html") continue;
+      expect(html.match(/<title>([^<]+)<\/title>/)?.[1], name).toContain(brand.siteName);
+    }
+  });
+
+  it("adds search-engine verification tags only when a valid token is set, and only on the home page", () => {
+    expect(verificationTags({})).toBe("");
+    expect(verificationTags({ verification: { google: "", bing: " " } })).toBe("");
+    expect(verificationTags({ verification: { google: "abc_DEF-1234567890", bing: "0123456789ABCDEF" } })).toBe(
+      '<meta name="google-site-verification" content="abc_DEF-1234567890">\n  <meta name="msvalidate.01" content="0123456789ABCDEF">',
+    );
+    expect(() => verificationTags({ verification: { google: '<meta name="google-site-verification" content="x">' } })).toThrow();
+    for (const [name, html] of pages) {
+      if (name !== "index.html") expect(html, name).not.toMatch(/google-site-verification|msvalidate\.01/);
+    }
+  });
+
+  it("redirects the duplicate brixoai.netlify.app project to the canonical site", () => {
+    const toml = readFileSync(path.join(root, "netlify.toml"), "utf8");
+    expect(toml).toContain('from = "https://brixoai.netlify.app/*"');
+    expect(toml).toContain(`to = "${brand.siteUrl}/:splat"`);
+    expect(toml).toMatch(/status = 301\s+force = true/);
   });
 
   it("uses the final product name, not a working title", () => {
