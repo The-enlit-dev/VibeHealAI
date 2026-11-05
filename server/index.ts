@@ -25,7 +25,7 @@ async function main(): Promise<void> {
 
   backend.server.listen(config.port, config.host, () => {
     const github = "appId" in config.providers.github ? "configured" : "not configured";
-    logger.info(`BrixoAI backend listening on ${config.host}:${config.port}`, { github });
+    logger.info(`VibeHeal backend listening on ${config.host}:${config.port}`, { github });
   });
 
   const shutdown = (): void => {

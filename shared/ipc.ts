@@ -1,4 +1,4 @@
-// The fixed API the desktop preload exposes to the renderer as window.brixo.
+// The fixed API the desktop preload exposes to the renderer as window.vibeheal.
 // The renderer has no other way to reach the main process or the network (WN-3).
 
 import type {
@@ -18,7 +18,7 @@ export interface BackendStatus {
   readonly backendUrl: string;
 }
 
-export interface BrixoBridge {
+export interface VibeHealBridge {
   backendStatus(): Promise<BridgeResult<BackendStatus>>;
   listProviders(): Promise<BridgeResult<readonly ProviderSummary[]>>;
   getProvider(providerId: string): Promise<BridgeResult<ProviderDetail>>;
@@ -33,12 +33,12 @@ export interface BrixoBridge {
 }
 
 export const IPC_CHANNELS = {
-  backendStatus: "brixo:backend-status",
-  listProviders: "brixo:list-providers",
-  getProvider: "brixo:get-provider",
-  connect: "brixo:connect",
-  disconnect: "brixo:disconnect",
-  runAction: "brixo:run-action",
-  listActivity: "brixo:list-activity",
-  openProviderLink: "brixo:open-provider-link",
-} as const satisfies Record<keyof BrixoBridge, string>;
+  backendStatus: "vibeheal:backend-status",
+  listProviders: "vibeheal:list-providers",
+  getProvider: "vibeheal:get-provider",
+  connect: "vibeheal:connect",
+  disconnect: "vibeheal:disconnect",
+  runAction: "vibeheal:run-action",
+  listActivity: "vibeheal:list-activity",
+  openProviderLink: "vibeheal:open-provider-link",
+} as const satisfies Record<keyof VibeHealBridge, string>;

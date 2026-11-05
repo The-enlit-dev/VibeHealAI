@@ -86,7 +86,7 @@
   "status": {
     "working": "An early development foundation: a local backend, an integration platform and a read-only GitHub connection, tested by the developer with automated tests against a simulated GitHub API. Not a public release.",
     "planned": "Project understanding, debugging help, code safety and recovery, automations, scheduled automations, workflow management and more integrations.",
-    "undecided": "The permanent name, release date, pricing and the final list of integrations."
+    "undecided": "The release date, pricing, the website domain and the final list of integrations."
   },
   "waitlist": {
     "aiTools": [

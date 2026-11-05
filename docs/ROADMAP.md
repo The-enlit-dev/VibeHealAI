@@ -1,6 +1,8 @@
 # BrixoAI — Implementation Roadmap
 
 > **Update (2026-10-29): superseded.** These phases (UI-first, waiting on Stitch screens) are not the current plan. The current milestones are in `docs/planning/ROADMAP.md`, and `docs/planning/DECISIONS.md` takes precedence over this file. This file is kept for history only.
+>
+> **Name (2026-11-05):** the product was renamed from BrixoAI to **VibeHeal** (see DEC-28 in `docs/planning/DECISIONS.md`). The old name below is kept as written.
 
 **Status:** proposed phases. Adjust after repository inspection and receipt of the finished Stitch screens. No phase below implies that the feature already exists.
 

@@ -1,4 +1,4 @@
-# BrixoAI content calendar
+# VibeHeal content calendar
 
 **Status:** draft. Dates are **suggestions**, not commitments. Nothing here is published automatically.
 **Batch covered:** 2 November to 15 November 2026 (two weeks), prepared 31 October 2026.

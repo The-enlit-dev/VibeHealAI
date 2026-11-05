@@ -9,7 +9,7 @@ const here = path.dirname(fileURLToPath(import.meta.url));
 export default defineConfig({
   root: path.join(here, "renderer"),
   base: "./",
-  envPrefix: "BRIXO_PUBLIC_",
+  envPrefix: "VIBEHEAL_PUBLIC_",
   esbuild: { jsx: "automatic" },
   build: {
     outDir: path.join(here, "..", "dist", "desktop", "renderer"),

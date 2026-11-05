@@ -16,7 +16,7 @@ export const GITHUB_PERMISSIONS = {
   contents: {
     id: "github.contents.read",
     title: "Repository contents (read)",
-    description: "See branches and commit history. BrixoAI does not change any files.",
+    description: "See branches and commit history. VibeHeal does not change any files.",
     access: "read",
     providerScope: "Contents: Read-only",
     verified: false,
@@ -24,14 +24,14 @@ export const GITHUB_PERMISSIONS = {
   pullRequests: {
     id: "github.pull-requests.read",
     title: "Pull requests (read)",
-    description: "See pull request titles, status and branches. BrixoAI cannot comment, merge or close them.",
+    description: "See pull request titles, status and branches. VibeHeal cannot comment, merge or close them.",
     access: "read",
     providerScope: "Pull requests: Read-only",
     verified: false,
   },
 } as const satisfies Record<string, PermissionDescriptor>;
 
-/** GitHub App permission key → BrixoAI permission id. Only read access is accepted. */
+/** GitHub App permission key → VibeHeal permission id. Only read access is accepted. */
 export const GITHUB_APP_PERMISSION_MAP: Readonly<Record<string, string>> = {
   metadata: GITHUB_PERMISSIONS.metadata.id,
   contents: GITHUB_PERMISSIONS.contents.id,
@@ -49,7 +49,7 @@ export const GITHUB_CAPABILITIES = {
   listRepositories: capability(
     "github.repositories.list",
     "List repositories",
-    "List the repositories you chose to share with the BrixoAI GitHub App.",
+    "List the repositories you chose to share with the VibeHeal GitHub App.",
     [GITHUB_PERMISSIONS.metadata.id],
   ),
   getRepository: capability("github.repository.get", "Repository details", "Read one repository's metadata.", [
@@ -72,7 +72,7 @@ export const GITHUB_METADATA: ProviderMetadata = {
   category: "source_control",
   summary: "Read repositories, branches, commits and pull requests.",
   description:
-    "Connect the BrixoAI GitHub App to the repositories you choose. BrixoAI reads repository details, branches, recent commits and pull requests. It cannot change code, push, merge or delete anything.",
+    "Connect the VibeHeal GitHub App to the repositories you choose. VibeHeal reads repository details, branches, recent commits and pull requests. It cannot change code, push, merge or delete anything.",
   contextUse:
     "Shows which branch and recent commits a broken project is on, and adds that context to the handoff brief for your AI tool.",
   websiteUrl: "https://github.com",
@@ -85,7 +85,7 @@ export const GITHUB_METADATA: ProviderMetadata = {
   notes: [
     "Uses a GitHub App with read-only permissions. You choose which repositories it can see during installation.",
     "Needs a GitHub App registered by the owner of this backend. See docs/integrations/GITHUB_APP_SETUP.md.",
-    "Disconnecting removes BrixoAI's record and revokes its current access token. To remove the app completely, uninstall it in your GitHub settings.",
+    "Disconnecting removes VibeHeal's record and revokes its current access token. To remove the app completely, uninstall it in your GitHub settings.",
     "Not yet tested against the live GitHub API: no GitHub App credentials were available when this was built.",
   ],
 };

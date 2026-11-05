@@ -1,4 +1,4 @@
-# BrixoAI — Architecture (Planning v4)
+# VibeHeal — Architecture (Planning v4)
 
 **Status:** Last updated 2026-10-31. This version adds the **backend-managed integration marketplace** [Decision DEC-17, DEC-18]. Labels are defined in [DECISIONS.md](./DECISIONS.md).
 
@@ -10,15 +10,15 @@
 - the core safety-workflow components (§3: Project Gate, Script Runner, Snapshot and Undo, and the others);
 - any hosted deployment.
 
-**History:** v3 (2026-10-29) was a single local desktop app with no backend, no ports and no network. Its core components are kept below. Its "no network, no ports, no credentials" rules are superseded for integration features only ([DECISIONS.md §4](./DECISIONS.md#4-round-3-backend-managed-integration-marketplace-recorded-2026-10-31)). The v3 text is preserved in git history and in [The-enlit-dev/BrixoAI#1](https://github.com/The-enlit-dev/BrixoAI/pull/1).
+**History:** v3 (2026-10-29) was a single local desktop app with no backend, no ports and no network. Its core components are kept below. Its "no network, no ports, no credentials" rules are superseded for integration features only ([DECISIONS.md §4](./DECISIONS.md#4-round-3-backend-managed-integration-marketplace-recorded-2026-10-31)). The v3 text is preserved in git history and in [The-enlit-dev/VibeHealAI#1](https://github.com/The-enlit-dev/VibeHealAI/pull/1).
 
 ---
 
 ## 1. The big picture in plain English
 
-BrixoAI has **two programs**:
+VibeHeal has **two programs**:
 1. **The desktop app** on the user's computer. It shows the marketplace, and later the broken-project workflow: inspect, explain, back up, review, undo, verify.
-2. **The BrixoAI backend.** A small server that holds provider credentials and talks to GitHub, Vercel and the other providers for the desktop app.
+2. **The VibeHeal backend.** A small server that holds provider credentials and talks to GitHub, Vercel and the other providers for the desktop app.
    - **Today it runs only on the developer's own computer** and listens only on `127.0.0.1`.
    - It is designed to be hosted later, but **it is not deployed** (DEC-18, DEC-22).
 
@@ -29,13 +29,13 @@ The desktop app never sees provider tokens or app secrets. It asks the backend t
 ```mermaid
 flowchart LR
   subgraph PC["User's computer"]
-    subgraph Desktop["BrixoAI desktop app (Electron)"]
+    subgraph Desktop["VibeHeal desktop app (Electron)"]
       UI["Window (React)<br/>sandboxed, no Node,<br/>CSP connect-src 'none'"]
-      PRE["Preload bridge<br/>window.brixo (fixed API)"]
+      PRE["Preload bridge<br/>window.vibeheal (fixed API)"]
       MAIN["Main process<br/>IPC validation, backend client,<br/>external-link guard"]
       CORE["Core safety modules<br/>(planned, M1–M4)"]
     end
-    subgraph Backend["BrixoAI backend (Node.js, loopback only)"]
+    subgraph Backend["VibeHeal backend (Node.js, loopback only)"]
       API["HTTP API /v1<br/>auth, host check, validation"]
       PLAT["Integration platform<br/>registry · connections ·<br/>permissions · approvals"]
       ADP["Provider adapters<br/>GitHub (real) · 8 planned"]
@@ -78,8 +78,8 @@ These are still the centre of the product [Decision DEC-16]. **None is implement
 sequenceDiagram
   autonumber
   actor U as User
-  participant W as BrixoAI window
-  participant M as BrixoAI main process
+  participant W as VibeHeal window
+  participant M as VibeHeal main process
   participant P as Project folder
   participant C as User's Claude Code (separate)
 
@@ -98,7 +98,7 @@ sequenceDiagram
   U->>W: Copy handoff brief (preview first)
   W->>M: buildBrief() → clipboard only (HB-2)
   U->>C: Paste brief, work with own AI tool
-  C->>P: Edits files (BrixoAI cannot control this)
+  C->>P: Edits files (VibeHeal cannot control this)
   U->>W: Review changes
   W->>M: diffAgainstSnapshot()
   M-->>W: Changed files, diffs, risk flags (FC-2, SN-1, SN-2)
@@ -220,13 +220,13 @@ The API's security rules are BK-1 to BK-8 in [SECURITY.md](./SECURITY.md#212-bac
 ## 6. Credentials and data
 
 - **Vault:** `EncryptedFileVault` encrypts each credential with **AES-256-GCM** (Node.js `crypto`).
-  - It uses a random 96-bit IV per record and a 256-bit key from `BRIXO_ENCRYPTION_KEY`.
+  - It uses a random 96-bit IV per record and a 256-bit key from `VIBEHEAL_ENCRYPTION_KEY`.
   - Additional authenticated data (AAD) binds each ciphertext to its credential id and provider, so records can't be swapped.
   - Each record stores a key id so the key can be rotated later.
   - The file is written atomically with owner-only permissions where the OS supports them.
 - **Secret values in memory** are wrapped in a `Secret` type. Its `toString`, `toJSON` and `inspect` all print `[REDACTED]`, so an accidental log line can't leak them.
-- **Persistent data** (connections, authorization states, approvals) is stored as JSON files in `BRIXO_DATA_DIR` (default `./.brixo-data/`, git-ignored). It sits behind repository interfaces, so a database can replace it when the backend is hosted.
-- **GitHub specifically:** BrixoAI stores only the installation id.
+- **Persistent data** (connections, authorization states, approvals) is stored as JSON files in `VIBEHEAL_DATA_DIR` (default `./.vibeheal-data/`, git-ignored). It sits behind repository interfaces, so a database can replace it when the backend is hosted.
+- **GitHub specifically:** VibeHeal stores only the installation id.
   - Short-lived (1-hour) installation tokens are minted on demand with the App's private key and cached in memory only.
   - No long-lived GitHub user token is kept.
 
@@ -238,7 +238,7 @@ Code: `desktop/`.
 - **Renderer:** React UI for the marketplace.
   - No Node.js, context isolation on, sandboxed.
   - Strict content security policy with `connect-src 'none'`: the window cannot make network requests itself.
-- **Preload:** exposes a small, fixed `window.brixo` API through `contextBridge`. It exposes no generic IPC.
+- **Preload:** exposes a small, fixed `window.vibeheal` API through `contextBridge`. It exposes no generic IPC.
 - **Main process:**
   - validates every IPC argument;
   - calls the backend with the local access token, which the renderer never sees;
@@ -248,7 +248,7 @@ Code: `desktop/`.
 ## 8. Hosting later (designed for, not done)
 
 - **Configuration:** everything comes from environment variables, validated at startup.
-- **Network binding:** the backend refuses to listen on a non-loopback address unless `BRIXO_ALLOW_NON_LOOPBACK=true` is set explicitly, which is meant for a future deployment behind TLS.
+- **Network binding:** the backend refuses to listen on a non-loopback address unless `VIBEHEAL_ALLOW_NON_LOOPBACK=true` is set explicitly, which is meant for a future deployment behind TLS.
 - **Storage and keys:** storage and the vault are interfaces. Postgres and a cloud KMS would be new implementations, not rewrites (P-10, P-12).
 - **Identity:** hosted identity is pending (P-9). Hosting must not happen before that decision and a security review.
 
@@ -256,7 +256,7 @@ Code: `desktop/`.
 
 | ID | Question | How to resolve | Blocks |
 |---|---|---|---|
-| U1 | Does Anthropic permit BrixoAI to launch or drive the user's **own unmodified** Claude Code with their own subscription? The terms contain both a permission ("an end user signing in to the unmodified Claude Code binary") and restrictions on third-party products. | Written answer from Anthropic (owner decision P-1). Until then: blocked | Any in-app AI |
+| U1 | Does Anthropic permit VibeHeal to launch or drive the user's **own unmodified** Claude Code with their own subscription? The terms contain both a permission ("an end user signing in to the unmodified Claude Code binary") and restrictions on third-party products. | Written answer from Anthropic (owner decision P-1). Until then: blocked | Any in-app AI |
 | U2 | How much real-world coverage can offline rule-based explanations achieve? | Measure against the test collection | Value of step 4 |
 | U3 | Reliable change detection while an external tool edits files (snapshot comparison vs file watching; Windows file locking) | M3 spike on Windows | SN-1 |
 | U4 | Running npm scripts on Windows without a shell: finding npm's JavaScript entry point across npm versions, and confirming Node's current rules for `.cmd` files | M2 spike on Windows; check Node/Electron release notes | CE-2 |

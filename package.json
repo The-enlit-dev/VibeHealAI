@@ -1,8 +1,8 @@
 {
-  "name": "brixoai",
+  "name": "vibeheal",
   "version": "0.1.0",
   "private": true,
-  "description": "BrixoAI: a safety net for broken JavaScript/TypeScript projects, with a backend-managed integration marketplace.",
+  "description": "VibeHeal: a safety net for broken JavaScript/TypeScript projects, with a backend-managed integration marketplace.",
   "type": "module",
   "main": "dist/desktop/main-build/desktop/main/main.js",
   "engines": {

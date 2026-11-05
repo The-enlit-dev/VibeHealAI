@@ -1,4 +1,4 @@
-# BrixoAI — Technical Stack and Cost Plan (Planning v3)
+# VibeHeal — Technical Stack and Cost Plan (Planning v3)
 
 **Status:** Last updated 2026-10-31. Development dependencies were installed on 2026-10-31 for integration milestone IM1 (DEC-27). Versions and licences below were read from the installed packages that day. Labels are defined in [DECISIONS.md](./DECISIONS.md).
 
@@ -32,7 +32,7 @@
 | Validation | **Small in-house validator** (`shared/validation.ts`) | Rejects unknown fields, checks types and lengths. Avoids a schema-library dependency (DEC-27) | $0 |
 | Encryption | **Node `crypto`, AES-256-GCM** | Built-in, well-reviewed primitive; no custom cryptography | $0 |
 | GitHub API | **Plain `fetch`** to api.github.com, with an RS256 App JWT signed by `crypto` | Avoids Octokit for five GET endpoints. Revisit if the GitHub feature set grows | $0 |
-| Persistent data | **JSON files** in `.brixo-data/` behind repository interfaces | Local and free. A hosted backend would use a database implementation (P-10) | $0 |
+| Persistent data | **JSON files** in `.vibeheal-data/` behind repository interfaces | Local and free. A hosted backend would use a database implementation (P-10) | $0 |
 | Hosting | **None.** Runs locally only (DEC-22) | — | $0 |
 
 No backend runtime dependency was added: `server/` imports only Node built-ins. React and React DOM are the only runtime dependencies, and they are used by the desktop renderer.
@@ -52,10 +52,10 @@ No backend runtime dependency was added: `server/` imports only Node built-ins. 
 | Previously proposed | Why removed | Revisit when |
 |---|---|---|
 | Next.js | No server-rendered pages needed in a desktop app | Only if a web product is ever planned |
-| Netlify (as BrixoAI's host) | Nothing to host; would add cost risk. **Still removed** in v4. Netlify now appears only as a provider users may connect (DEC-19) | Same |
-| Supabase (as BrixoAI's own database) | No accounts, sync or cloud data (DEC-07, DEC-09). **Still removed** in v4. Supabase now appears only as a provider users may connect (DEC-19) | Validation shows accounts are needed |
+| Netlify (as VibeHeal's host) | Nothing to host; would add cost risk. **Still removed** in v4. Netlify now appears only as a provider users may connect (DEC-19) | Same |
+| Supabase (as VibeHeal's own database) | No accounts, sync or cloud data (DEC-07, DEC-09). **Still removed** in v4. Supabase now appears only as a provider users may connect (DEC-19) | Validation shows accounts are needed |
 | Separate local helper + pairing | One desktop app is simpler and opens no ports. **Superseded in part 2026-10-31:** a separate *backend* now exists for integrations (DEC-18). It listens on loopback only, and there is still no pairing protocol | Hosting (P-9) |
-| Claude Agent SDK + Anthropic API key | Requires API billing ([INTEGRATIONS.md](./INTEGRATIONS.md#2-why-brixoai-cannot-embed-ai-on-your-subscription)) | A permitted $0 path exists, or the budget changes |
+| Claude Agent SDK + Anthropic API key | Requires API billing ([INTEGRATIONS.md](./INTEGRATIONS.md#2-why-vibeheal-cannot-embed-ai-on-your-subscription)) | A permitted $0 path exists, or the budget changes |
 | Sentry or other monitoring services | Sends data off the device (NP-1); possible cost | — |
 | Domains, websites | Not needed for the MVP | — |
 
@@ -63,7 +63,7 @@ No backend runtime dependency was added: `server/` imports only Node built-ins. 
 
 | Item | Cost |
 |---|---|
-| BrixoAI infrastructure | **$0**. The desktop app and the backend both run on the developer's own computer. Nothing is hosted (DEC-22) |
+| VibeHeal infrastructure | **$0**. The desktop app and the backend both run on the developer's own computer. Nothing is hosted (DEC-22) |
 | AI usage | **$0 extra**. The user's own Claude Code subscription, used directly in Claude Code |
 | Development tools | **$0**. Open-source |
 | CI on a private repository | **$0** within GitHub's free quota (§4) |
@@ -90,7 +90,7 @@ Every place where the plan could cost money, and how it's handled:
 | **Stripe** (IM4) | **Yes, if live mode were used** | Test mode only and read-only; live keys rejected (IN-11) |
 | **Shopify** (IM4) | Possible: building may need a free Partner account and a development store | Owner decision when IM4 starts; read-only scopes only |
 
-## 5. Requirements for developing BrixoAI (owner's machine)
+## 5. Requirements for developing VibeHeal (owner's machine)
 - Windows 10/11 (the target platform), Node.js LTS, Git, and an editor. All free.
 - Claude Code (existing subscription) to help write the code. That's ordinary use and adds no API cost.
 - No Docker, cloud accounts or paid tools needed.

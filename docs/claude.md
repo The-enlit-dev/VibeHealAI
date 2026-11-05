@@ -1,13 +1,13 @@
-# BrixoAI — Claude Code Engineering Rules
+# VibeHeal — Claude Code Engineering Rules
 
 **Status:** rewritten 2026-10-30; updated 2026-10-31 for the backend-managed integration marketplace (DEC-16 to DEC-27). `docs/planning/DECISIONS.md` takes precedence over this file. Requirement IDs (PB-, FC-, CE-, SN-, SE-, HB-, NP-, LD-, WN-, VR-, BK-, IN-, CR-, AU-) refer to `docs/planning/SECURITY.md`.
 
 ## 1. Mission
-Build BrixoAI's MVP, a free, local-first Windows desktop app that helps vibe coders with a broken JavaScript/TypeScript project. It inspects the project, captures and explains errors offline, snapshots files, shows every change, offers undo and re-runs approved checks. It has **no built-in AI**: users run their own Claude Code separately.
+Build VibeHeal's MVP, a free, local-first Windows desktop app that helps vibe coders with a broken JavaScript/TypeScript project. It inspects the project, captures and explains errors offline, snapshots files, shows every change, offers undo and re-runs approved checks. It has **no built-in AI**: users run their own Claude Code separately.
 
-Alongside it, BrixoAI has a **first-party integration marketplace**:
+Alongside it, VibeHeal has a **first-party integration marketplace**:
 - nine providers, read-only first;
-- managed by a local BrixoAI backend that keeps credentials server-side;
+- managed by a local VibeHeal backend that keeps credentials server-side;
 - it feeds context into that workflow and must never replace it (DEC-16).
 
 Deliver small, working, tested increments in the order set by `docs/planning/ROADMAP.md`. Do not build the long-term vision early.
@@ -59,14 +59,14 @@ Don't replace existing work with a fresh scaffold because it's easier.
 
 ## 6. Product domain
 Keep these concepts distinct:
-- **Project:** one folder the user selects. BrixoAI works only inside it.
+- **Project:** one folder the user selects. VibeHeal works only inside it.
 - **Session:** one attempt to diagnose and fix a problem in a project.
 - **Captured output:** redacted output of an approved script run or pasted error.
 - **Explanation rule:** an offline rule that recognises an error pattern and explains it.
 - **Snapshot:** backup of in-scope files taken before a protected fix session.
 - **Change review:** comparison of the project against the snapshot, with keep/undo per file.
 - **Verification:** re-running the same approved script; reports only what that check showed.
-- **Handoff brief:** a redacted summary the user copies into their own AI tool. BrixoAI never sends it anywhere.
+- **Handoff brief:** a redacted summary the user copies into their own AI tool. VibeHeal never sends it anywhere.
 - **Provider:** an external service in the marketplace (GitHub, Vercel, and so on). Its adapter implements `ProviderAdapter`.
 - **Connection:** an authorized link to one provider account, stored by the backend. Credentials sit in the vault, referenced by id.
 - **Capability:** one named, typed provider action with an access level (`read`, `write` or `sensitive`).
@@ -76,10 +76,10 @@ Keep these concepts distinct:
 - Every file read, file write and command goes through the Project Gate (PB-1 to PB-5).
 - Never read, display, store or copy secret file contents (SE-1). Redact everything shown, stored or copied (SE-2).
 - Run only `package.json` scripts the user explicitly approves, with no shell, a minimal environment, a timeout and whole-process-tree cancellation (CE-1 to CE-7).
-- BrixoAI changes project files only on an explicit user action (undo/restore), atomically, and logs it (FC-3 to FC-5).
-- Be honest about limits: BrixoAI cannot control or undo what the user's external AI tool does outside the project folder (SN-4).
+- VibeHeal changes project files only on an explicit user action (undo/restore), atomically, and logs it (FC-3 to FC-5).
+- Be honest about limits: VibeHeal cannot control or undo what the user's external AI tool does outside the project folder (SN-4).
 - The core workflow makes no network connections. There is no telemetry and no update checks (NP-1, WN-6).
-- Integration features connect only to the BrixoAI backend and, through it, to providers the user connected.
+- Integration features connect only to the VibeHeal backend and, through it, to providers the user connected.
 - **Backend:**
   - loopback only (BK-1);
   - bearer token, Host check and browser rejection (BK-2, BK-3);
@@ -101,7 +101,7 @@ Keep these concepts distinct:
 - No hosting or deployment of the backend.
 - Don't create provider accounts or apps for the owner. Document what's needed (for example `docs/integrations/GITHUB_APP_SETUP.md`) and provide a mock or a **Not configured** state.
 - No built-in AI in the MVP (DEC-06). Never add claude.ai login, subscription tokens or credential handling. Anthropic does not permit it for third-party products (`docs/planning/INTEGRATIONS.md` §2).
-- BrixoAI must not launch or drive Claude Code for the user unless Anthropic confirms in writing (unknown U1, decision P-1).
+- VibeHeal must not launch or drive Claude Code for the user unless Anthropic confirms in writing (unknown U1, decision P-1).
 
 ## 9. Reuse rules
 Follow `docs/planning/REUSE.md`. Copy Rakazo code only after the specific piece has been reviewed and approved by the owner. Keep Apache-2.0 notices, mark modified files and record each adoption. Never use the Rakazo name or branding.
@@ -112,7 +112,7 @@ Two tracks (ROADMAP.md):
 - **Integrations:** IM1 marketplace foundation (done) → IM2 GitHub read-only (live test pending) → IM3 Vercel/Netlify read-only → IM4 the remaining providers, one at a time.
 
 Keep the core track moving alongside the integration track. Don't add:
-- BrixoAI user accounts;
+- VibeHeal user accounts;
 - hosted infrastructure;
 - third-party plugins;
 - provider write actions;

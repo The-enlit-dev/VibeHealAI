@@ -6,8 +6,8 @@ import { ConfigError, loadConfig } from "./config.js";
 import { tempDir, testRsaKey } from "./test-support/fixtures.js";
 
 const baseEnv = () => ({
-  BRIXO_CLIENT_TOKEN: randomBytes(32).toString("base64url"),
-  BRIXO_ENCRYPTION_KEY: randomBytes(32).toString("base64"),
+  VIBEHEAL_CLIENT_TOKEN: randomBytes(32).toString("base64url"),
+  VIBEHEAL_ENCRYPTION_KEY: randomBytes(32).toString("base64"),
 });
 
 const problems = (env: Record<string, string>, cwd?: string): string[] => {
@@ -36,32 +36,32 @@ describe("loadConfig (BK-1, BK-7, CR-3)", () => {
 
   it("requires the client token and encryption key", () => {
     const found = problems({}).join("\n");
-    expect(found).toContain("BRIXO_CLIENT_TOKEN");
-    expect(found).toContain("BRIXO_ENCRYPTION_KEY");
+    expect(found).toContain("VIBEHEAL_CLIENT_TOKEN");
+    expect(found).toContain("VIBEHEAL_ENCRYPTION_KEY");
   });
 
   it("rejects placeholders, short tokens and badly sized keys", () => {
-    expect(problems({ ...baseEnv(), BRIXO_CLIENT_TOKEN: "replace-me" }).join()).toContain("BRIXO_CLIENT_TOKEN");
-    expect(problems({ ...baseEnv(), BRIXO_CLIENT_TOKEN: "short" }).join()).toContain("43");
-    expect(problems({ ...baseEnv(), BRIXO_ENCRYPTION_KEY: randomBytes(16).toString("base64") }).join()).toContain("32 bytes");
-    expect(problems({ ...baseEnv(), BRIXO_ENCRYPTION_KEY: Buffer.alloc(32).toString("base64") }).join()).toContain("random");
+    expect(problems({ ...baseEnv(), VIBEHEAL_CLIENT_TOKEN: "replace-me" }).join()).toContain("VIBEHEAL_CLIENT_TOKEN");
+    expect(problems({ ...baseEnv(), VIBEHEAL_CLIENT_TOKEN: "short" }).join()).toContain("43");
+    expect(problems({ ...baseEnv(), VIBEHEAL_ENCRYPTION_KEY: randomBytes(16).toString("base64") }).join()).toContain("32 bytes");
+    expect(problems({ ...baseEnv(), VIBEHEAL_ENCRYPTION_KEY: Buffer.alloc(32).toString("base64") }).join()).toContain("random");
   });
 
   it("refuses a non-loopback host unless explicitly allowed", () => {
-    expect(problems({ ...baseEnv(), BRIXO_HOST: "0.0.0.0" }).join()).toContain("loopback");
-    expect(problems({ ...baseEnv(), BRIXO_HOST: "0.0.0.0", BRIXO_ALLOW_NON_LOOPBACK: "true" })).toEqual([]);
+    expect(problems({ ...baseEnv(), VIBEHEAL_HOST: "0.0.0.0" }).join()).toContain("loopback");
+    expect(problems({ ...baseEnv(), VIBEHEAL_HOST: "0.0.0.0", VIBEHEAL_ALLOW_NON_LOOPBACK: "true" })).toEqual([]);
   });
 
   it("requires https for a non-loopback public URL", () => {
-    expect(problems({ ...baseEnv(), BRIXO_PUBLIC_URL: "http://example.com" }).join()).toContain("https");
-    expect(problems({ ...baseEnv(), BRIXO_PUBLIC_URL: "https://example.com" })).toEqual([]);
+    expect(problems({ ...baseEnv(), VIBEHEAL_PUBLIC_URL: "http://example.com" }).join()).toContain("https");
+    expect(problems({ ...baseEnv(), VIBEHEAL_PUBLIC_URL: "https://example.com" })).toEqual([]);
   });
 
   it("never includes secret values in error messages", () => {
-    const env = { ...baseEnv(), BRIXO_CLIENT_TOKEN: "x".repeat(10) + "unique-secret-marker" };
+    const env = { ...baseEnv(), VIBEHEAL_CLIENT_TOKEN: "x".repeat(10) + "unique-secret-marker" };
     const message = (() => {
       try {
-        loadConfig({ ...env, BRIXO_ENCRYPTION_KEY: "not-base64-unique-marker" });
+        loadConfig({ ...env, VIBEHEAL_ENCRYPTION_KEY: "not-base64-unique-marker" });
         return "";
       } catch (error) {
         return String((error as Error).message);
@@ -79,7 +79,7 @@ describe("loadConfig (BK-1, BK-7, CR-3)", () => {
       {
         ...baseEnv(),
         GITHUB_APP_ID: "12345",
-        GITHUB_APP_SLUG: "brixoai-dev",
+        GITHUB_APP_SLUG: "vibeheal-dev",
         GITHUB_APP_CLIENT_ID: "Iv1.abcdef123456",
         GITHUB_APP_CLIENT_SECRET: randomBytes(20).toString("hex"),
         GITHUB_APP_PRIVATE_KEY_PATH: keyPath,
@@ -94,7 +94,7 @@ describe("loadConfig (BK-1, BK-7, CR-3)", () => {
     const found = problems({
       ...baseEnv(),
       GITHUB_APP_ID: "12345",
-      GITHUB_APP_SLUG: "brixoai-dev",
+      GITHUB_APP_SLUG: "vibeheal-dev",
       GITHUB_APP_CLIENT_ID: "Iv1.abcdef123456",
       GITHUB_APP_CLIENT_SECRET: "a-client-secret-value",
       GITHUB_APP_PRIVATE_KEY_PATH: path.join(dir, "missing.pem"),

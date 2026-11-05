@@ -35,7 +35,7 @@ export function errorOf(code: ErrorCode, message: string): IntegrationError {
 
 /** Minimal static page for the provider callback. Echoes nothing from the request. */
 export function sendCallbackPage(response: ServerResponse, status: number, title: string, message: string): void {
-  const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><title>BrixoAI</title>
+  const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><title>VibeHeal</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>body{font:16px/1.5 system-ui,sans-serif;max-width:32rem;margin:15vh auto;padding:0 1rem;color:#1f2328}h1{font-size:1.25rem}</style>
 </head><body><h1>${escapeHtml(title)}</h1><p>${escapeHtml(message)}</p></body></html>`;

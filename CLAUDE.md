@@ -1,4 +1,4 @@
-# BrixoAI — Claude Code Entry Instructions
+# VibeHeal — Claude Code Entry Instructions
 
 **Status:** updated 2026-10-31 for the backend-managed integration marketplace (DEC-16 to DEC-27).
 - **Implemented:** the integration platform (IM1) and the read-only GitHub adapter (IM2).
@@ -26,7 +26,7 @@
   - Providers: GitHub, Vercel, Netlify, Supabase, Figma, Stripe, Shopify, Notion, Slack.
   - Read-only first.
   - They feed context into the core workflow and must not replace it.
-- **Backend-managed:** a BrixoAI backend (Node.js, `server/`) holds provider credentials, encrypted, and calls provider APIs.
+- **Backend-managed:** a VibeHeal backend (Node.js, `server/`) holds provider credentials, encrypted, and calls provider APIs.
   - The desktop app never receives OAuth client secrets or provider tokens.
   - The backend runs **locally only**. Nothing is deployed.
 - **No built-in AI and no AI billing.** Users run their own Claude Code separately.

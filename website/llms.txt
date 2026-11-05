@@ -1,6 +1,6 @@
-# AI assistant for vibe coders
+# VibeHeal
 
-> A planned AI assistant for vibe coders: people who build apps, websites and software with AI tools. It aims to help with project understanding, debugging, integrations, automations and code safety. It is in early development and not available yet.
+> VibeHeal is a planned AI assistant for vibe coders: people who build apps, websites and software with AI tools. It aims to help with project understanding, debugging, integrations, automations and code safety. It is in early development and not available yet.
 
 Status: early development, not available to use. An early development foundation: a local backend, an integration platform and a read-only GitHub connection, tested by the developer with automated tests against a simulated GitHub API. Not a public release.
 

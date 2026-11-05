@@ -37,7 +37,7 @@ export class GitHubClient {
     }
     const headers: Record<string, string> = {
       Accept: request.web ? "application/json" : "application/vnd.github+json",
-      "User-Agent": "BrixoAI-backend",
+      "User-Agent": "VibeHeal-backend",
     };
     if (!request.web) headers["X-GitHub-Api-Version"] = "2022-11-28";
     if (request.authorization) headers.Authorization = request.authorization;
@@ -75,13 +75,13 @@ function mapError(response: Response): IntegrationError {
     return new IntegrationError("rate_limited", "GitHub's rate limit was reached. Try again later.", { retryAfterSeconds: seconds });
   }
   if (response.status === 401) {
-    return new IntegrationError("provider_unauthorized", "GitHub rejected BrixoAI's authorization. Reconnect GitHub.");
+    return new IntegrationError("provider_unauthorized", "GitHub rejected VibeHeal's authorization. Reconnect GitHub.");
   }
   if (response.status === 403) {
     return new IntegrationError("forbidden", "GitHub denied access. The app may not have permission for this repository.");
   }
   if (response.status === 404) {
-    return new IntegrationError("not_found", "Not found on GitHub, or not shared with the BrixoAI app.");
+    return new IntegrationError("not_found", "Not found on GitHub, or not shared with the VibeHeal app.");
   }
   if (response.status === 422) return new IntegrationError("bad_request", "GitHub rejected the request.");
   return new IntegrationError("provider_error", `GitHub returned an error (HTTP ${response.status}).`);

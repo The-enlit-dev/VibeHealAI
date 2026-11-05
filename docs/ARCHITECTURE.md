@@ -1,6 +1,8 @@
 # BrixoAI — Proposed Architecture
 
 > **Update (2026-10-29): superseded.** The cloud worker, queue and integration design below is not the current plan. The current architecture is a local-first Windows desktop app with no built-in AI: see `docs/planning/ARCHITECTURE.md`. `docs/planning/DECISIONS.md` takes precedence over this file. This file is kept for history only.
+>
+> **Name (2026-11-05):** the product was renamed from BrixoAI to **VibeHeal** (see DEC-28 in `docs/planning/DECISIONS.md`). The old name below is kept as written.
 
 **Status:** conceptual guidance, not a selected or implemented stack. Inspect the repository and agree on the implementation plan before committing to technologies.
 

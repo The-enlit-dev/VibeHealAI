@@ -12,8 +12,8 @@ const siteDir = path.resolve(here, "..", "website");
 const adminDir = path.resolve(here, "admin-ui");
 
 const SECRET_PATTERNS = [
-  /BRIXO_ENCRYPTION_KEY/,
-  /BRIXO_CLIENT_TOKEN/,
+  /(?:VIBEHEAL|BRIXO)_ENCRYPTION_KEY/,
+  /(?:VIBEHEAL|BRIXO)_CLIENT_TOKEN/,
   /GITHUB_APP_CLIENT_SECRET/,
   /GITHUB_APP_PRIVATE_KEY/,
   /WAITLIST_ADMIN_PASSWORD_HASH/,
@@ -100,7 +100,7 @@ describe("public website files", () => {
     }
   });
 
-  it("does not use the undecided product name in public copy", () => {
+  it("does not use the former product name (BrixoAI) in public copy", () => {
     for (const file of site) {
       expect(/brixo/i.test(file.text), file.name).toBe(false);
     }

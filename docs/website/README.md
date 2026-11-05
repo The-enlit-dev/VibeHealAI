@@ -1,13 +1,13 @@
 # Public website, waitlist and admin dashboard
 
-**Status:** last updated 2026-10-31. Nothing is deployed. The site runs locally, and Netlify builds deploy previews of `website/` for pull requests (that connection was set up by the owner outside this repository).
+**Status:** last updated 2026-11-05 (product renamed VibeHeal). Nothing is deployed. The site runs locally, and Netlify builds deploy previews of `website/` for pull requests (that connection was set up by the owner outside this repository).
 
 ## Documents in this folder
 
 | Document | What it covers |
 |---|---|
 | [DESIGN.md](./DESIGN.md) | Visual direction, palette, contrast rules, layout and component decisions |
-| [BRANDING.md](./BRANDING.md) | How the temporary identity works and how to rename the site later |
+| [BRANDING.md](./BRANDING.md) | Where the VibeHeal identity is set and how to change it |
 | [SEO.md](./SEO.md) | SEO, AEO and GEO implementation, structured data and the canonical URL |
 | [SEARCH_CONSOLE.md](./SEARCH_CONSOLE.md) | Google Search Console setup the owner completes after a domain is chosen |
 | [ADMIN.md](./ADMIN.md) | Admin dashboard setup, security model and operations |
@@ -16,7 +16,7 @@
 
 ```text
 site/                  SOURCE for the public website (edit these)
-  brand.json           temporary name, headline, tagline, colours, logo, social image, canonical URL
+  brand.json           name, headline, tagline, colours, logo, social image, canonical URL
   content.json         capabilities and their status, steps, principles, waitlist options
   faq.json             FAQ: one source for the FAQ page, the home page preview and FAQPage data
   layout.html          shared <head>, header and footer
@@ -63,4 +63,4 @@ Open http://127.0.0.1:8790/. To enable the admin dashboard, follow [ADMIN.md](./
 - **Privacy notice** says the retention period and contact address are not decided yet. The owner must decide both, and should review the wording, before the waitlist is public.
 - **Structured data** was validated by automated tests for structure and content rules, not with Google's Rich Results Test or the Schema Markup Validator (both need network access and should be run after deployment).
 - **Positioning conflict to resolve:** the new headline says "AI assistant", while `docs/planning/DECISIONS.md` (DEC-06, DEC-24) records "no built-in AI". The site copy states that no built-in AI exists today and that this is undecided. The owner should record a decision.
-- **Marketing drafts** in `marketing/` still use the earlier BrixoAI name and the narrower "safety net" positioning. Review them before posting.
+- **Marketing drafts** in `marketing/` still use the narrower "safety net" positioning. Review them before posting.

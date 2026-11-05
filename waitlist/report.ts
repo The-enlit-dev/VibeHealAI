@@ -91,7 +91,7 @@ function table(rows: CountRow[]): string {
 /** Markdown summary. Contains no email addresses or free-text answers. */
 export function renderMarkdown(report: WaitlistReport, generatedAt: Date): string {
   const lines: string[] = [
-    "# BrixoAI early-access waitlist: demand summary",
+    "# VibeHeal early-access waitlist: demand summary",
     "",
     `Generated: ${generatedAt.toISOString()}`,
     "",

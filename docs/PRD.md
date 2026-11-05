@@ -1,6 +1,8 @@
 # BrixoAI — Product Requirements Document
 
 > **Update (2026-10-29): superseded.** This document describes an earlier direction (website-operations workspace, GitHub-first journey, cloud execution, named agents). The current product definition is `docs/planning/PRODUCT.md`, and `docs/planning/DECISIONS.md` takes precedence over this file. Its safety and honesty principles still apply. This file is kept for history only.
+>
+> **Name (2026-11-05):** the product was renamed from BrixoAI to **VibeHeal** (see DEC-28 in `docs/planning/DECISIONS.md`). The old name below is kept as written.
 
 **Status:** MVP planning  
 **Product type:** AI-powered website operations and developer workspace  

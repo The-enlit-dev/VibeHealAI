@@ -15,7 +15,7 @@ const desktopFile = path.join(root, ".env.desktop");
 
 if (existsSync(backendFile) || existsSync(desktopFile)) {
   console.error("Refusing to overwrite: .env or .env.desktop already exists. Delete them first if you want new secrets.");
-  console.error("Note: a new BRIXO_ENCRYPTION_KEY makes previously stored credentials unreadable; reconnect providers afterwards.");
+  console.error("Note: a new VIBEHEAL_ENCRYPTION_KEY makes previously stored credentials unreadable; reconnect providers afterwards.");
   process.exit(1);
 }
 
@@ -24,14 +24,14 @@ const key = randomBytes(32).toString("base64");
 
 const template = readFileSync(path.join(root, ".env.example"), "utf8");
 const backend = template
-  .replace(/^BRIXO_CLIENT_TOKEN=.*$/m, `BRIXO_CLIENT_TOKEN=${token}`)
-  .replace(/^BRIXO_ENCRYPTION_KEY=.*$/m, `BRIXO_ENCRYPTION_KEY=${key}`);
+  .replace(/^VIBEHEAL_CLIENT_TOKEN=.*$/m, `VIBEHEAL_CLIENT_TOKEN=${token}`)
+  .replace(/^VIBEHEAL_ENCRYPTION_KEY=.*$/m, `VIBEHEAL_ENCRYPTION_KEY=${key}`);
 if (!backend.includes(token) || !backend.includes(key)) {
-  console.error(".env.example is missing BRIXO_CLIENT_TOKEN or BRIXO_ENCRYPTION_KEY lines.");
+  console.error(".env.example is missing VIBEHEAL_CLIENT_TOKEN or VIBEHEAL_ENCRYPTION_KEY lines.");
   process.exit(1);
 }
 
-const desktop = readFileSync(path.join(root, ".env.desktop.example"), "utf8").replace(/^BRIXO_CLIENT_TOKEN=.*$/m, `BRIXO_CLIENT_TOKEN=${token}`);
+const desktop = readFileSync(path.join(root, ".env.desktop.example"), "utf8").replace(/^VIBEHEAL_CLIENT_TOKEN=.*$/m, `VIBEHEAL_CLIENT_TOKEN=${token}`);
 
 writeFileSync(backendFile, backend, { mode: 0o600, flag: "wx" });
 writeFileSync(desktopFile, desktop, { mode: 0o600, flag: "wx" });

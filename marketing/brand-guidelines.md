@@ -1,10 +1,10 @@
-# BrixoAI brand guidelines
+# VibeHeal brand guidelines
 
 **Status:** draft for owner review. Last updated 2026-10-31.
 
 ## Names
-- **Brand:** BrixoAI (one word, capital B and capital AI).
-- **Community:** Brixo Builders. The platform is **not chosen yet**. WhatsApp is preferred for now, but no post, page or feature may require it.
+- **Brand:** VibeHeal (one word, capital B and capital AI).
+- **Community:** VibeHeal Builders. The platform is **not chosen yet**. WhatsApp is preferred for now, but no post, page or feature may require it.
 
 ## Core message
 - **Positioning:** "Your safety net for AI-generated code."
@@ -25,7 +25,7 @@
 ## Words to avoid
 - Hype: "revolutionary", "game-changing", "10x", "unlock", "supercharge", "the future of coding".
 - Vague AI-marketing filler: "seamlessly", "leverage", "empower your workflow", "robust solution", "in today's fast-paced world".
-- Guarantees: "never breaks", "100% safe", "fully secure", "guaranteed recovery". BrixoAI is not built yet, and nothing can promise that.
+- Guarantees: "never breaks", "100% safe", "fully secure", "guaranteed recovery". VibeHeal is not built yet, and nothing can promise that.
 - Fake social proof: testimonials, user counts, "thousands of developers", "trusted by". Only use real numbers from real records.
 - Dates and prices we have not decided. Do not hint at a launch date.
 
@@ -41,7 +41,7 @@ Any sentence about the product must match `docs/planning/DECISIONS.md` and the i
 - Typography: the system UI font stack. No paid or licensed fonts.
 - Style: clean cards, generous spacing, one clear action per section.
 - Imagery: simple diagrams of the workflow (inspect → explain → review → back up), a calm "safety net" motif, and posters with short copy. Avoid stock photos of people at laptops and avoid fake code screenshots that look like real product output.
-- Logos: wordmark only ("BrixoAI" in bold). No third-party logos (for example Claude, Cursor or GitHub logos) in marketing graphics unless the owner has checked the terms for that use.
+- Logos: wordmark only ("VibeHeal" in bold). No third-party logos (for example Claude, Cursor or GitHub logos) in marketing graphics unless the owner has checked the terms for that use.
 
 ## Audience
 1. **Primary:** beginner vibe coders using Claude Code, Cursor and other AI coding tools.

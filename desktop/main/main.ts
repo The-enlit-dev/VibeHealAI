@@ -41,7 +41,7 @@ function createWindow(): void {
     height: 800,
     minWidth: 760,
     minHeight: 520,
-    title: "BrixoAI",
+    title: "VibeHeal",
     backgroundColor: "#16181d",
     show: false,
     webPreferences: {

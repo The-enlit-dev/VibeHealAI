@@ -14,7 +14,7 @@ import type { FetchLike } from "./client.js";
 const { privateKey, publicKey } = testRsaKey();
 const config: GitHubAppConfig = {
   appId: "12345",
-  slug: "brixoai-dev",
+  slug: "vibeheal-dev",
   clientId: "Iv1.testclientid",
   clientSecret: new Secret(randomBytes(20).toString("hex")),
   privateKey,
@@ -109,7 +109,7 @@ describe("GitHubAdapter", () => {
     const { authorizationUrl } = await adapter.beginConnect({ state: "state-123", callbackUrl: "http://127.0.0.1:8787/v1/callback/github" });
     const url = new URL(authorizationUrl);
     expect(url.origin).toBe("https://github.com");
-    expect(url.pathname).toBe("/apps/brixoai-dev/installations/new");
+    expect(url.pathname).toBe("/apps/vibeheal-dev/installations/new");
     expect(url.searchParams.get("state")).toBe("state-123");
   });
 

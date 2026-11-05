@@ -1,8 +1,8 @@
-# BrixoAI Planning Set (v4)
+# VibeHeal Planning Set (v4)
 
 **Status:** last updated 2026-10-31.
 - v4 adds the **backend-managed integration marketplace**. Its first implementation (IM1 marketplace foundation, IM2 GitHub read-only) is on the implementation branch `claude/nice-brown-7edqmx`.
-- The v3 planning set is reviewed in the draft pull request [The-enlit-dev/BrixoAI#1](https://github.com/The-enlit-dev/BrixoAI/pull/1). That PR is left untouched (DEC-25).
+- The v3 planning set is reviewed in the draft pull request [The-enlit-dev/VibeHealAI#1](https://github.com/The-enlit-dev/VibeHealAI/pull/1). That PR is left untouched (DEC-25).
 
 **Start with [DECISIONS.md](./DECISIONS.md).** It records the owner's decisions and takes precedence over every other document. Its [§4](./DECISIONS.md#4-round-3-backend-managed-integration-marketplace-recorded-2026-10-31) explains what changed in v4 and why.
 
@@ -14,10 +14,10 @@
 - **What (new, 2026-10-31):** an extensible **integration marketplace** of first-party integrations [DEC-17, DEC-19]:
   - providers: GitHub, Vercel, Netlify, Supabase, Figma, Stripe, Shopify, Notion and Slack;
   - read-only first [DEC-21];
-  - managed by a BrixoAI **backend** that holds credentials, encrypted [DEC-18, DEC-20].
+  - managed by a VibeHeal **backend** that holds credentials, encrypted [DEC-18, DEC-20].
 - **AI:** no built-in AI and no AI billing. The user runs their own Claude Code [DEC-06, DEC-24].
 - **Cost:** $0. The backend runs locally only: no hosting, paid APIs, databases or domains [DEC-05, DEC-22].
-- **Not in scope:** BrixoAI user accounts (DEC-07, DEC-23), third-party plugins (DEC-17), provider write actions (DEC-21), deployment of the backend (DEC-22).
+- **Not in scope:** VibeHeal user accounts (DEC-07, DEC-23), third-party plugins (DEC-17), provider write actions (DEC-21), deployment of the backend (DEC-22).
 
 ## 2. Documents
 

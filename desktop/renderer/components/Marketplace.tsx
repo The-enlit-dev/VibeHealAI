@@ -25,7 +25,7 @@ export function Marketplace() {
         <header className="page-header">
           <h1 id="catalog-heading">Integrations</h1>
           <p className="muted">
-            First-party integrations that bring repository, deployment and design context into your broken-project sessions. Credentials stay on the BrixoAI backend.
+            First-party integrations that bring repository, deployment and design context into your broken-project sessions. Credentials stay on the VibeHeal backend.
           </p>
         </header>
 

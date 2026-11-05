@@ -10,7 +10,7 @@ const noDesktop = { group: ["**/desktop/**"], message: "Desktop code must not be
 const noMain = { group: ["**/main/**"], message: "The renderer must not import main-process code (WN-3)." };
 
 export default tseslint.config(
-  { ignores: ["dist/**", "node_modules/**", "coverage/**", ".brixo-data/**"] },
+  { ignores: ["dist/**", "node_modules/**", "coverage/**", ".vibeheal-data/**", ".brixo-data/**"] },
   js.configs.recommended,
   ...tseslint.configs.recommended,
   {
