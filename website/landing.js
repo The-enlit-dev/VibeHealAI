@@ -1,4 +1,4 @@
-/* global document, window */
+/* global document, window, IntersectionObserver */
 // Motion for the home page. Dependency-free. Everything here is progressive enhancement:
 // without this script the page shows its final, readable state.
 // Rules: transform and opacity only, requestAnimationFrame for scroll work, no looping animation,

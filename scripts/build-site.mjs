@@ -179,7 +179,7 @@ function demoCardsBlock(content) {
 /** Hero headline split into words for a staggered entrance; the full text stays readable for screen readers. */
 function headlineWordsBlock(text) {
   const words = text.split(/\s+/).filter(Boolean);
-  const spans = words.map((w, i) => `<span class="word" style="--i:${i}">${escapeHtml(w)}</span>`).join(" ");
+  const spans = words.map((w) => `<span class="word">${escapeHtml(w)}</span>`).join(" ");
   return `<span class="sr-only">${escapeHtml(text)}</span><span class="headline-words" aria-hidden="true">${spans}</span>`;
 }
 
@@ -589,15 +589,12 @@ export function buildSite({ root = defaultRoot, siteUrl } = {}) {
         ogType,
         ogUrl: canonical,
         ogImage: `${base}${brand.socialImage.path}`,
-        key: page.key,
-        canonicalTag: page.indexable ? `<link rel="canonical" href="${escapeHtml(canonical)}">` : "",
-        jsonLd: page.indexable ? jsonLdScript({ "@context": "https://schema.org", "@graph": graph }) : "",
-        script: page.script ? '<script src="/app.js" defer></script>' + (page.key === "home" ? '\n  <script src="/landing.js" defer></script>\n  <script src="/landing-motion.js" defer></script>' : "") : "",
-        verificationTags: page.key === "home" ? verificationTags(brand) : "",
         key,
         canonicalTag: indexable ? `<link rel="canonical" href="${escapeHtml(canonical)}">` : "",
         jsonLd: indexable ? jsonLdScript({ "@context": "https://schema.org", "@graph": graph }) : "",
-        script: script ? `<script src="${escapeHtml(script)}" defer></script>` : "",
+        script:
+          (script ? `<script src="${escapeHtml(script)}" defer></script>` : "") +
+          (key === "home" ? '\n  <script src="/landing.js" defer></script>\n  <script src="/landing-motion.js" defer></script>' : ""),
         verificationTags: key === "home" ? verificationTags(brand) : "",
         authScripts: auth.scripts,
         socialImageWidth: String(brand.socialImage.width),

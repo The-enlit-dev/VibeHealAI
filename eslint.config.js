@@ -10,7 +10,8 @@ const noDesktop = { group: ["**/desktop/**"], message: "Desktop code must not be
 const noMain = { group: ["**/main/**"], message: "The renderer must not import main-process code (WN-3)." };
 
 export default tseslint.config(
-  { ignores: ["dist/**", "node_modules/**", "coverage/**", ".vibeheal-data/**", ".brixo-data/**"] },
+  // website/landing-motion.js is a generated, minified bundle (source: motion-src/, npm run build:motion).
+  { ignores: ["dist/**", "node_modules/**", "coverage/**", ".vibeheal-data/**", ".brixo-data/**", "website/landing-motion.js"] },
   js.configs.recommended,
   ...tseslint.configs.recommended,
   {

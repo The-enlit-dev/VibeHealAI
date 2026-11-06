@@ -1,3 +1,4 @@
+/* global document, window */
 // Motion graphics for the VibeHealAI home page, built with the "motion" library (pinned 14.5.0).
 // Source: motion-src/. Built output: website/landing-motion.js (committed, same-origin, CSP-safe).
 //
