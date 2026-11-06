@@ -11,7 +11,8 @@
 | [SEO.md](./SEO.md) | SEO, AEO and GEO implementation, structured data and the canonical URL |
 | [SEARCH_CONSOLE.md](./SEARCH_CONSOLE.md) | Submitting the site to Google Search Console and Bing (owner steps) |
 | [ADMIN.md](./ADMIN.md) | Admin dashboard setup, security model and operations |
-| [AUTH.md](./AUTH.md) | Clerk sign-in on the public website: setup, DNS, security and owner steps |
+| [AUTH.md](./AUTH.md) | Clerk sign-in, account, members and studio pages: setup, security and owner steps |
+| [BLOG.md](./BLOG.md) | Writing blog posts, the content studio, front matter and the supported Markdown |
 
 ## How the pieces fit
 
@@ -20,6 +21,7 @@ site/                  SOURCE for the public website (edit these)
   brand.json           name, headline, tagline, colours, logo, social image, canonical URL
   content.json         capabilities and their status, steps, principles, waitlist options
   faq.json             FAQ: one source for the FAQ page, the home page preview and FAQPage data
+  blog/*.md            blog posts (Markdown + front matter), built into /blog/ and /blog/feed.xml
   layout.html          shared <head>, header and footer
   pages/*.html         page bodies
 scripts/build-site.mjs generator (no dependencies) -> writes website/
@@ -57,7 +59,8 @@ Open http://127.0.0.1:8790/. To enable the admin dashboard, follow [ADMIN.md](./
 
 - **Waitlist on Netlify uses Netlify Forms** (DEC-29). The form is registered as `waitlist`. It works only after the owner turns on form detection in the Netlify UI (Forms > Enable form detection) and redeploys. Until then the form shows "not reachable". Submissions are viewed and exported in the Netlify dashboard, not in the local admin dashboard. Netlify does not remove duplicate emails.
 - **Domain:** the canonical URL is `https://vibeheal.online` (DEC-31); the `*.netlify.app` addresses redirect there. Not yet submitted to Google or Bing; see [SEARCH_CONSOLE.md](./SEARCH_CONSOLE.md).
-- **Sign-in (Clerk)** does not work until the owner adds Clerk's DNS records; until then the header shows no account controls. See [AUTH.md](./AUTH.md).
+- **Sign-in (Clerk)** is live; Google and GitHub sign-in need the owner's OAuth credentials. See [AUTH.md](./AUTH.md).
+- **Netlify builds the site on each deploy** (`node scripts/build-site.mjs`), so posts merged from GitHub's editor go live. Each production deploy uses 15 of the free plan's 300 monthly credits.
 - **Local storage:** the local waitlist service (`npm run site:dev`) stores signups in a local JSON file, not encrypted at rest.
 - **Admin sessions** live in memory: restarting the service signs the admin out. There is one admin account and no password reset flow (create a new hash instead).
 - **Rate limits** are in-memory and keyed by the socket address. Behind a shared proxy every visitor would share one address. Change this before hosting behind a proxy.

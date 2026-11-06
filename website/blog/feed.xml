@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>VibeHeal blog</title>
+    <link>https://vibeheal.online/blog/</link>
+    <description>News and notes from VibeHeal.</description>
+    <language>en</language>
+    <lastBuildDate>Thu, 05 Nov 2026 00:00:00 GMT</lastBuildDate>
+    <atom:link href="https://vibeheal.online/blog/feed.xml" rel="self" type="application/rss+xml"/>
+    <item>
+      <title>Introducing VibeHeal</title>
+      <link>https://vibeheal.online/blog/introducing-vibeheal/</link>
+      <guid isPermaLink="true">https://vibeheal.online/blog/introducing-vibeheal/</guid>
+      <pubDate>Thu, 05 Nov 2026 00:00:00 GMT</pubDate>
+      <description>The project now has a name, VibeHeal, and a catch line, &quot;Just vibeheal it.&quot; Here is what it is meant to do, what exists today and what is still undecided.</description>
+      <category>news</category>
+      <category>vibe coding</category>
+    </item>
+  </channel>
+</rss>

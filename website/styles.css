@@ -2599,3 +2599,181 @@ html.js .flow-track .flow-step {
     display: none;
   }
 }
+
+/* ---------- blog (DEC-32) ---------- */
+
+.post-list {
+  display: grid;
+  gap: 16px;
+  padding-bottom: 72px;
+}
+
+.post-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius);
+  padding: 20px 22px;
+}
+
+.post-card h2 {
+  font-size: 1.25rem;
+  margin: 0 0 4px;
+}
+
+.post-card h2 a {
+  color: var(--color-text);
+  text-decoration: none;
+}
+
+.post-card h2 a:hover {
+  text-decoration: underline;
+}
+
+.post-card .meta,
+.studio-posts .meta {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--color-muted);
+  margin: 0 0 8px;
+}
+
+.post-card p:last-child {
+  margin-bottom: 0;
+  color: var(--color-muted);
+}
+
+.post-body h2,
+.post-body h3,
+.post-body h4 {
+  margin-top: 1.8em;
+}
+
+.post-body pre {
+  background: var(--color-navy);
+  color: var(--color-ivory);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  overflow-x: auto;
+  font-size: 0.9rem;
+}
+
+.post-body blockquote {
+  margin: 1.2em 0;
+  padding: 4px 18px;
+  border-left: 4px solid var(--color-teal);
+  background: var(--color-surface);
+}
+
+.post-body hr {
+  border: 0;
+  border-top: 1px solid var(--color-line-strong);
+  margin: 2em 0;
+}
+
+.post-footer {
+  padding-bottom: 72px;
+}
+
+.post-tags {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 0;
+  margin: 0 0 16px;
+}
+
+.post-tags li {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  border: 1px solid var(--color-line-strong);
+  border-radius: var(--radius-small);
+  padding: 2px 8px;
+  color: var(--color-muted);
+}
+
+.empty-state {
+  color: var(--color-muted);
+  padding-bottom: 72px;
+}
+
+/* ---------- account, members and studio pages ---------- */
+
+[data-auth-page] {
+  padding-bottom: 72px;
+}
+
+.auth-status {
+  color: var(--color-muted);
+}
+
+.auth-status[hidden],
+.waitlist-status[hidden],
+.members-content[hidden],
+.studio[hidden],
+.account-note[hidden] {
+  display: none;
+}
+
+.auth-mount:empty {
+  display: none;
+}
+
+.waitlist-status,
+.account-note {
+  background: var(--color-surface);
+  border: 1px solid var(--color-line);
+  border-left: 4px solid var(--color-teal);
+  border-radius: var(--radius);
+  padding: 10px 14px;
+  margin: 0 0 20px;
+}
+
+.waitlist-status p {
+  margin: 0;
+}
+
+.members-greeting {
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.auth-link {
+  color: var(--color-navy);
+  font-size: 0.95rem;
+  padding: 6px 4px;
+}
+
+.auth-user {
+  display: flex;
+  align-items: center;
+}
+
+.studio {
+  display: grid;
+  gap: 20px;
+}
+
+.studio-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius);
+  padding: 20px 22px;
+}
+
+.studio-card h2 {
+  font-size: 1.2rem;
+  margin-top: 0;
+}
+
+.studio-form .field {
+  margin-bottom: 14px;
+}
+
+.studio-posts {
+  padding-left: 18px;
+}
+
+.studio-posts li {
+  margin-bottom: 6px;
+}

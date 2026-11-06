@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Members area | VibeHeal</title>
+  <meta name="description" content="Early-access updates for signed-in members, and your waitlist status.">
+  <meta name="robots" content="noindex, nofollow">
+  
+  
+  <meta name="theme-color" content="#14213D">
+  <meta name="color-scheme" content="light">
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/brand.css">
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="alternate" type="application/rss+xml" title="VibeHeal blog" href="/blog/feed.xml">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="VibeHeal">
+  <meta property="og:locale" content="en_GB">
+  <meta property="og:title" content="Members area | VibeHeal">
+  <meta property="og:description" content="Early-access updates for signed-in members, and your waitlist status.">
+  <meta property="og:url" content="https://vibeheal.online/members/">
+  <meta property="og:image" content="https://vibeheal.online/assets/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Abstract geometric symbol beside the text: Your AI assistant for vibe coders. Just vibeheal it.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Members area | VibeHeal">
+  <meta name="twitter:description" content="Early-access updates for signed-in members, and your waitlist status.">
+  <meta name="twitter:image" content="https://vibeheal.online/assets/og-image.png">
+  <meta name="twitter:image:alt" content="Abstract geometric symbol beside the text: Your AI assistant for vibe coders. Just vibeheal it.">
+  
+</head>
+<body class="page-members">
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="/">
+        <img class="brand-mark" src="/assets/logo.svg" alt="" width="32" height="32">
+        <span class="brand-name">VibeHeal</span>
+      </a>
+      <nav class="site-nav" aria-label="Main">
+        <a href="/#capabilities">Capabilities</a>
+        <a href="/#how-it-works">How it works</a>
+        <a href="/blog/">Blog</a>
+        <a href="/faq/">FAQ</a>
+        <a href="/about/">About</a>
+        <a class="nav-cta" href="/#waitlist">Join the waitlist</a>
+      </nav>
+      <div id="auth-controls" class="auth-controls" aria-label="Account" role="group" hidden></div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="page-hero" aria-labelledby="members-title">
+      <div class="container narrow">
+        <p class="section-kicker">Members</p>
+        <h1 id="members-title">Members area</h1>
+        <p class="lead">Early-access updates for people with a VibeHeal account.</p>
+      </div>
+    </section>
+
+    <div class="container narrow" data-auth-page="members">
+      <p class="auth-status" data-auth-state="loading">Checking your sign-in…</p>
+      <noscript><p class="auth-status">The members area needs JavaScript to load.</p></noscript>
+      <div class="auth-mount" data-auth-mount></div>
+
+      <div class="prose members-content" data-auth-content hidden>
+        <p class="members-greeting" data-auth-greeting></p>
+        <div class="waitlist-status" data-waitlist-status hidden></div>
+
+        <section aria-labelledby="members-updates">
+          <h2 id="members-updates">Latest updates</h2>
+          <ul>
+            <li><a href="/blog/introducing-vibeheal/">Introducing VibeHeal</a> (<time datetime="2026-11-05">5 November 2026</time>)</li>
+          </ul>
+        </section>
+
+        <section aria-labelledby="members-next">
+          <h2 id="members-next">What members can expect</h2>
+          <ul>
+            <li>Early-access news before it goes on the public site.</li>
+            <li>A chance to try test builds when they are ready. No date has been set.</li>
+            <li>A say in what gets built first, through short surveys.</li>
+          </ul>
+          <p>Nothing here is secret: this page only saves you a few clicks. Product access will come through a separate, secure process when it exists.</p>
+        </section>
+
+        <p><a class="button button-secondary" href="/account/">Manage your account</a></p>
+      </div>
+    </div>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div class="footer-brand">
+        <a class="brand brand-footer" href="/">
+          <img class="brand-mark" src="/assets/logo.svg" alt="" width="28" height="28">
+          <span class="brand-name">VibeHeal</span>
+        </a>
+        <p class="footer-tagline">Just vibeheal it.</p>
+      </div>
+      <nav class="footer-nav" aria-label="Footer">
+        <a href="/blog/">Blog</a>
+        <a href="/faq/">FAQ</a>
+        <a href="/about/">About</a>
+        <a href="/privacy/">Waitlist privacy</a>
+        <a href="/#waitlist">Join the waitlist</a>
+      </nav>
+      <div class="footer-notes">
+        
+        <p class="footer-note">This site describes work in progress. Nothing on it is a launch announcement, a price or a promise of a specific feature.</p>
+      </div>
+    </div>
+  </footer>
+  <script defer crossorigin="anonymous" src="https://clerk.vibeheal.online/npm/@clerk/ui@1/dist/ui.browser.js"></script>
+  <script defer crossorigin="anonymous" data-clerk-publishable-key="pk_live_Y2xlcmsudmliZWhlYWwub25saW5lJA" src="https://clerk.vibeheal.online/npm/@clerk/clerk-js@6/dist/clerk.browser.js"></script>
+  <script defer src="/auth.js"></script>
+  
+</body>
+</html>

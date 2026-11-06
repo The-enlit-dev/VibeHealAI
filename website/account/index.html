@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Your account | VibeHeal</title>
+  <meta name="description" content="Manage your sign-in details, email address, password and connected accounts.">
+  <meta name="robots" content="noindex, nofollow">
+  
+  
+  <meta name="theme-color" content="#14213D">
+  <meta name="color-scheme" content="light">
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/brand.css">
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="alternate" type="application/rss+xml" title="VibeHeal blog" href="/blog/feed.xml">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="VibeHeal">
+  <meta property="og:locale" content="en_GB">
+  <meta property="og:title" content="Your account | VibeHeal">
+  <meta property="og:description" content="Manage your sign-in details, email address, password and connected accounts.">
+  <meta property="og:url" content="https://vibeheal.online/account/">
+  <meta property="og:image" content="https://vibeheal.online/assets/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Abstract geometric symbol beside the text: Your AI assistant for vibe coders. Just vibeheal it.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Your account | VibeHeal">
+  <meta name="twitter:description" content="Manage your sign-in details, email address, password and connected accounts.">
+  <meta name="twitter:image" content="https://vibeheal.online/assets/og-image.png">
+  <meta name="twitter:image:alt" content="Abstract geometric symbol beside the text: Your AI assistant for vibe coders. Just vibeheal it.">
+  
+</head>
+<body class="page-account">
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="/">
+        <img class="brand-mark" src="/assets/logo.svg" alt="" width="32" height="32">
+        <span class="brand-name">VibeHeal</span>
+      </a>
+      <nav class="site-nav" aria-label="Main">
+        <a href="/#capabilities">Capabilities</a>
+        <a href="/#how-it-works">How it works</a>
+        <a href="/blog/">Blog</a>
+        <a href="/faq/">FAQ</a>
+        <a href="/about/">About</a>
+        <a class="nav-cta" href="/#waitlist">Join the waitlist</a>
+      </nav>
+      <div id="auth-controls" class="auth-controls" aria-label="Account" role="group" hidden></div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="page-hero" aria-labelledby="account-title">
+      <div class="container narrow">
+        <p class="section-kicker">Account</p>
+        <h1 id="account-title">Your account</h1>
+        <p class="lead">Manage your sign-in details. An account is optional and does not give access to the product yet.</p>
+      </div>
+    </section>
+
+    <div class="container narrow account-page" data-auth-page="account">
+      <p class="auth-status" data-auth-state="loading">Loading your account…</p>
+      <noscript><p class="auth-status">Your account needs JavaScript to load.</p></noscript>
+      <div class="waitlist-status" data-waitlist-status hidden></div>
+      <div class="auth-mount" data-auth-mount></div>
+    </div>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div class="footer-brand">
+        <a class="brand brand-footer" href="/">
+          <img class="brand-mark" src="/assets/logo.svg" alt="" width="28" height="28">
+          <span class="brand-name">VibeHeal</span>
+        </a>
+        <p class="footer-tagline">Just vibeheal it.</p>
+      </div>
+      <nav class="footer-nav" aria-label="Footer">
+        <a href="/blog/">Blog</a>
+        <a href="/faq/">FAQ</a>
+        <a href="/about/">About</a>
+        <a href="/privacy/">Waitlist privacy</a>
+        <a href="/#waitlist">Join the waitlist</a>
+      </nav>
+      <div class="footer-notes">
+        
+        <p class="footer-note">This site describes work in progress. Nothing on it is a launch announcement, a price or a promise of a specific feature.</p>
+      </div>
+    </div>
+  </footer>
+  <script defer crossorigin="anonymous" src="https://clerk.vibeheal.online/npm/@clerk/ui@1/dist/ui.browser.js"></script>
+  <script defer crossorigin="anonymous" data-clerk-publishable-key="pk_live_Y2xlcmsudmliZWhlYWwub25saW5lJA" src="https://clerk.vibeheal.online/npm/@clerk/clerk-js@6/dist/clerk.browser.js"></script>
+  <script defer src="/auth.js"></script>
+  
+</body>
+</html>
