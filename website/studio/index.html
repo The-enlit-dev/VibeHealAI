@@ -8,9 +8,10 @@
   <meta name="robots" content="noindex, nofollow">
   
   
-  <meta name="theme-color" content="#14213D">
-  <meta name="color-scheme" content="light">
-  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+  <meta name="theme-color" content="#080B10">
+  <meta name="color-scheme" content="dark">
+  <link rel="icon" href="/assets/favicon.png" type="image/png">
+  <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
   <link rel="stylesheet" href="/brand.css">
   <link rel="stylesheet" href="/styles.css">
   <link rel="alternate" type="application/rss+xml" title="VibeHeal blog" href="/blog/feed.xml">
@@ -23,30 +24,33 @@
   <meta property="og:image" content="https://vibeheal.online/assets/og-image.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="Abstract geometric symbol beside the text: Your AI assistant for vibe coders. Just vibeheal it.">
+  <meta property="og:image:alt" content="The VibeHealAI logo beside the text: Your AI assistant for vibe coders. Just vibeheal it.">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Content studio | VibeHeal">
   <meta name="twitter:description" content="Write and manage blog posts. Only accounts with the admin role can use this page.">
   <meta name="twitter:image" content="https://vibeheal.online/assets/og-image.png">
-  <meta name="twitter:image:alt" content="Abstract geometric symbol beside the text: Your AI assistant for vibe coders. Just vibeheal it.">
+  <meta name="twitter:image:alt" content="The VibeHealAI logo beside the text: Your AI assistant for vibe coders. Just vibeheal it.">
   
 </head>
 <body class="page-studio">
   <a class="skip-link" href="#main">Skip to content</a>
 
-  <header class="site-header">
+  <header class="site-header" id="site-header">
     <div class="container header-inner">
-      <a class="brand" href="/">
-        <img class="brand-mark" src="/assets/logo.svg" alt="" width="32" height="32">
+      <a class="brand" href="/" aria-label="VibeHeal home">
+        <img class="brand-mark" src="/assets/logo-mark.png" alt="" width="44" height="29">
         <span class="brand-name">VibeHeal</span>
       </a>
-      <nav class="site-nav" aria-label="Main">
-        <a href="/#capabilities">Capabilities</a>
-        <a href="/#how-it-works">How it works</a>
-        <a href="/blog/">Blog</a>
-        <a href="/faq/">FAQ</a>
-        <a href="/about/">About</a>
-        <a class="nav-cta" href="/#waitlist">Join the waitlist</a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav" id="nav-toggle">
+        <span class="nav-toggle-bars" aria-hidden="true"></span><span class="sr-only">Menu</span>
+      </button>
+      <nav class="site-nav" id="site-nav" aria-label="Main">
+        <a class="nav-link" href="/#product">Product</a>
+        <a class="nav-link" href="/#features">Features</a>
+        <a class="nav-link" href="/#how-it-works">How it works</a>
+        <a class="nav-link" href="/blog/">Blog</a>
+        <a class="nav-link" href="/about/">About</a>
+        <a class="nav-cta" href="/#waitlist">Get Started</a>
       </nav>
       <div id="auth-controls" class="auth-controls" aria-label="Account" role="group" hidden></div>
     </div>
@@ -110,25 +114,38 @@
   <footer class="site-footer">
     <div class="container footer-inner">
       <div class="footer-brand">
-        <a class="brand brand-footer" href="/">
-          <img class="brand-mark" src="/assets/logo.svg" alt="" width="28" height="28">
-          <span class="brand-name">VibeHeal</span>
+        <a class="brand brand-footer" href="/" aria-label="VibeHeal home">
+          <img class="brand-lockup" src="/assets/logo-lockup.png" alt="VibeHealAI" width="1292" height="226">
         </a>
         <p class="footer-tagline">Just vibeheal it.</p>
       </div>
-      <nav class="footer-nav" aria-label="Footer">
-        <a href="/blog/">Blog</a>
-        <a href="/faq/">FAQ</a>
-        <a href="/about/">About</a>
-        <a href="/privacy/">Waitlist privacy</a>
-        <a href="/#waitlist">Join the waitlist</a>
+      <nav class="footer-cols" aria-label="Footer">
+        <div>
+          <p class="footer-head">Product</p>
+          <a href="/#product">Overview</a>
+          <a href="/#features">Features</a>
+          <a href="/#how-it-works">How it works</a>
+          <a href="/#demo">Interactive preview</a>
+        </div>
+        <div>
+          <p class="footer-head">Company</p>
+          <a href="/about/">About</a>
+          <a href="/blog/">Blog</a>
+          <a href="/faq/">FAQ</a>
+          <a href="/#waitlist">Join the waitlist</a>
+        </div>
+        <div>
+          <p class="footer-head">Legal</p>
+          <a href="/privacy/">Waitlist privacy</a>
+        </div>
       </nav>
       <div class="footer-notes">
         
-        <p class="footer-note">This site describes work in progress. Nothing on it is a launch announcement, a price or a promise of a specific feature.</p>
+        <p class="footer-note">&copy; 2026 VibeHeal. Early development. Nothing on this site is a launch announcement, a price or a promise of a specific feature.</p>
       </div>
     </div>
   </footer>
+  <script src="/nav.js" defer></script>
   <script defer crossorigin="anonymous" src="https://clerk.vibeheal.online/npm/@clerk/ui@1/dist/ui.browser.js"></script>
   <script defer crossorigin="anonymous" data-clerk-publishable-key="pk_live_Y2xlcmsudmliZWhlYWwub25saW5lJA" src="https://clerk.vibeheal.online/npm/@clerk/clerk-js@6/dist/clerk.browser.js"></script>
   <script defer src="/auth.js"></script>

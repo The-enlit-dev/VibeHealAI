@@ -3,17 +3,17 @@
       <div class="container hero-grid">
         <div class="hero-copy">
           <img class="hero-logo reveal-logo" src="{{ brand.logo.lockupPath }}" alt="VibeHealAI" width="1292" height="226">
-          <p class="eyebrow reveal-up" style="--d:0.35s"><span class="eyebrow-dot" aria-hidden="true"></span>{{ content.hero.eyebrow }}</p>
+          <p class="eyebrow reveal-up d-350"><span class="eyebrow-dot" aria-hidden="true"></span>{{ content.hero.eyebrow }}</p>
           <h1 id="hero-title" class="hero-title">{{{ blocks.heroHeadline }}}</h1>
-          <p class="lead reveal-up" style="--d:1.1s">{{ content.hero.lead }}</p>
-          <div class="actions hero-actions reveal-up" style="--d:1.25s">
+          <p class="lead reveal-up d-1100">{{ content.hero.lead }}</p>
+          <div class="actions hero-actions reveal-up d-1250">
             <a class="button button-primary" href="#waitlist">Get Started</a>
             <a class="button button-secondary" href="#product">Explore the Platform</a>
           </div>
-          <p class="hero-note reveal-up" style="--d:1.4s">Early development. No release date has been set. The waitlist is for early access.</p>
+          <p class="hero-note reveal-up d-1400">Early development. Not available yet. No release date has been set, and the waitlist is for early access.</p>
         </div>
 
-        <div class="hero-visual reveal-up" style="--d:0.6s" aria-hidden="true">
+        <div class="hero-visual reveal-up d-600" aria-hidden="true">
           <div class="stage">
             <svg class="hero-connector" viewBox="0 0 100 100" preserveAspectRatio="none" focusable="false">
               <path d="M 21 33 C 11 50, 11 70, 22 84" fill="none" stroke="#38BDF8" stroke-opacity="0.75" stroke-width="1.2" vector-effect="non-scaling-stroke" stroke-linecap="round"/>
@@ -61,10 +61,10 @@
           <p class="section-intro">AI tools change files quickly. When something breaks, the error rarely says where to start, and the project is spread across many dashboards. VibeHeal is designed to bring that context together and keep you in control of every change.</p>
         </div>
         <ul class="problem-grid">
-          <li class="reveal-up" style="--d:0.05s"><h3>Code you didn't write</h3><p>AI tools change files you don't fully understand, and it is hard to tell which change matters.</p></li>
-          <li class="reveal-up" style="--d:0.12s"><h3>Errors without a map</h3><p>When a project breaks, the error message rarely tells a beginner where to start.</p></li>
-          <li class="reveal-up" style="--d:0.19s"><h3>Tools in ten tabs</h3><p>Code, hosting, database, design and chat each live somewhere else, with their own dashboards.</p></li>
-          <li class="reveal-up" style="--d:0.26s"><h3>Chores that eat build time</h3><p>Running checks, keeping track of what changed and repeating the same steps add up.</p></li>
+          <li class="reveal-up d-50"><h3>Code you didn't write</h3><p>AI tools change files you don't fully understand, and it is hard to tell which change matters.</p></li>
+          <li class="reveal-up d-120"><h3>Errors without a map</h3><p>When a project breaks, the error message rarely tells a beginner where to start.</p></li>
+          <li class="reveal-up d-190"><h3>Tools in ten tabs</h3><p>Code, hosting, database, design and chat each live somewhere else, with their own dashboards.</p></li>
+          <li class="reveal-up d-260"><h3>Chores that eat build time</h3><p>Running checks, keeping track of what changed and repeating the same steps add up.</p></li>
         </ul>
         <div class="layers" aria-hidden="true">
           <div class="layer layer-1" data-depth="0.08"><div class="layer-title">Activity</div><div class="layer-row"><span>GitHub: repository metadata</span><em>Success</em></div><div class="layer-row"><span>GitHub: pull requests</span><em>Success</em></div><div class="layer-row"><span>Vercel: deployments</span><em>Not connected</em></div></div>
@@ -154,7 +154,7 @@
                     <span class="badge" id="demo-badge"></span>
                   </div>
                   <p class="details-sum" id="demo-sum"></p>
-                  <h4>Permissions</h4>
+                  <h3 class="demo-subhead">Permissions</h3>
                   <ul class="perm-list" id="demo-perms"></ul>
                   <p class="demo-note" id="demo-note"></p>
                 </div>
@@ -194,15 +194,15 @@
           <h2 id="status-title">Where things stand</h2>
         </div>
         <div class="status-columns">
-          <div class="status-column reveal-up" style="--d:0s">
+          <div class="status-column reveal-up">
             <h3><span class="chip chip-working-in-development">In development</span></h3>
             <p>{{ content.status.working }}</p>
           </div>
-          <div class="status-column reveal-up" style="--d:0.08s">
+          <div class="status-column reveal-up d-80">
             <h3><span class="chip chip-planned">Planned</span></h3>
             <p>{{ content.status.planned }}</p>
           </div>
-          <div class="status-column reveal-up" style="--d:0.16s">
+          <div class="status-column reveal-up d-160">
             <h3><span class="chip chip-exploring">Not decided</span></h3>
             <p>{{ content.status.undecided }}</p>
           </div>
@@ -217,11 +217,11 @@
           <h2 id="audience-title">Made for people who build with AI</h2>
         </div>
         <div class="audience-grid">
-          <article class="audience-card reveal-up" style="--d:0s">
+          <article class="audience-card reveal-up">
             <h3>Vibe coders</h3>
             <p>Especially beginners building with Claude Code, Cursor and similar tools, who want to understand what changed, fix what broke and spend less time on chores. This is the first audience.</p>
           </article>
-          <article class="audience-card reveal-up" style="--d:0.08s">
+          <article class="audience-card reveal-up d-80">
             <h3>Indie hackers and independent developers</h3>
             <p>People who ship alone and want their project, tools and automations in one calmer place.</p>
           </article>
@@ -252,7 +252,7 @@
           </div>
         </div>
 
-        <form id="waitlist-form" class="waitlist-form reveal-up" style="--d:0.1s" name="waitlist" method="POST" action="/" data-netlify="true" netlify-honeypot="company" data-endpoint="/api/waitlist" novalidate>
+        <form id="waitlist-form" class="waitlist-form reveal-up d-100" name="waitlist" method="POST" action="/" data-netlify="true" netlify-honeypot="company" data-endpoint="/api/waitlist" novalidate>
           <input type="hidden" name="form-name" value="waitlist">
           <p id="account-note" class="account-note" hidden></p>
           <div class="field">
