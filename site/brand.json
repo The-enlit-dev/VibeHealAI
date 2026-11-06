@@ -10,24 +10,30 @@
   "locale": "en_GB",
   "lastUpdated": "2026-11-05",
   "colors": {
-    "navy": "#14213D",
-    "teal": "#1B998B",
-    "ivory": "#F6F4EF",
-    "slate": "#667085",
-    "amber": "#F4B942",
-    "tealInk": "#0E6F64",
-    "white": "#FFFFFF"
+    "obsidian": "#080B10",
+    "graphite": "#111923",
+    "elevated": "#17212D",
+    "sidebar": "#0D131C",
+    "input": "#0D1520",
+    "primary": "#2684FF",
+    "ice": "#38BDF8",
+    "textPrimary": "#F4F6F8",
+    "textSecondary": "#9AA5B1",
+    "textMuted": "#657181",
+    "border": "#283442",
+    "warmNeutral": "#DCE3EA"
   },
   "logo": {
-    "path": "/assets/logo.svg",
-    "description": "Abstract geometric symbol: a navy tile holding three teal squares and an amber circle in a two-by-two grid. It contains no letters."
+    "path": "/assets/logo-mark.png",
+    "lockupPath": "/assets/logo-lockup.png",
+    "description": "The VibeHealAI V symbol with its sparkle, supplied as the official brand artwork and cut out from its background without recolouring. The full lockup pairs it with the VibeHealAI wordmark."
   },
-  "favicon": "/assets/favicon.svg",
+  "favicon": "/assets/favicon.png",
   "socialImage": {
     "path": "/assets/og-image.png",
     "width": 1200,
     "height": 630,
-    "alt": "Abstract geometric symbol beside the text: Your AI assistant for vibe coders. Just vibeheal it."
+    "alt": "The VibeHealAI logo beside the text: Your AI assistant for vibe coders. Just vibeheal it."
   },
   "author": {
     "name": "",
@@ -43,5 +49,6 @@
     "_comment": "Optional search-engine ownership tokens (not secrets). Paste only the content value of the meta tag each tool gives you. See docs/website/SEARCH_CONSOLE.md.",
     "google": "",
     "bing": ""
-  }
+  },
+  "appleTouchIcon": "/assets/apple-touch-icon.png"
 }

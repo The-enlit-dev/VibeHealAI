@@ -122,14 +122,72 @@ function capabilitiesBlock(content) {
     .join("\n");
 }
 
-function stepsBlock(content) {
+const FLOW_VISUALS = [
+  `<div class="flow-visual flow-visual-connect" aria-hidden="true"><span class="flow-node">Project folder</span><span class="flow-link"></span><span class="flow-node">GitHub <em>read only</em></span><span class="flow-link"></span><span class="flow-node">Other tools <em>read only</em></span></div>`,
+  `<div class="flow-visual flow-visual-understand" aria-hidden="true"><span class="flow-line"><b>Setup</b><i></i></span><span class="flow-line"><b>Recent changes</b><i></i></span><span class="flow-line"><b>Errors, in plain language</b><i></i></span></div>`,
+  `<div class="flow-visual flow-visual-control" aria-hidden="true"><span class="flow-action">Review change</span><span class="flow-action">Keep backup</span><span class="flow-action flow-action-primary">Undo</span></div>`,
+];
+
+/** Three-step workflow (content.steps), each with an illustration. */
+function workflowBlock(content) {
   return content.steps
     .map(
-      (step, index) => `        <li class="step">
-          <span class="step-number" aria-hidden="true">${String(index + 1).padStart(2, "0")}</span>
-          <h3>${escapeHtml(step.title)}</h3>
-          <p>${escapeHtml(step.body)}</p>
-        </li>`,
+      (step, i) => `          <li class="flow-step" data-step="${i}">
+            <span class="flow-num" aria-hidden="true">0${i + 1}</span>
+            <div class="flow-text">
+              <h3>${escapeHtml(step.title)}</h3>
+              <p>${escapeHtml(step.body)}</p>
+            </div>
+            ${FLOW_VISUALS[i] ?? ""}
+          </li>`,
+    )
+    .join("\n");
+}
+
+/** Feature tiles (content.capabilities) with their real status. */
+function featureTilesBlock(content) {
+  return content.capabilities
+    .map(
+      (c, i) => `          <li class="feature-tile feature-tile-${i}" data-status="${escapeHtml(c.status)}">
+            <div class="feature-head">
+              <h3>${escapeHtml(c.title)}</h3>
+              <span class="chip chip-${escapeHtml(c.status)}">${escapeHtml(content.statusLabels[c.status])}</span>
+            </div>
+            <p>${escapeHtml(c.body)}</p>
+            <div class="feature-visual" aria-hidden="true"><span></span><span></span><span></span></div>
+          </li>`,
+    )
+    .join("\n");
+}
+
+/** Sample provider cards for the interactive demo. Sample data, not connected to anything. */
+function demoCardsBlock(content) {
+  const labels = { available: "Available", coming_soon: "Coming soon" };
+  return content.demo.providers
+    .map((p) => {
+      const initials = p.name.slice(0, 2).toUpperCase();
+      const category = content.demo.categoryLabels[p.category];
+      return `              <li><button type="button" class="demo-card" aria-pressed="false" data-name="${escapeHtml(p.name)}" data-category="${escapeHtml(category)}" data-summary="${escapeHtml(p.summary)}" data-status="${escapeHtml(p.status)}" data-status-label="${escapeHtml(labels[p.status])}" data-permissions="${escapeHtml((p.permissions ?? []).join("|"))}">
+                <span class="monogram monogram-sm" aria-hidden="true">${escapeHtml(initials)}</span>
+                <span class="demo-card-text"><span class="demo-card-name">${escapeHtml(p.name)}</span><span class="demo-card-cat">${escapeHtml(category)}</span></span>
+                <span class="badge badge-${escapeHtml(p.status)}">${escapeHtml(labels[p.status])}</span>
+              </button></li>`;
+    })
+    .join("\n");
+}
+
+/** Hero headline split into words for a staggered entrance; the full text stays readable for screen readers. */
+function headlineWordsBlock(text) {
+  const words = text.split(/\s+/).filter(Boolean);
+  const spans = words.map((w, i) => `<span class="word" style="--i:${i}">${escapeHtml(w)}</span>`).join(" ");
+  return `<span class="sr-only">${escapeHtml(text)}</span><span class="headline-words" aria-hidden="true">${spans}</span>`;
+}
+
+/** Sample activity rows for the demo. */
+function demoActivityBlock(content) {
+  return content.demo.activity
+    .map(
+      (a) => `              <tr><td>${escapeHtml(a.event)}</td><td>${escapeHtml(a.result)}</td></tr>`,
     )
     .join("\n");
 }
@@ -485,7 +543,11 @@ export function buildSite({ root = defaultRoot, siteUrl } = {}) {
     studioPosts: studioPostsBlock(posts, brand),
     authControls: auth.controls,
     capabilities: capabilitiesBlock(content),
-    steps: stepsBlock(content),
+    workflow: workflowBlock(content),
+    featureTiles: featureTilesBlock(content),
+    demoCards: demoCardsBlock(content),
+    demoActivity: demoActivityBlock(content),
+    heroHeadline: headlineWordsBlock(content.hero.headline),
     principles: principlesBlock(content),
     faqHome: faqHomeBlock(faq),
     faqFull: faqFullBlock(faq),
@@ -527,6 +589,11 @@ export function buildSite({ root = defaultRoot, siteUrl } = {}) {
         ogType,
         ogUrl: canonical,
         ogImage: `${base}${brand.socialImage.path}`,
+        key: page.key,
+        canonicalTag: page.indexable ? `<link rel="canonical" href="${escapeHtml(canonical)}">` : "",
+        jsonLd: page.indexable ? jsonLdScript({ "@context": "https://schema.org", "@graph": graph }) : "",
+        script: page.script ? '<script src="/app.js" defer></script>' + (page.key === "home" ? '\n  <script src="/landing.js" defer></script>\n  <script src="/landing-motion.js" defer></script>' : "") : "",
+        verificationTags: page.key === "home" ? verificationTags(brand) : "",
         key,
         canonicalTag: indexable ? `<link rel="canonical" href="${escapeHtml(canonical)}">` : "",
         jsonLd: indexable ? jsonLdScript({ "@context": "https://schema.org", "@graph": graph }) : "",
@@ -623,13 +690,18 @@ export function buildSite({ root = defaultRoot, siteUrl } = {}) {
     "brand.css",
     `/* Generated from site/brand.json by scripts/build-site.mjs. Do not edit by hand. */
 :root {
-  --color-navy: ${c.navy};
-  --color-teal: ${c.teal};
-  --color-ivory: ${c.ivory};
-  --color-slate: ${c.slate};
-  --color-amber: ${c.amber};
-  --color-teal-ink: ${c.tealInk};
-  --color-white: ${c.white};
+  --color-obsidian: ${c.obsidian};
+  --color-graphite: ${c.graphite};
+  --color-elevated: ${c.elevated};
+  --color-sidebar: ${c.sidebar};
+  --color-input: ${c.input};
+  --color-primary: ${c.primary};
+  --color-ice: ${c.ice};
+  --color-text-primary: ${c.textPrimary};
+  --color-text-secondary: ${c.textSecondary};
+  --color-text-muted: ${c.textMuted};
+  --color-border: ${c.border};
+  --color-warm-neutral: ${c.warmNeutral};
 }
 `,
   );

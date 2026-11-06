@@ -57,12 +57,8 @@
       "body": "See your project's setup, recent changes and errors explained in plain language."
     },
     {
-      "title": "Automate the repetitive parts",
-      "body": "Pick the tasks to automate and when they run. You approve anything that changes files or services."
-    },
-    {
-      "title": "Stay in control",
-      "body": "Review every change, keep backups and undo what you don't want. Your own AI tool does the coding."
+      "title": "Automate, and stay in control",
+      "body": "Pick the tasks to automate and when they run. You approve anything that changes files or services. Review every change, keep backups and undo what you don't want. Your own AI tool does the coding."
     }
   ],
   "principles": [
@@ -90,22 +86,135 @@
   },
   "waitlist": {
     "aiTools": [
-      { "id": "claude-code", "label": "Claude Code" },
-      { "id": "cursor", "label": "Cursor" },
-      { "id": "other", "label": "Another AI coding tool" },
-      { "id": "none", "label": "I'm not using one yet" }
+      {
+        "id": "claude-code",
+        "label": "Claude Code"
+      },
+      {
+        "id": "cursor",
+        "label": "Cursor"
+      },
+      {
+        "id": "other",
+        "label": "Another AI coding tool"
+      },
+      {
+        "id": "none",
+        "label": "I'm not using one yet"
+      }
     ],
     "capabilities": [
-      { "id": "explain-errors", "label": "Plain-language explanations of errors" },
-      { "id": "handoff-brief", "label": "A structured brief to paste into my AI tool" },
-      { "id": "review-changes", "label": "Review every change before I keep it" },
-      { "id": "backups-undo", "label": "Backups and one-click undo" },
-      { "id": "project-inspection", "label": "A safe check of my project's setup" },
-      { "id": "github-context", "label": "Read-only GitHub context (repos, branches, pull requests)" },
-      { "id": "integrations", "label": "Connections to other tools I use (deployment, design, docs, chat)" },
-      { "id": "automations", "label": "Automating repetitive project tasks" },
-      { "id": "scheduled-automations", "label": "Automations that run on a schedule I choose" },
-      { "id": "music", "label": "Music and other everyday integrations" }
+      {
+        "id": "explain-errors",
+        "label": "Plain-language explanations of errors"
+      },
+      {
+        "id": "handoff-brief",
+        "label": "A structured brief to paste into my AI tool"
+      },
+      {
+        "id": "review-changes",
+        "label": "Review every change before I keep it"
+      },
+      {
+        "id": "backups-undo",
+        "label": "Backups and one-click undo"
+      },
+      {
+        "id": "project-inspection",
+        "label": "A safe check of my project's setup"
+      },
+      {
+        "id": "github-context",
+        "label": "Read-only GitHub context (repos, branches, pull requests)"
+      },
+      {
+        "id": "integrations",
+        "label": "Connections to other tools I use (deployment, design, docs, chat)"
+      },
+      {
+        "id": "automations",
+        "label": "Automating repetitive project tasks"
+      },
+      {
+        "id": "scheduled-automations",
+        "label": "Automations that run on a schedule I choose"
+      },
+      {
+        "id": "music",
+        "label": "Music and other everyday integrations"
+      }
+    ]
+  },
+  "hero": {
+    "eyebrow": "For vibe coders · In early development",
+    "headline": "Your ideas deserve more than just AI.",
+    "lead": "VibeHeal is an intelligent assistant for the projects you build with AI tools. It is designed to help you understand what is happening, connect the tools you already use and keep control of every change. It is in early development and not available yet."
+  },
+  "demo": {
+    "categoryLabels": {
+      "source_control": "Source control",
+      "deployment": "Deployment",
+      "database": "Database",
+      "design": "Design",
+      "payments": "Payments"
+    },
+    "providers": [
+      {
+        "name": "GitHub",
+        "category": "source_control",
+        "summary": "Read repositories, branches, commits and pull requests.",
+        "status": "available",
+        "permissions": [
+          "Repository metadata (read)",
+          "Repository contents (read)",
+          "Pull requests (read)"
+        ]
+      },
+      {
+        "name": "Vercel",
+        "category": "deployment",
+        "summary": "See projects, deployments and their build status.",
+        "status": "coming_soon"
+      },
+      {
+        "name": "Netlify",
+        "category": "deployment",
+        "summary": "See sites, deploys and their build status.",
+        "status": "coming_soon"
+      },
+      {
+        "name": "Supabase",
+        "category": "database",
+        "summary": "See project status and configuration names.",
+        "status": "coming_soon"
+      },
+      {
+        "name": "Figma",
+        "category": "design",
+        "summary": "Reference design files while fixing UI problems.",
+        "status": "coming_soon"
+      },
+      {
+        "name": "Stripe",
+        "category": "payments",
+        "summary": "Test-mode, read-only context for payment integrations.",
+        "status": "coming_soon"
+      }
+    ],
+    "activity": [
+      {
+        "event": "GitHub: repository metadata",
+        "result": "Success"
+      },
+      {
+        "event": "GitHub: pull requests",
+        "result": "Success"
+      },
+      {
+        "event": "Vercel: deployments",
+        "result": "Not connected"
+      }
     ]
   }
 }

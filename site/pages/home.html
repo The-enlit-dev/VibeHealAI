@@ -1,93 +1,208 @@
-    <section class="hero" aria-labelledby="hero-title">
+    <section class="hero" id="top" aria-labelledby="hero-title">
+      <div class="hero-glow" aria-hidden="true"></div>
       <div class="container hero-grid">
         <div class="hero-copy">
-          <p class="eyebrow"><span class="eyebrow-dot" aria-hidden="true"></span>Early development. Not available yet.</p>
-          <h1 id="hero-title">{{ brand.headline }}</h1>
-          <p class="tagline">{{ brand.tagline }}</p>
-          <p class="lead">A planned assistant for people who build apps, websites and software with AI tools. It aims to help you understand your projects, connect the tools you already use, automate the repetitive parts and recover safely when something breaks.</p>
-          <div class="actions">
-            <a class="button button-primary" href="#waitlist">Join the waitlist</a>
-            <a class="button button-secondary" href="#how-it-works">See how it's meant to work</a>
+          <img class="hero-logo reveal-logo" src="{{ brand.logo.lockupPath }}" alt="VibeHealAI" width="1292" height="226">
+          <p class="eyebrow reveal-up" style="--d:0.35s"><span class="eyebrow-dot" aria-hidden="true"></span>{{ content.hero.eyebrow }}</p>
+          <h1 id="hero-title" class="hero-title">{{{ blocks.heroHeadline }}}</h1>
+          <p class="lead reveal-up" style="--d:1.1s">{{ content.hero.lead }}</p>
+          <div class="actions hero-actions reveal-up" style="--d:1.25s">
+            <a class="button button-primary" href="#waitlist">Get Started</a>
+            <a class="button button-secondary" href="#product">Explore the Platform</a>
           </div>
-          <p class="hero-note">No release date has been set. The waitlist is for early access.</p>
+          <p class="hero-note reveal-up" style="--d:1.4s">Early development. No release date has been set. The waitlist is for early access.</p>
         </div>
-        <aside class="status-panel" aria-labelledby="status-panel-title">
-          <div class="status-panel-head">
-            <p id="status-panel-title" class="status-panel-title">Status at a glance</p>
-            <p class="status-panel-date">Updated <time datetime="{{ brand.lastUpdated }}">{{ brand.lastUpdated }}</time></p>
+
+        <div class="hero-visual reveal-up" style="--d:0.6s" aria-hidden="true">
+          <div class="stage">
+            <svg class="hero-connector" viewBox="0 0 100 100" preserveAspectRatio="none" focusable="false">
+              <path d="M 21 33 C 11 50, 11 70, 22 84" fill="none" stroke="#38BDF8" stroke-opacity="0.75" stroke-width="1.2" vector-effect="non-scaling-stroke" stroke-linecap="round"/>
+              <circle cx="21" cy="33" r="1.2" fill="#38BDF8"/>
+              <circle cx="22" cy="84" r="1.2" fill="#2684FF"/>
+            </svg>
+            <div class="panel panel-back">
+              <div class="panel-bar"><span></span><span></span><span></span><b>Integrations</b></div>
+              <div class="mini-grid">
+                <div class="mini-card is-selected"><span class="mini-mono">GH</span><span class="mini-name">GitHub</span><span class="badge badge-available">Available</span></div>
+                <div class="mini-card"><span class="mini-mono">VC</span><span class="mini-name">Vercel</span><span class="badge badge-coming_soon">Coming soon</span></div>
+                <div class="mini-card"><span class="mini-mono">NL</span><span class="mini-name">Netlify</span><span class="badge badge-coming_soon">Coming soon</span></div>
+                <div class="mini-card"><span class="mini-mono">SB</span><span class="mini-name">Supabase</span><span class="badge badge-coming_soon">Coming soon</span></div>
+              </div>
+            </div>
+            <div class="panel panel-front">
+              <div class="details-head">
+                <span class="monogram monogram-md">GH</span>
+                <div><strong>GitHub</strong><span class="details-cat">Source control</span></div>
+                <span class="badge badge-available">Available</span>
+              </div>
+              <p class="details-sum">Read repositories, branches, commits and pull requests.</p>
+              <ul class="perm-list">
+                <li><span>Repository metadata</span><span class="access">Read only</span></li>
+                <li><span>Repository contents</span><span class="access">Read only</span></li>
+                <li><span>Pull requests</span><span class="access">Read only</span></li>
+              </ul>
+              <span class="cursor" aria-hidden="true"></span>
+            </div>
+            <div class="toast">
+              <span class="toast-dot"></span>
+              <span><b>GitHub: repository metadata</b><em>Success</em></span>
+            </div>
           </div>
-          <ul class="status-rows">
-            <li><span>Integration platform</span><span class="chip chip-working-in-development">In development</span></li>
-            <li><span>Read-only GitHub connection</span><span class="chip chip-working-in-development">In development</span></li>
-            <li><span>Project understanding and debugging</span><span class="chip chip-planned">Planned</span></li>
-            <li><span>Code safety and recovery</span><span class="chip chip-planned">Planned</span></li>
-            <li><span>Automations and schedules</span><span class="chip chip-planned">Planned</span></li>
-          </ul>
-          <p class="status-panel-foot">"In development" means work exists and is tested by the developer, but nothing is released.</p>
-        </aside>
+          <p class="visual-caption">Sample screen, not connected to any account.</p>
+        </div>
       </div>
     </section>
 
-    <section class="section" aria-labelledby="problem-title">
-      <div class="container">
-        <p class="section-kicker">The problem</p>
-        <h2 id="problem-title">Building with AI is fast. Everything around it isn't.</h2>
+    <section class="section section-product" id="product" aria-labelledby="product-title">
+      <div class="container product-intro">
+        <div class="reveal-up">
+          <p class="section-kicker">The product</p>
+          <h2 id="product-title">Built for the moment a project breaks</h2>
+          <p class="section-intro">AI tools change files quickly. When something breaks, the error rarely says where to start, and the project is spread across many dashboards. VibeHeal is designed to bring that context together and keep you in control of every change.</p>
+        </div>
         <ul class="problem-grid">
-          <li><h3>Code you didn't write</h3><p>AI tools change files you don't fully understand, and it is hard to tell which change matters.</p></li>
-          <li><h3>Errors without a map</h3><p>When a project breaks, the error message rarely tells a beginner where to start.</p></li>
-          <li><h3>Tools in ten tabs</h3><p>Code, hosting, database, design and chat each live somewhere else, with their own dashboards.</p></li>
-          <li><h3>Chores that eat build time</h3><p>Running checks, keeping track of what changed and repeating the same steps add up.</p></li>
+          <li class="reveal-up" style="--d:0.05s"><h3>Code you didn't write</h3><p>AI tools change files you don't fully understand, and it is hard to tell which change matters.</p></li>
+          <li class="reveal-up" style="--d:0.12s"><h3>Errors without a map</h3><p>When a project breaks, the error message rarely tells a beginner where to start.</p></li>
+          <li class="reveal-up" style="--d:0.19s"><h3>Tools in ten tabs</h3><p>Code, hosting, database, design and chat each live somewhere else, with their own dashboards.</p></li>
+          <li class="reveal-up" style="--d:0.26s"><h3>Chores that eat build time</h3><p>Running checks, keeping track of what changed and repeating the same steps add up.</p></li>
         </ul>
+        <div class="layers" aria-hidden="true">
+          <div class="layer layer-1" data-depth="0.08"><div class="layer-title">Activity</div><div class="layer-row"><span>GitHub: repository metadata</span><em>Success</em></div><div class="layer-row"><span>GitHub: pull requests</span><em>Success</em></div><div class="layer-row"><span>Vercel: deployments</span><em>Not connected</em></div></div>
+          <div class="layer layer-2" data-depth="0.16"><div class="layer-title">Connection</div><p>Read-only first. Nothing changes until you approve it.</p><span class="chip chip-working-in-development">In development</span></div>
+          <div class="layer layer-3" data-depth="0.24"><div class="layer-title">Your project</div><p>Setup, recent changes and errors, explained in plain language.</p><span class="chip chip-planned">Planned</span></div>
+        </div>
       </div>
     </section>
 
-    <section class="section section-alt" id="capabilities" aria-labelledby="capabilities-title">
+    <section class="section section-alt" id="features" aria-labelledby="features-title">
       <div class="container">
-        <p class="section-kicker">Capabilities</p>
-        <h2 id="capabilities-title">What it's designed to do</h2>
-        <p class="section-intro">Each capability shows its real status. Nothing below is available to use yet.</p>
-        <ul class="capability-grid">
-{{{ blocks.capabilities }}}
+        <div class="reveal-up">
+          <p class="section-kicker">Features</p>
+          <h2 id="features-title">What it's designed to do</h2>
+          <p class="section-intro">Each capability shows its real status. Nothing below is available to use yet.</p>
+        </div>
+        <ul class="feature-grid">
+{{{ blocks.featureTiles }}}
         </ul>
-        <p class="callout">Code safety and recovery is one part of the plan, not the whole product.</p>
+        <p class="callout reveal-up">Code safety and recovery is one part of the plan, not the whole product.</p>
       </div>
     </section>
 
-    <section class="section section-dark" id="how-it-works" aria-labelledby="how-title">
+    <section class="section" id="how-it-works" aria-labelledby="how-title">
       <div class="container">
-        <p class="section-kicker">How it works</p>
-        <h2 id="how-title">How it's intended to work</h2>
-        <p class="section-intro">An outline of the planned workflow. Details may change before release.</p>
-        <ol class="step-grid">
-{{{ blocks.steps }}}
-        </ol>
+        <div class="reveal-up">
+          <p class="section-kicker">How it works</p>
+          <h2 id="how-title">How it's intended to work</h2>
+          <p class="section-intro">An outline of the planned workflow. Details may change before release.</p>
+        </div>
+        <div class="flow-track" data-flow>
+          <div class="flow-sticky">
+            <div class="flow-rail" aria-hidden="true"><span class="flow-rail-fill"></span></div>
+            <ol class="flow-list">
+{{{ blocks.workflow }}}
+            </ol>
+          </div>
+        </div>
       </div>
     </section>
 
-    <section class="section" aria-labelledby="principles-title">
+    <section class="section section-alt" id="demo" aria-labelledby="demo-title">
       <div class="container">
-        <p class="section-kicker">Principles</p>
-        <h2 id="principles-title">Built around staying in control</h2>
+        <div class="reveal-up">
+          <p class="section-kicker">Interactive preview</p>
+          <h2 id="demo-title">Look around, without signing up</h2>
+          <p class="section-intro">These screens use sample data to show how the planned app is laid out. Nothing here connects to an account or a real service, and the buttons do not change anything.</p>
+        </div>
+
+        <div class="demo reveal-up" data-demo>
+          <div class="demo-tabs" role="tablist" aria-label="Preview screens">
+            <button type="button" role="tab" id="tab-integrations" aria-controls="panel-integrations" aria-selected="true" tabindex="0" class="demo-tab">Integrations</button>
+            <button type="button" role="tab" id="tab-activity" aria-controls="panel-activity" aria-selected="false" tabindex="-1" class="demo-tab">Activity</button>
+          </div>
+
+          <div id="panel-integrations" role="tabpanel" aria-labelledby="tab-integrations" class="demo-panel">
+            <div class="demo-toolbar">
+              <label class="demo-field"><span>Search integrations</span><input id="demo-search" type="search" placeholder="Search integrations" autocomplete="off"></label>
+              <label class="demo-field"><span>Category</span>
+                <select id="demo-category">
+                  <option value="">All categories</option>
+                  <option value="Source control">Source control</option>
+                  <option value="Deployment">Deployment</option>
+                  <option value="Database">Database</option>
+                  <option value="Design">Design</option>
+                  <option value="Payments">Payments</option>
+                </select>
+              </label>
+              <label class="demo-field"><span>Status</span>
+                <select id="demo-status">
+                  <option value="">Any status</option>
+                  <option value="available">Available</option>
+                  <option value="coming_soon">Coming soon</option>
+                </select>
+              </label>
+            </div>
+            <div class="demo-body">
+              <ul class="demo-list" id="demo-list">
+{{{ blocks.demoCards }}}
+              </ul>
+              <div class="demo-details" id="demo-details" aria-live="polite">
+                <p class="demo-details-empty" id="demo-empty">Select an integration to see what it can access and how it would connect.</p>
+                <div class="demo-details-body" id="demo-body" hidden>
+                  <div class="details-head">
+                    <span class="monogram monogram-md" id="demo-mono" aria-hidden="true"></span>
+                    <div><strong id="demo-name"></strong><span class="details-cat" id="demo-cat"></span></div>
+                    <span class="badge" id="demo-badge"></span>
+                  </div>
+                  <p class="details-sum" id="demo-sum"></p>
+                  <h4>Permissions</h4>
+                  <ul class="perm-list" id="demo-perms"></ul>
+                  <p class="demo-note" id="demo-note"></p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div id="panel-activity" role="tabpanel" aria-labelledby="tab-activity" class="demo-panel" hidden>
+            <table class="demo-table">
+              <thead><tr><th scope="col">Event</th><th scope="col">Result</th></tr></thead>
+              <tbody>
+{{{ blocks.demoActivity }}}
+              </tbody>
+            </table>
+            <p class="demo-note">Sample rows. The real activity log records what the app did, and what it was refused.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-principles" aria-labelledby="principles-title">
+      <div class="container">
+        <div class="reveal-up">
+          <p class="section-kicker">Principles</p>
+          <h2 id="principles-title">Built around staying in control</h2>
+        </div>
         <ul class="principle-grid">
 {{{ blocks.principles }}}
         </ul>
       </div>
     </section>
 
-    <section class="section section-alt" id="status" aria-labelledby="status-title">
+    <section class="section" id="status" aria-labelledby="status-title">
       <div class="container">
-        <p class="section-kicker">Status</p>
-        <h2 id="status-title">Where things stand</h2>
+        <div class="reveal-up">
+          <p class="section-kicker">Status</p>
+          <h2 id="status-title">Where things stand</h2>
+        </div>
         <div class="status-columns">
-          <div class="status-column">
+          <div class="status-column reveal-up" style="--d:0s">
             <h3><span class="chip chip-working-in-development">In development</span></h3>
             <p>{{ content.status.working }}</p>
           </div>
-          <div class="status-column">
+          <div class="status-column reveal-up" style="--d:0.08s">
             <h3><span class="chip chip-planned">Planned</span></h3>
             <p>{{ content.status.planned }}</p>
           </div>
-          <div class="status-column">
+          <div class="status-column reveal-up" style="--d:0.16s">
             <h3><span class="chip chip-exploring">Not decided</span></h3>
             <p>{{ content.status.undecided }}</p>
           </div>
@@ -95,16 +210,18 @@
       </div>
     </section>
 
-    <section class="section" aria-labelledby="audience-title">
+    <section class="section section-alt" aria-labelledby="audience-title">
       <div class="container">
-        <p class="section-kicker">Who it's for</p>
-        <h2 id="audience-title">Made for people who build with AI</h2>
+        <div class="reveal-up">
+          <p class="section-kicker">Who it's for</p>
+          <h2 id="audience-title">Made for people who build with AI</h2>
+        </div>
         <div class="audience-grid">
-          <article class="audience-card">
+          <article class="audience-card reveal-up" style="--d:0s">
             <h3>Vibe coders</h3>
             <p>Especially beginners building with Claude Code, Cursor and similar tools, who want to understand what changed, fix what broke and spend less time on chores. This is the first audience.</p>
           </article>
-          <article class="audience-card">
+          <article class="audience-card reveal-up" style="--d:0.08s">
             <h3>Indie hackers and independent developers</h3>
             <p>People who ship alone and want their project, tools and automations in one calmer place.</p>
           </article>
@@ -112,9 +229,19 @@
       </div>
     </section>
 
+    <section class="final-cta" aria-labelledby="cta-title">
+      <div class="final-glow" aria-hidden="true"></div>
+      <div class="container final-inner reveal-up">
+        <h2 id="cta-title">Ready to experience a smarter way to build?</h2>
+        <p>Start exploring what VibeHealAI can do.</p>
+        <a class="button button-primary" href="#waitlist">Get Started</a>
+        <p class="final-note">Early access by waitlist. No release date has been set.</p>
+      </div>
+    </section>
+
     <section class="section section-alt" id="waitlist" aria-labelledby="waitlist-title">
       <div class="container waitlist-grid">
-        <div class="waitlist-copy">
+        <div class="waitlist-copy reveal-up">
           <p class="section-kicker">Early access</p>
           <h2 id="waitlist-title">Join the waitlist</h2>
           <p class="section-intro">Leave your email and we'll contact you about early access when it is ready. Only your email is required.</p>
@@ -125,7 +252,7 @@
           </div>
         </div>
 
-        <form id="waitlist-form" class="waitlist-form" name="waitlist" method="POST" action="/" data-netlify="true" netlify-honeypot="company" data-endpoint="/api/waitlist" novalidate>
+        <form id="waitlist-form" class="waitlist-form reveal-up" style="--d:0.1s" name="waitlist" method="POST" action="/" data-netlify="true" netlify-honeypot="company" data-endpoint="/api/waitlist" novalidate>
           <input type="hidden" name="form-name" value="waitlist">
           <p id="account-note" class="account-note" hidden></p>
           <div class="field">
@@ -184,8 +311,10 @@
 
     <section class="section" id="faq" aria-labelledby="faq-title">
       <div class="container narrow">
-        <p class="section-kicker">FAQ</p>
-        <h2 id="faq-title">Common questions</h2>
+        <div class="reveal-up">
+          <p class="section-kicker">FAQ</p>
+          <h2 id="faq-title">Common questions</h2>
+        </div>
         <div class="faq-preview-list">
 {{{ blocks.faqHome }}}
         </div>
