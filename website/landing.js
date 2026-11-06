@@ -14,7 +14,6 @@
   var reduceQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
   var fineQuery = window.matchMedia("(pointer: fine)");
   var stickyQuery = window.matchMedia("(min-width: 900px) and (prefers-reduced-motion: no-preference)");
-  var parallaxQuery = window.matchMedia("(min-width: 721px) and (prefers-reduced-motion: no-preference)");
   var reduceMotion = reduceQuery.matches;
 
   // ---------- reveals on scroll ----------
@@ -36,9 +35,7 @@
     reveals.forEach(function (el) { revealObserver.observe(el); });
   }
 
-  // ---------- scroll-linked work: parallax layers and sticky workflow ----------
-  var layers = Array.prototype.slice.call(document.querySelectorAll(".layer[data-depth]"));
-  var layersBox = document.querySelector(".layers");
+  // ---------- scroll-linked work: sticky workflow (parallax lives in landing-motion.js) ----------
   var flowTrack = document.querySelector("[data-flow]");
   var flowSteps = flowTrack ? Array.prototype.slice.call(flowTrack.querySelectorAll(".flow-step")) : [];
   var flowRail = flowTrack ? flowTrack.querySelector(".flow-rail") : null;
@@ -54,17 +51,6 @@
 
   function onScrollFrame() {
     var vh = window.innerHeight;
-
-    if (layersBox && parallaxQuery.matches) {
-      var box = layersBox.getBoundingClientRect();
-      if (box.bottom > -200 && box.top < vh + 200) {
-        var offset = (box.top + box.height / 2 - vh / 2) / vh; // about -1 .. 1 near the centre
-        layers.forEach(function (layer) {
-          var depth = parseFloat(layer.getAttribute("data-depth")) || 0;
-          layer.style.transform = "translate3d(0," + (offset * depth * -60).toFixed(1) + "px,0)";
-        });
-      }
-    }
 
     if (flowTrack && stickyQuery.matches) {
       var rect = flowTrack.getBoundingClientRect();
