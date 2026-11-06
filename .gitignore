@@ -15,3 +15,10 @@ waitlist-data/
 *.log
 !.env.desktop.example
 !.env.waitlist.example
+# /brag launch video: regenerable intermediates (frames, stills, captures, drafts).
+brag-output/work/frames/
+brag-output/work/stills/
+brag-output/work/site/
+brag-output/work/*.mp4
+brag-output/work/*.wav
+brag-output/work/*.png

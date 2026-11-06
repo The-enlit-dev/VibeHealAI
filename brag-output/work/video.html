@@ -1,0 +1,411 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>VibeHeal brag</title>
+<link rel="stylesheet" href="brand.css">
+<link rel="stylesheet" href="styles.css">
+<style>
+  html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; }
+  body { font-family: "Inter", var(--font-sans); background: var(--color-ivory); -webkit-font-smoothing: antialiased; }
+  .mono { font-family: "Liberation Mono", "DejaVu Sans Mono", var(--font-mono); }
+  .scene { position: absolute; inset: 0; overflow: hidden; display: none; }
+  .abs { position: absolute; }
+  .will { will-change: transform, opacity; }
+
+  /* S1 hook */
+  #s1 { background: var(--color-navy); }
+  #term { position: absolute; left: 96px; top: 96px; width: 1728px; height: 888px; border-radius: 14px;
+          background: #0C1530; border: 1px solid rgba(246,244,239,.10); box-shadow: 0 30px 80px rgba(0,0,0,.35); overflow: hidden; }
+  #term .bar { height: 52px; border-bottom: 1px solid rgba(246,244,239,.08); display: flex; align-items: center; gap: 12px; padding: 0 22px; }
+  #term .bar i { width: 15px; height: 15px; border-radius: 50%; background: rgba(246,244,239,.18); display: block; }
+  #term .bar span { margin-left: 18px; color: rgba(246,244,239,.45); font-size: 20px; }
+  #lines { padding: 24px 34px; font-size: 25px; line-height: 1.62; white-space: pre; }
+  #lines div { color: #C8CDD6; }
+  #lines .err { color: #FF7A70; }
+  #lines .dim { color: rgba(200,205,214,.55); }
+  #lines .ok { color: var(--color-teal); }
+  #hookText { position: absolute; left: 0; right: 0; top: 0; bottom: 0; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; padding-left: 210px; }
+  #hookText .h { font-size: 132px; font-weight: 800; letter-spacing: -0.035em; line-height: 1.04; color: #fff; padding: 6px 28px 14px; margin: 6px 0; border-radius: 10px;
+                 background: rgba(20,33,61,.94); box-shadow: 0 20px 60px rgba(0,0,0,.35); }
+  #hookText .h2 { color: var(--color-amber); }
+  #hookText .h2 .x { color: #FF7A70; }
+
+  /* S2 problem */
+  #s2 { background: var(--color-ivory); }
+  #tabstrip { position: absolute; left: 0; right: 0; top: 0; height: 132px; background: #E9E5DC; border-bottom: 1px solid var(--color-line-strong); }
+  .tab { position: absolute; top: 46px; height: 86px; border-radius: 14px 14px 0 0; background: #F6F4EF; border: 1px solid var(--color-line-strong); border-bottom: 0;
+         display: flex; align-items: center; gap: 14px; padding: 0 22px; font-size: 27px; font-weight: 600; color: var(--color-navy); overflow: hidden; white-space: nowrap; box-sizing: border-box; }
+  .tab b { width: 26px; height: 26px; border-radius: 6px; flex: 0 0 26px; display: block; }
+  .tab .x { margin-left: auto; color: var(--color-slate); font-weight: 400; font-size: 26px; }
+  #s2text { position: absolute; left: 210px; top: 400px; }
+  .kicker { font-size: 30px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--color-teal-ink); margin-bottom: 26px; }
+  .big { font-size: 128px; font-weight: 800; letter-spacing: -0.035em; line-height: 1.05; color: var(--color-navy); }
+  #s2 .l2 { color: var(--color-teal-ink); }
+
+  /* S3 reveal */
+  #s3 { background: var(--color-ivory); }
+  #s3wrap { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+  .logo { position: relative; width: 168px; height: 168px; }
+  .logo > div { position: absolute; }
+  #brandRow { display: flex; align-items: center; gap: 34px; margin-bottom: 58px; }
+  #brandName { font-size: 92px; font-weight: 750; letter-spacing: -0.03em; color: var(--color-navy); }
+  #s3 h1 { margin: 0; font-size: 116px; font-weight: 800; letter-spacing: -0.04em; line-height: 1.04; color: var(--color-navy); }
+  #s3 h1 span { display: inline-block; margin: 0 .12em; }
+  #s3 .tag { margin-top: 40px; font-size: 76px; font-weight: 750; letter-spacing: -0.02em; color: var(--color-teal-ink); }
+
+  /* S4 how it works */
+  #s4 { background: var(--color-navy); color: var(--color-on-dark); }
+  #s4head { position: absolute; left: 150px; top: 150px; }
+  #s4 .kicker { color: var(--color-amber); }
+  #s4 .big { color: var(--color-on-dark); font-size: 104px; }
+  #steps { position: absolute; left: 150px; right: 150px; top: 520px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 46px; }
+  #steps .st { position: relative; padding-top: 34px; }
+  #steps .st .rule { position: absolute; left: 0; right: 0; top: 0; height: 2px; background: rgba(246,244,239,.25); }
+  #steps .st .fill { position: absolute; left: 0; top: -2px; height: 6px; background: var(--color-teal); border-radius: 3px; }
+  #steps .num { font-size: 50px; font-weight: 700; color: var(--color-teal); margin-bottom: 18px; display: block; }
+  #steps h3 { margin: 0 0 18px; font-size: 46px; line-height: 1.12; font-weight: 750; letter-spacing: -0.02em; color: var(--color-on-dark); }
+  #steps p { margin: 0; font-size: 29px; line-height: 1.45; color: var(--color-on-dark-muted); }
+
+  /* S5 status */
+  #s5 { background: var(--color-ivory); }
+  #s5left { position: absolute; left: 150px; top: 300px; width: 760px; }
+  #s5left .big { font-size: 132px; }
+  #s5left .sub { margin-top: 44px; font-size: 62px; line-height: 1.16; font-weight: 700; letter-spacing: -0.02em; color: var(--color-slate); }
+  #s5left .sub em { font-style: normal; color: var(--color-navy); }
+  #panelWrap { position: absolute; left: 1010px; top: 190px; width: 500px; transform-origin: 0 0; }
+  #panelWrap .status-panel { box-shadow: 0 24px 60px rgba(20,33,61,.12); }
+  #panelWrap .status-panel-title, #panelWrap .status-panel-date, #panelWrap .chip { font-family: "Liberation Mono", "DejaVu Sans Mono", var(--font-mono); }
+  #panelWrap li span:first-child { color: var(--color-navy); }
+
+  /* S6 outro */
+  #s6 { background: var(--color-ivory); }
+  #s6wrap { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+  #s6 .brand2 { display: flex; align-items: center; gap: 26px; margin-bottom: 40px; }
+  #s6 .brand2 .logo { width: 112px; height: 112px; }
+  #s6 .brand2 span { font-size: 64px; font-weight: 750; letter-spacing: -0.03em; color: var(--color-navy); }
+  #s6 .tagBig { font-size: 168px; font-weight: 850; letter-spacing: -0.045em; line-height: 1; color: var(--color-navy); }
+  #s6 .tagBig b { color: var(--color-teal-ink); font-weight: 850; }
+  #s6 .row { margin-top: 70px; display: flex; align-items: center; gap: 40px; }
+  #cta { position: relative; font-size: 44px; min-height: 0; padding: 26px 46px; border-radius: 10px; font-weight: 700; overflow: hidden; }
+  #ripple { position: absolute; border-radius: 50%; background: rgba(246,244,239,.35); width: 40px; height: 40px; }
+  #url { font-size: 46px; color: var(--color-navy); font-weight: 700; }
+  #pill { margin-top: 52px; display: inline-flex; align-items: center; gap: 14px; padding: 14px 22px; border: 1px solid var(--color-line-strong); border-radius: 6px; background: #fff;
+          font-size: 26px; letter-spacing: .04em; color: var(--color-navy); }
+  #pill i { width: 14px; height: 14px; border-radius: 50%; background: var(--color-amber); display: block; }
+  #cursor { position: absolute; width: 56px; height: 56px; }
+
+  /* wipes */
+  .wipe { position: absolute; top: 0; bottom: 0; width: 2400px; left: 0; display: none; }
+</style>
+</head>
+<body>
+
+<!-- S1: hook -->
+<section class="scene" id="s1">
+  <div id="term">
+    <div class="bar"><i></i><i></i><i></i><span class="mono">~/my-vibe-app: npm run dev</span></div>
+    <div id="lines" class="mono"></div>
+  </div>
+  <div id="hookText">
+    <div class="h h1 will">Code you didn't write.</div>
+    <div class="h h2 will"><span class="x">✖</span> Errors without a map.</div>
+  </div>
+</section>
+
+<!-- S2: problem -->
+<section class="scene" id="s2">
+  <div id="tabstrip"></div>
+  <div id="s2text">
+    <div class="kicker mono will" id="s2k">The problem</div>
+    <div class="big will" id="s2l1">Building with AI is fast.</div>
+    <div class="big l2 will" id="s2l2">Everything around it isn't.</div>
+  </div>
+</section>
+
+<!-- S3: reveal -->
+<section class="scene" id="s3">
+  <div id="s3wrap">
+    <div id="brandRow">
+      <div class="logo" id="logoA"></div>
+      <div id="brandName" class="will">VibeHeal</div>
+    </div>
+    <h1 id="s3h"></h1>
+    <div class="tag will" id="s3tag">Just vibeheal it.</div>
+  </div>
+</section>
+
+<!-- S4: how it works -->
+<section class="scene" id="s4">
+  <div id="s4head">
+    <div class="kicker mono will" id="s4k">How it works</div>
+    <div class="big will" id="s4h">How it's intended to work</div>
+  </div>
+  <div id="steps"></div>
+</section>
+
+<!-- S5: status -->
+<section class="scene" id="s5">
+  <div id="s5left">
+    <div class="kicker mono will" id="s5k">Principles</div>
+    <div class="big will" id="s5h">Honest status.</div>
+    <div class="sub will" id="s5s"><em>Nothing on this site</em> is a launch promise.</div>
+  </div>
+  <div id="panelWrap">
+    <aside class="status-panel">
+      <div class="status-panel-head">
+        <p class="status-panel-title">Status at a glance</p>
+        <p class="status-panel-date">Updated <time>2026-11-05</time></p>
+      </div>
+      <ul class="status-rows">
+        <li><span>Integration platform</span><span class="chip chip-working-in-development">In development</span></li>
+        <li><span>Read-only GitHub connection</span><span class="chip chip-working-in-development">In development</span></li>
+        <li><span>Project understanding and debugging</span><span class="chip chip-planned">Planned</span></li>
+        <li><span>Code safety and recovery</span><span class="chip chip-planned">Planned</span></li>
+        <li><span>Automations and schedules</span><span class="chip chip-planned">Planned</span></li>
+      </ul>
+      <p class="status-panel-foot">"In development" means work exists and is tested by the developer, but nothing is released.</p>
+    </aside>
+  </div>
+</section>
+
+<!-- S6: outro -->
+<section class="scene" id="s6">
+  <div id="s6wrap">
+    <div class="brand2 will" id="s6b"><div class="logo" id="logoB"></div><span>VibeHeal</span></div>
+    <div class="tagBig will" id="s6t">Just <b>vibeheal</b> it.</div>
+    <div class="row">
+      <span class="button button-primary will" id="cta">Join the waitlist<span id="ripple"></span></span>
+      <span class="mono will" id="url">vibeheal.online</span>
+    </div>
+    <div id="pill" class="mono will"><i></i>EARLY DEVELOPMENT. NOT AVAILABLE YET.</div>
+  </div>
+  <svg id="cursor" viewBox="0 0 24 24"><path d="M4 2.5 L4 19.5 L8.6 15.4 L11.6 22 L14.6 20.7 L11.7 14.3 L18 14.3 Z" fill="#14213D" stroke="#fff" stroke-width="1.4" stroke-linejoin="round"/></svg>
+</section>
+
+<div class="wipe" id="wA"></div>
+<div class="wipe" id="wB"></div>
+
+<script>
+const $ = s => document.querySelector(s);
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const p = (t, s, d) => clamp((t - s) / d);
+const eOut = x => 1 - Math.pow(1 - x, 3);
+const eOut5 = x => 1 - Math.pow(1 - x, 5);
+const eInOut = x => x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+const eBack = x => { const c = 1.9; return 1 + (c + 1) * Math.pow(x - 1, 3) + c * Math.pow(x - 1, 2); };
+const lerp = (a, b, x) => a + (b - a) * x;
+function rise(el, t, s, d = .35, dy = 40) { const k = eOut5(p(t, s, d)); el.style.opacity = k; el.style.transform = `translateY(${(1 - k) * dy}px)`; }
+
+// ---------- build static DOM ----------
+const LINES = [
+  ['dim', '$ npm run dev'],
+  ['dim', '> vite --port 5173'],
+  ['err', '✖ [vite] Failed to resolve import "./lib/auth" from "src/App.tsx"'],
+  ['', '  TypeError: Cannot read properties of undefined (reading \'map\')'],
+  ['dim', '      at TodoList (src/components/TodoList.tsx:42:17)'],
+  ['err', '✖ Uncaught ReferenceError: process is not defined'],
+  ['err', '✖ Module not found: Can\'t resolve \'react-router\''],
+  ['', '  Hydration failed because the initial UI does not match'],
+  ['err', '✖ Build failed with 3 errors'],
+  ['err', '✖ 12 problems (12 errors, 0 warnings)'],
+  ['', '  TypeError: fetch failed'],
+  ['err', '✖ [vite] Internal server error: Unexpected token (17:4)'],
+  ['dim', '      at Object.parse (node_modules/vite/dist/node/chunks/dep.js:1:9)'],
+  ['', '  Warning: Each child in a list should have a unique "key" prop.'],
+  ['err', '✖ Error: Invalid hook call. Hooks can only be called inside a component'],
+  ['err', '✖ [plugin:vite:css] Cannot find module "tailwindcss"'],
+  ['', '  npm ERR! code ERESOLVE  could not resolve dependency tree'],
+  ['err', '✖ Failed to compile.'],
+];
+const lines = $('#lines');
+LINES.forEach(([c, s]) => { const d = document.createElement('div'); d.className = c; d.textContent = s; lines.appendChild(d); });
+const lineEls = [...lines.children];
+const lineT = i => i < 4 ? i * 0.25 : 1.0 + (i - 4) * 0.125;
+
+const TABS = [['Code', '#14213D'], ['Hosting', '#1B998B'], ['Database', '#0E6F64'], ['Design', '#F4B942'], ['Chat', '#667085'],
+  ['Docs', '#14213D'], ['Deploy logs', '#1B998B'], ['Dashboard', '#0E6F64'], ['Settings', '#F4B942'], ['Chat (2)', '#667085']];
+const strip = $('#tabstrip');
+TABS.forEach(([n, c]) => { const d = document.createElement('div'); d.className = 'tab'; d.innerHTML = `<b style="background:${c}"></b><span>${n}</span><span class="x">×</span>`; strip.appendChild(d); });
+const tabEls = [...strip.children];
+const tabT = i => 3.0 + i * 0.25;
+
+const H1W = ['Your', 'AI', 'assistant', 'for', 'vibe', 'coders'];
+H1W.forEach((w, i) => { const s = document.createElement('span'); s.textContent = w; s.className = 'will'; $('#s3h').appendChild(s); if (i === 2) $('#s3h').appendChild(document.createElement('br')); });
+const h1Els = [...$('#s3h').querySelectorAll('span')];
+
+const STEPS = [
+  ['01', 'Connect your project and tools', 'Choose a project folder and connect services you already use. Connections start read-only.'],
+  ['02', 'Understand what\'s happening', 'See your project\'s setup, recent changes and errors explained in plain language.'],
+  ['03', 'Automate the repetitive parts', 'Pick the tasks to automate and when they run. You approve anything that changes files.'],
+  ['04', 'Stay in control', 'Review every change, keep backups and undo what you don\'t want.'],
+];
+STEPS.forEach(([n, h, b]) => { const d = document.createElement('div'); d.className = 'st'; d.innerHTML = `<div class="rule"></div><div class="fill"></div><span class="num mono">${n}</span><h3>${h}</h3><p>${b}</p>`; $('#steps').appendChild(d); });
+const stepEls = [...$('#steps').children];
+
+function buildLogo(el, size) {
+  el.innerHTML = '';
+  const s = size / 48;
+  const parts = [
+    { x: 0, y: 0, w: 48, h: 48, r: 8, c: '#14213D' },
+    { x: 10, y: 10, w: 12.5, h: 12.5, r: 2, c: '#1B998B' },
+    { x: 10, y: 25.5, w: 12.5, h: 12.5, r: 2, c: '#1B998B' },
+    { x: 25.5, y: 25.5, w: 12.5, h: 12.5, r: 2, c: '#1B998B' },
+    { x: 25.5, y: 10, w: 12.5, h: 12.5, r: 99, c: '#F4B942' },
+  ];
+  return parts.map(q => { const d = document.createElement('div');
+    Object.assign(d.style, { left: q.x * s + 'px', top: q.y * s + 'px', width: q.w * s + 'px', height: q.h * s + 'px', borderRadius: (q.r === 99 ? '50%' : q.r * s + 'px'), background: q.c });
+    el.appendChild(d); return d; });
+}
+const logoA = buildLogo($('#logoA'), 168);
+const logoB = buildLogo($('#logoB'), 112);
+const panelRows = [...document.querySelectorAll('#panelWrap li')];
+const chips = [...document.querySelectorAll('#panelWrap .chip')];
+
+// ---------- scenes ----------
+const SC = [['#s1', 0, 3], ['#s2', 3, 6], ['#s3', 6, 9], ['#s4', 9, 14], ['#s5', 14, 18], ['#s6', 18, 21.01]];
+// wipes: [cut, lead colour, main colour]
+const WIPES = [[3, '#1B998B', '#F6F4EF'], [6, '#F4B942', '#1B998B'], [9, '#1B998B', '#14213D'], [14, '#F4B942', '#F6F4EF'], [18, '#1B998B', '#14213D']];
+
+function logoAnim(parts, t, t0, step) {
+  parts.forEach((d, i) => {
+    const s = t0 + (i === 0 ? 0 : step * i);
+    const k = p(t, s, i === 0 ? .35 : .3);
+    const sc = i === 0 ? eBack(k) : eBack(k);
+    d.style.opacity = clamp(k * 3);
+    const dy = i === 4 ? (1 - eOut5(k)) * -60 : 0;
+    d.style.transform = `translateY(${dy}px) scale(${Math.max(0, sc)})`;
+  });
+}
+
+function render(t) {
+  SC.forEach(([id, a, b]) => { $(id).style.display = (t >= a && t < b) ? 'block' : 'none'; });
+
+  // S1
+  if (t < 3) {
+    let shake = 0;
+    lineEls.forEach((el, i) => {
+      const s = lineT(i); const k = p(t, s, .12);
+      el.style.opacity = k; el.style.transform = `translateX(${(1 - eOut(k)) * -24}px)`;
+      if (LINES[i][0] === 'err' && t >= s) shake += Math.exp(-(t - s) * 22) * Math.sin((t - s) * 90);
+    });
+    $('#term').style.transform = `translate(${shake * 7}px, ${shake * 2}px) scale(${1 + t * 0.012})`;
+    const h1 = $('#hookText .h1'), h2 = $('#hookText .h2');
+    { const k = eOut5(p(t, .25, .3)); h1.style.opacity = k; h1.style.transform = `translateY(${(1 - k) * 50}px) scale(${lerp(.94, 1, k)})`; }
+    { const k = eOut5(p(t, 1.5, .3)); h2.style.opacity = k; h2.style.transform = `translateY(${(1 - k) * 50}px) scale(${lerp(.94, 1, k)})`; }
+  }
+
+  // S2
+  if (t >= 3 && t < 6) {
+    const n = TABS.filter((_, i) => t >= tabT(i)).length;
+    const avail = 1920 - 40;
+    tabEls.forEach((el, i) => {
+      const k = p(t, tabT(i), .18);
+      // width animates as tabs multiply
+      const nPrev = Math.max(1, n);
+      const w = Math.min(330, avail / nPrev);
+      el.style.width = (w - 6) + 'px';
+      el.style.left = (20 + i * w) + 'px';
+      el.style.opacity = t >= tabT(i) ? 1 : 0;
+      el.style.transform = `translateY(${(1 - eOut5(k)) * 86}px)`;
+      el.style.background = i === n - 1 ? '#FFFFFF' : '#F1EEE7';
+    });
+    rise($('#s2k'), t, 3.05, .3);
+    rise($('#s2l1'), t, 3.2, .35, 50);
+    rise($('#s2l2'), t, 4.0, .35, 50);
+    // gentle push-in
+    $('#s2text').style.transform = `scale(${1 + (t - 3) * 0.01})`;
+    $('#s2text').style.transformOrigin = '0 50%';
+  }
+
+  // S3
+  if (t >= 6 && t < 9) {
+    logoAnim(logoA, t, 6.0, .125);
+    { const k = eOut5(p(t, 6.5, .35)); const el = $('#brandName'); el.style.opacity = k; el.style.transform = `translateX(${(1 - k) * -40}px)`; }
+    h1Els.forEach((el, i) => rise(el, t, 6.75 + i * .07, .4, 60));
+    rise($('#s3tag'), t, 7.5, .4, 40);
+    $('#s3wrap').style.transform = `scale(${1 + (t - 6) * 0.008})`;
+  }
+
+  // S4
+  if (t >= 9 && t < 14) {
+    rise($('#s4k'), t, 9.0, .3);
+    rise($('#s4h'), t, 9.1, .35, 50);
+    stepEls.forEach((el, i) => {
+      const s = 9.5 + i * .5;
+      rise(el, t, s, .4, 50);
+      const f = el.querySelector('.fill');
+      f.style.width = (eInOut(p(t, s, .5)) * 100) + '%';
+    });
+  }
+
+  // S5
+  if (t >= 14 && t < 18) {
+    rise($('#s5k'), t, 14.0, .3);
+    rise($('#s5h'), t, 14.05, .35, 50);
+    rise($('#s5s'), t, 15.25, .4, 40);
+    const pw = $('#panelWrap');
+    const kp = eOut5(p(t, 14.0, .45));
+    pw.style.opacity = kp;
+    pw.style.transform = `translateX(${(1 - kp) * 120}px) scale(1.56)`;
+    panelRows.forEach((li, i) => { const k = eOut5(p(t, 14.2 + i * .1, .35)); li.firstChild.style.opacity = k; li.firstChild.style.display = 'inline-block'; li.firstChild.style.transform = `translateX(${(1 - k) * 30}px)`; });
+    chips.forEach((c, i) => {
+      const s = 14.75 + i * .25; const k = p(t, s, .22);
+      c.style.opacity = t >= s ? 1 : 0;
+      c.style.transform = `scale(${t >= s ? lerp(1.9, 1, eBack(k)) : 1.9}) rotate(${(1 - eOut(k)) * (i % 2 ? 6 : -6)}deg)`;
+    });
+    const foot = document.querySelector('#panelWrap .status-panel-foot');
+    rise(foot, t, 16.0, .4, 16);
+  }
+
+  // S6
+  if (t >= 18) {
+    logoAnim(logoB, t, 18.0, .08);
+    rise($('#s6b'), t, 18.0, .3, 30);
+    rise($('#s6t'), t, 18.25, .4, 50);
+    rise($('#cta'), t, 18.75, .35, 30);
+    rise($('#url'), t, 18.85, .35, 30);
+    rise($('#pill'), t, 19.0, .35, 20);
+    // cursor
+    const cta = $('#cta');
+    const r = cta.getBoundingClientRect();
+    const tx = r.left + r.width * .62, ty = r.top + r.height * .58;
+    const km = eInOut(p(t, 18.85, .6));
+    const cx = lerp(1700, tx, km), cy = lerp(1120, ty, km);
+    const cur = $('#cursor');
+    const press = t >= 19.45 && t < 19.62;
+    cur.style.left = cx + 'px'; cur.style.top = cy + 'px';
+    cur.style.transform = `scale(${press ? .86 : 1})`;
+    cur.style.opacity = clamp((t - 18.85) * 6) * (1 - p(t, 20.3, .3));
+    const kc = p(t, 19.5, .12), kr = p(t, 19.62, .2);
+    const sc = t < 19.5 ? 1 : (t < 19.62 ? lerp(1, .95, kc) : lerp(.95, 1, eBack(kr)));
+    cta.style.transform = `scale(${sc})`;
+    const rp = $('#ripple'); const kk = p(t, 19.5, .6);
+    rp.style.opacity = t >= 19.5 ? (1 - kk) : 0;
+    rp.style.left = (tx - r.left - 20) + 'px'; rp.style.top = (ty - r.top - 20) + 'px';
+    rp.style.transform = `scale(${1 + kk * 22})`;
+  }
+
+  // wipes
+  const wA = $('#wA'), wB = $('#wB');
+  wA.style.display = wB.style.display = 'none';
+  for (const [c, lead, main] of WIPES) {
+    if (t >= c - .2 && t < c + .32) {
+      // in: [c-.2, c] lead then main cover the frame; out: main leaves first, lead trails as a stripe
+      const kinA = eInOut(p(t, c - .2, .16)), kinB = eInOut(p(t, c - .16, .16));
+      const koutB = eInOut(p(t, c, .22)), koutA = eInOut(p(t, c + .07, .24));
+      const xA = t < c ? lerp(2100, -440, kinA) : lerp(-440, -2700, koutA);
+      const xB = t < c ? lerp(2100, -200, kinB) : lerp(-200, -2700, koutB);
+      wA.style.display = wB.style.display = 'block';
+      wA.style.background = lead; wB.style.background = main;
+      wA.style.transform = `translateX(${xA}px) skewX(-8deg)`;
+      wB.style.transform = `translateX(${xB}px) skewX(-8deg)`;
+    }
+  }
+}
+window.render = render;
+window.ready = document.fonts.ready.then(() => true);
+render(0);
+</script>
+</body>
+</html>
