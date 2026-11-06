@@ -1,0 +1,285 @@
+<!doctype html>
+<html
+  lang="en"
+  data-composition-variables='[
+    {"id":"color-ground","type":"color","label":"Background","default":"#080B10"},
+    {"id":"color-ink","type":"color","label":"Text","default":"#F4F6F8"},
+    {"id":"color-accent","type":"color","label":"Accent","default":"#2684FF"},
+    {"id":"color-ice","type":"color","label":"Highlight","default":"#38BDF8"},
+    {"id":"cta-url","type":"string","label":"Waitlist URL","default":"vibeheal.online"}
+  ]'
+>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <title>VibeHeal reel 03: Fix. Build. Automate.</title>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+    <style>
+      :root {
+        --color-ground: #080b10;
+        --color-ink: #f4f6f8;
+        --color-accent: #2684ff;
+        --color-ice: #38bdf8;
+        --graphite: #111923;
+        --elevated: #17212d;
+        --muted: #9aa5b1;
+        --red: #ff5c5c;
+      }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1080px; height: 1920px; overflow: hidden; background: var(--color-ground); }
+      body { font-family: "Inter", sans-serif; color: var(--color-ink); }
+      #root { position: absolute; inset: 0; overflow: hidden; background: var(--color-ground); }
+      .scene { position: absolute; inset: 0; overflow: hidden; }
+      .fill { position: absolute; inset: 0; }
+      /* Every word lives in this band: clear of the status bar, caption area and action rail. */
+      .band {
+        position: absolute; left: 90px; right: 150px; top: 210px; bottom: 610px;
+        display: flex; flex-direction: column; justify-content: center; align-items: flex-start;
+      }
+      .xl { font-weight: 900; font-size: 168px; line-height: 0.93; letter-spacing: -0.045em; }
+      .l { font-weight: 900; font-size: 128px; line-height: 0.95; letter-spacing: -0.04em; }
+      .m { font-weight: 900; font-size: 96px; line-height: 1; letter-spacing: -0.035em; }
+      .s { font-weight: 700; font-size: 60px; line-height: 1.15; letter-spacing: -0.02em; }
+      .mono { font-family: "JetBrains Mono", monospace; }
+      .w, .c { display: inline-block; }
+      .ice { color: var(--color-ice); }
+      .red { color: var(--red); }
+      .muted { color: var(--muted); }
+      .ink { color: var(--color-ink); }
+      .dark { color: var(--color-ground); }
+      .g-obsidian { background: var(--color-ground); }
+      .g-graphite { background: var(--graphite); }
+      .g-elevated { background: var(--elevated); }
+      .g-blue { background: var(--color-accent); }
+      .g-ice { background: var(--color-ice); }
+      .flood { clip-path: circle(0% at 50% 45%); }
+
+      /* end card */
+      .end-mark { width: 260px; height: auto; margin-bottom: 26px; }
+      .end-name { font-weight: 900; font-size: 150px; letter-spacing: -0.05em; line-height: 1; white-space: nowrap; }
+      .end-tag { font-weight: 700; font-size: 58px; color: var(--color-ice); margin: 18px 0 70px; letter-spacing: -0.02em; }
+      .end-cta { font-weight: 900; font-size: 74px; letter-spacing: -0.03em; line-height: 1.05; }
+      .end-url { font-family: "JetBrains Mono", monospace; font-weight: 700; font-size: 58px; color: var(--color-ice); margin-top: 26px; position: relative; padding-bottom: 12px; }
+      .end-url-line { position: absolute; left: 0; right: 0; bottom: 0; height: 6px; background: var(--color-ice); transform-origin: left center; }
+      .end-bio { font-weight: 700; font-size: 40px; color: var(--muted); margin-top: 22px; }
+      .end-floor { position: absolute; left: 0; right: 0; top: 1390px; height: 530px; background: var(--color-accent); transform-origin: left center; }
+
+      .r3-slot { height: 132px; overflow: hidden; margin-top: 20px; }
+      .r3-strip div { height: 132px; font-weight: 900; font-size: 104px; line-height: 132px; letter-spacing: -0.04em; color: var(--color-ice); white-space: nowrap; }
+      .r3-strip div:last-child { color: var(--color-ink); }
+
+      .r3-crack { position: relative; width: 840px; height: 220px; margin: 70px 0 80px; }
+      .r3-seg { position: absolute; top: 99px; width: 280px; height: 22px; border-radius: 11px; background: var(--red); }
+
+      .r3-site { position: relative; width: 840px; height: 600px; margin: 50px 0 60px; border: 6px solid #3a4756; border-radius: 28px; overflow: hidden; }
+      .r3-bar { position: absolute; left: 0; right: 0; top: 0; height: 64px; background: #1e2a38; }
+      .r3-dot { position: absolute; top: 22px; width: 20px; height: 20px; border-radius: 50%; background: #3a4756; }
+      .r3-blk { position: absolute; border-radius: 16px; background: #2a3a4d; }
+      .r3-hero { background: var(--color-accent); }
+      .r3-cta { background: var(--color-ice); }
+
+      .r3-cal { position: relative; width: 840px; height: 430px; margin: 50px 0 60px; }
+      .r3-card { position: absolute; left: 100px; top: 70px; width: 640px; height: 290px; border-radius: 30px; background: #22303f; padding: 40px 48px; }
+      .r3-day { height: 64px; overflow: hidden; }
+      .r3-days div { height: 64px; font-family: "JetBrains Mono", monospace; font-weight: 700; font-size: 52px; line-height: 64px; color: var(--color-ice); }
+      .r3-task { font-weight: 700; font-size: 46px; white-space: nowrap; line-height: 1.25; margin-top: 26px; }
+      .r3-ring { position: absolute; left: 0; top: 0; width: 840px; height: 430px; }
+
+      .r3-three .xl { color: #9cc7ff; }
+      .r3-pick { margin-top: 30px; }
+      .r3-opt { display: flex; align-items: baseline; gap: 34px; margin: 6px 0; }
+      .r3-opt b { font-family: "JetBrains Mono", monospace; font-weight: 700; font-size: 110px; color: var(--color-ice); }
+      .r3-opt span { font-weight: 900; font-size: 110px; letter-spacing: -0.04em; }
+    </style>
+  </head>
+  <body>
+    <!-- Generated by marketing/reels/tools/build.py from tools/reels.py. Edit there, then rebuild. -->
+    <div id="root" data-composition-id="main" data-start="0" data-duration="22.9" data-width="1080" data-height="1920">
+
+      <!-- s1 · 0-3.2 · hook on frame 0; the slot rolls through the three jobs -->
+      <div id="s1" class="clip scene g-obsidian" data-start="0" data-duration="3.2" data-track-index="1" data-track-kind="graphics">
+        <div class="band">
+          <div class="m">Today I need to</div>
+          <div class="r3-slot" data-layout-allow-overflow>
+            <div class="r3-strip">
+              <div>fix my app</div><div>build a site</div><div>automate stuff</div>
+              <div>fix my app</div><div>build a site</div><div>automate stuff</div>
+              <div>do all three.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- s2 · 3.2-6.8 · FIX: a cracked line heals -->
+      <div id="s2" class="clip scene g-obsidian" data-start="3.2" data-duration="3.6" data-track-index="1" data-track-kind="graphics">
+        <div class="band">
+          <div class="l r3-fix-q" data-split>Broken project?</div>
+          <div class="r3-crack" data-layout-allow-overflow>
+            <div class="r3-seg r3-seg1" style="left: 0px"></div>
+            <div class="r3-seg r3-seg2" style="left: 280px"></div>
+            <div class="r3-seg r3-seg3" style="left: 560px"></div>
+          </div>
+          <div class="xl ice r3-fix-a" data-split>Fix it.</div>
+        </div>
+      </div>
+
+      <!-- s3 · 6.8-10.4 · BUILD: blocks stack into a web page -->
+      <div id="s3" class="clip scene g-graphite" data-start="6.8" data-duration="3.6" data-track-index="1" data-track-kind="graphics">
+        <div class="band">
+          <div class="l r3-build-q" data-split>Got an idea?</div>
+          <div class="r3-site">
+            <div class="r3-bar"></div>
+            <div class="r3-dot" style="left: 26px"></div><div class="r3-dot" style="left: 58px"></div><div class="r3-dot" style="left: 90px"></div>
+            <div class="r3-blk r3-b1" style="left: 30px; top: 92px; width: 768px; height: 54px"></div>
+            <div class="r3-blk r3-hero r3-b2" style="left: 30px; top: 170px; width: 768px; height: 210px"></div>
+            <div class="r3-blk r3-cta r3-b3" style="left: 30px; top: 404px; width: 250px; height: 66px"></div>
+            <div class="r3-blk r3-b4" style="left: 30px; top: 494px; width: 372px; height: 78px"></div>
+            <div class="r3-blk r3-b5" style="left: 426px; top: 494px; width: 372px; height: 78px"></div>
+          </div>
+          <div class="xl ice r3-build-a" data-split>Build it.</div>
+        </div>
+      </div>
+
+      <!-- s4 · 10.4-14.0 · AUTOMATE: the same task every day, then the loop closes -->
+      <div id="s4" class="clip scene g-elevated" data-start="10.4" data-duration="3.6" data-track-index="1" data-track-kind="graphics">
+        <div class="band">
+          <div class="l r3-auto-q" data-split>Same task every day?</div>
+          <div class="r3-cal" data-layout-allow-overflow>
+            <svg class="r3-ring" viewBox="0 0 840 430" data-layout-ignore>
+              <rect class="r3-ring-path" x="70" y="30" width="700" height="370" rx="60" fill="none" stroke="#38BDF8" stroke-width="12" stroke-linecap="round" />
+            </svg>
+            <div class="r3-card">
+              <div class="r3-day" data-layout-allow-overflow>
+                <div class="r3-days"><div>MON</div><div>TUE</div><div>WED</div><div>THU</div><div>FRI</div><div>MON</div><div>TUE</div><div>WED</div><div>EVERY DAY</div></div>
+              </div>
+              <div class="r3-task">copy → paste → send</div>
+            </div>
+          </div>
+          <div class="xl ice r3-auto-a" data-split>Automate it.</div>
+        </div>
+      </div>
+
+      <!-- s5 · 14.0-16.7 · all three, one platform -->
+      <div id="s5" class="clip scene g-blue" data-start="14" data-duration="2.7" data-track-index="1" data-track-kind="graphics">
+        <div class="band r3-three">
+          <div class="xl r3-t1">Fix.</div>
+          <div class="xl r3-t2">Build.</div>
+          <div class="xl r3-t3">Automate.</div>
+          <div class="s ink r3-one" data-split style="margin-top: 50px">One platform. In the works.</div>
+        </div>
+      </div>
+
+      <!-- s6 · 16.7-19.7 · the poll in the comments -->
+      <div id="s6" class="clip scene g-obsidian" data-start="16.7" data-duration="3" data-track-index="1" data-track-kind="graphics">
+        <div class="band">
+          <div class="m r3-ask" data-split>Which do you need first?</div>
+          <div class="r3-pick">
+            <div class="r3-opt r3-o1"><b>1</b><span>Fix</span></div>
+            <div class="r3-opt r3-o2"><b>2</b><span>Build</span></div>
+            <div class="r3-opt r3-o3"><b>3</b><span>Automate</span></div>
+          </div>
+          <div class="s muted r3-cmt" data-split style="margin-top: 30px">Comment 1, 2 or 3</div>
+        </div>
+      </div>
+
+      <!-- end · 19.7-22.9 · end card, holds 2 s+ -->
+      <div id="end" class="clip scene g-obsidian" data-start="19.7" data-duration="3.2" data-track-index="1" data-track-kind="graphics">
+        <div class="end-floor" data-layout-ignore></div>
+        <div class="band">
+          <img class="end-mark" src="assets/logo-mark.png" alt="VibeHeal mark" />
+          <div class="end-name" data-split="chars">VibeHeal</div>
+          <div class="end-tag">Just vibeheal it.</div>
+          <div class="end-cta">Join the beta waitlist</div>
+          <div class="end-url"><span data-var-text="cta-url">vibeheal.online</span><div class="end-url-line"></div></div>
+          <div class="end-bio">link in bio</div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Split marked text into word (.w) or letter (.c) spans. Deterministic, runs once before the timeline is built.
+      document.querySelectorAll("[data-split]").forEach((el) => {
+        const chars = el.getAttribute("data-split") === "chars";
+        const walk = (node) => {
+          [...node.childNodes].forEach((n) => {
+            if (n.nodeType === 3) {
+              const frag = document.createDocumentFragment();
+              const parts = chars ? [...n.textContent] : n.textContent.split(/(\s+)/);
+              parts.forEach((p) => {
+                if (!p) return;
+                if (/^\s+$/.test(p)) { frag.appendChild(document.createTextNode(chars ? " " : p)); return; }
+                const s = document.createElement("span");
+                s.className = chars ? "c" : "w";
+                s.textContent = p;
+                frag.appendChild(s);
+              });
+              node.replaceChild(frag, n);
+            } else if (n.nodeType === 1 && n.tagName !== "BR") walk(n);
+          });
+        };
+        walk(el);
+      });
+
+      const tl = gsap.timeline({ paused: true });
+      const blurIn = (sel, t, stagger = 0.067) =>
+        tl.fromTo(sel, { opacity: 0, filter: "blur(8px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.14, ease: "power4.out", stagger }, t);
+      const blurOut = (sel, t) =>
+        tl.fromTo(sel, { opacity: 1, filter: "blur(0px)" }, { opacity: 0, filter: "blur(8px)", duration: 0.16, ease: "power2.in", immediateRender: false }, t);
+      const inkIn = (sel, t, from = "#3a4756", to = "#f4f6f8", stagger = 0.085) =>
+        tl.fromTo(sel, { color: from }, { color: to, duration: 0.12, ease: "none", stagger }, t);
+      const flood = (sel, t, at = "50% 45%") =>
+        tl.fromTo(sel, { clipPath: `circle(0% at ${at})` }, { clipPath: `circle(150% at ${at})`, duration: 0.4, ease: "power2.inOut" }, t);
+      // Show a block for a window (hard cut in and out); used by montages and the pause game.
+      const flash = (sel, t, dur) => {
+        tl.fromTo(sel, { opacity: 0 }, { opacity: 1, duration: 0.001, ease: "none" }, t);
+        tl.fromTo(sel, { opacity: 1 }, { opacity: 0, duration: 0.001, ease: "none", immediateRender: false }, t + dur);
+      };
+
+      // s1 · slot machine lands on "do all three."
+      tl.fromTo(".r3-strip", { y: 0 }, { y: -6 * 132, duration: 1.5, ease: "power3.inOut" }, 0.7);
+
+      // s2 · cracked segments snap straight and turn blue
+      blurIn(".r3-fix-q .w", 3.25);
+      tl.fromTo(".r3-seg1", { rotation: -14, y: 30, x: -10 }, { rotation: 0, y: 0, x: 0, duration: 0.5, ease: "back.out(1.5)" }, 4.4);
+      tl.fromTo(".r3-seg2", { rotation: 11, y: -46, x: 18 }, { rotation: 0, y: 0, x: 0, duration: 0.5, ease: "back.out(1.5)" }, 4.47);
+      tl.fromTo(".r3-seg3", { rotation: -8, y: 22, x: 34 }, { rotation: 0, y: 0, x: 0, duration: 0.5, ease: "back.out(1.5)" }, 4.54);
+      tl.fromTo(".r3-seg", { backgroundColor: "#ff5c5c" }, { backgroundColor: "#38bdf8", duration: 0.2, ease: "none" }, 4.85);
+      blurIn(".r3-fix-a .w", 5.2, 0.1);
+
+      // s3 · wireframe blocks drop in and settle
+      blurIn(".r3-build-q .w", 6.85);
+      tl.fromTo(".r3-b1, .r3-b2, .r3-b3, .r3-b4, .r3-b5", { y: -90, opacity: 0 }, { y: 0, opacity: 1, duration: 0.45, ease: "back.out(1.4)", stagger: 0.12 }, 7.55);
+      blurIn(".r3-build-a .w", 8.8, 0.1);
+
+      // s4 · the days roll by, then the loop closes around the task
+      blurIn(".r3-auto-q .w", 10.45);
+      tl.fromTo(".r3-days", { y: 0 }, { y: -8 * 64, duration: 1.6, ease: "power2.inOut" }, 10.9);
+      tl.fromTo(".r3-ring-path", { strokeDasharray: 2200, strokeDashoffset: 2200 }, { strokeDashoffset: 0, duration: 0.6, ease: "power2.inOut" }, 12.2);
+      blurIn(".r3-auto-a .w", 12.6, 0.1);
+
+      // s5 · the three words land, light blue to white
+      inkIn(".r3-t1", 14.1, "#9cc7ff", "#ffffff");
+      inkIn(".r3-t2", 14.35, "#9cc7ff", "#ffffff");
+      inkIn(".r3-t3", 14.6, "#9cc7ff", "#080b10");
+      blurIn(".r3-one .w", 15.0);
+
+      // s6 · the poll
+      blurIn(".r3-ask .w", 16.75);
+      tl.fromTo(".r3-opt", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.3, ease: "expo.out", stagger: 0.12 }, 17.25);
+      blurIn(".r3-cmt .w", 17.8);
+
+      // end card
+      tl.fromTo(".end-floor", { scaleX: 0 }, { scaleX: 1, duration: 0.5, ease: "expo.out" }, 19.7);
+      tl.fromTo("#end .end-mark", { scale: 0.6, opacity: 0, filter: "blur(12px)" }, { scale: 1, opacity: 1, filter: "blur(0px)", duration: 0.5, ease: "expo.out" }, 19.75);
+      tl.fromTo("#end .end-name .c", { opacity: 0.12 }, { opacity: 1, duration: 0.08, stagger: 0.06, ease: "none" }, 19.9);
+      blurIn("#end .end-tag", 20.25);
+      blurIn("#end .end-cta", 20.45);
+      blurIn("#end .end-url", 20.6);
+      tl.fromTo("#end .end-url-line", { scaleX: 0 }, { scaleX: 1, duration: 0.4, ease: "expo.out" }, 20.7);
+      blurIn("#end .end-bio", 20.8);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["main"] = tl;
+    </script>
+  </body>
+</html>

@@ -1,0 +1,284 @@
+<!doctype html>
+<html
+  lang="en"
+  data-composition-variables='[
+    {"id":"color-ground","type":"color","label":"Background","default":"#080B10"},
+    {"id":"color-ink","type":"color","label":"Text","default":"#F4F6F8"},
+    {"id":"color-accent","type":"color","label":"Accent","default":"#2684FF"},
+    {"id":"color-ice","type":"color","label":"Highlight","default":"#38BDF8"},
+    {"id":"cta-url","type":"string","label":"Waitlist URL","default":"vibeheal.online"}
+  ]'
+>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <title>VibeHeal reel 01: It worked 5 minutes ago</title>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+    <style>
+      :root {
+        --color-ground: #080b10;
+        --color-ink: #f4f6f8;
+        --color-accent: #2684ff;
+        --color-ice: #38bdf8;
+        --graphite: #111923;
+        --elevated: #17212d;
+        --muted: #9aa5b1;
+        --red: #ff5c5c;
+      }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body {
+        width: 1080px; height: 1920px; overflow: hidden;
+        background: var(--color-ground);
+      }
+      body { font-family: "Inter", sans-serif; color: var(--color-ink); }
+      #root { position: absolute; inset: 0; overflow: hidden; background: var(--color-ground); }
+      .scene { position: absolute; inset: 0; overflow: hidden; }
+      .fill { position: absolute; inset: 0; }
+      /* Every word lives in this band: clear of the status bar, caption area and action rail. */
+      .band {
+        position: absolute; left: 90px; right: 150px; top: 210px; bottom: 610px;
+        display: flex; flex-direction: column; justify-content: center; align-items: flex-start;
+      }
+      .xl { font-weight: 900; font-size: 168px; line-height: 0.93; letter-spacing: -0.045em; }
+      .l { font-weight: 900; font-size: 128px; line-height: 0.95; letter-spacing: -0.04em; }
+      .m { font-weight: 900; font-size: 96px; line-height: 1; letter-spacing: -0.035em; }
+      .s { font-weight: 700; font-size: 60px; line-height: 1.15; letter-spacing: -0.02em; }
+      .mono { font-family: "JetBrains Mono", monospace; }
+      .w, .c { display: inline-block; }
+      .ice { color: var(--color-ice); }
+      .red { color: var(--red); }
+      .muted { color: var(--muted); }
+
+      /* s1 hook */
+      .s1-kicker { font-family: "JetBrains Mono", monospace; font-weight: 700; font-size: 64px; color: var(--color-ice); margin-bottom: 28px; }
+      .s1-flash { background: var(--red); opacity: 0; }
+
+      /* s2 errors */
+      #s2 { background: #0b0f15; }
+      .s2-list { position: absolute; left: 90px; right: 150px; top: 230px; }
+      .err {
+        font-family: "JetBrains Mono", monospace; font-size: 33px; line-height: 1.25;
+        color: var(--red); padding: 10px 0; border-bottom: 2px solid #2a1418; white-space: nowrap;
+      }
+      .err b { font-weight: 700; margin-right: 18px; }
+      .bubble {
+        position: absolute; border-radius: 44px; padding: 34px 44px;
+        font-weight: 700; font-size: 66px; letter-spacing: -0.02em; line-height: 1.1;
+      }
+      .bubble small { display: block; font-size: 32px; font-weight: 700; letter-spacing: 0; margin-bottom: 10px; }
+      .s2-you { right: 150px; top: 860px; background: var(--color-ink); color: var(--color-ground); border-bottom-right-radius: 10px; }
+      .s2-you small { color: #5b6673; }
+      .s2-ai { left: 90px; top: 1090px; background: var(--color-accent); color: #fff; border-bottom-left-radius: 10px; }
+      .s2-ai small { color: #ffffff; }
+
+      /* s3 counter */
+      #s3 { background: var(--graphite); }
+      .slot { height: 400px; overflow: hidden; margin: 6px 0 10px; }
+      .slot-strip div { height: 400px; font-weight: 900; font-size: 400px; line-height: 400px; letter-spacing: -0.06em; color: var(--color-ice); }
+
+      /* s4 flood */
+      #s4 { background: var(--graphite); }
+      .s4-flood { background: var(--color-accent); clip-path: circle(0% at 50% 45%); }
+
+      /* s5 reveal */
+      #s5 { background: var(--color-accent); }
+      .s5-flood { background: var(--color-ground); clip-path: circle(0% at 30% 40%); }
+      .s5-name { display: flex; align-items: center; gap: 26px; margin: 18px 0 54px; }
+      .s5-name img { width: 170px; height: auto; }
+      .s5-name .end-name { font-size: 132px; white-space: nowrap; }
+      .s5-lines .m { color: #3a4756; }
+
+      /* s6 comment */
+      .s6-arrow { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; }
+
+      /* end card */
+      #end { background: var(--color-ground); }
+      .end-mark { width: 260px; height: auto; margin-bottom: 26px; }
+      .end-name { font-weight: 900; font-size: 150px; letter-spacing: -0.05em; line-height: 1; }
+      .end-tag { font-weight: 700; font-size: 58px; color: var(--color-ice); margin: 18px 0 70px; letter-spacing: -0.02em; }
+      .end-cta { font-weight: 900; font-size: 74px; letter-spacing: -0.03em; line-height: 1.05; }
+      .end-url { font-family: "JetBrains Mono", monospace; font-weight: 700; font-size: 58px; color: var(--color-ice); margin-top: 26px; position: relative; padding-bottom: 12px; }
+      .end-url-line { position: absolute; left: 0; right: 0; bottom: 0; height: 6px; background: var(--color-ice); transform-origin: left center; }
+      .end-bio { font-weight: 700; font-size: 40px; color: var(--muted); margin-top: 22px; }
+      .end-floor { position: absolute; left: 0; right: 0; top: 1390px; height: 530px; background: var(--color-accent); transform-origin: left center; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="21.6" data-width="1080" data-height="1920">
+
+      <!-- s1 · 0.0-2.4 · hook on frame 0, then the build breaks (shake + red flash) -->
+      <div id="s1" class="clip scene" data-start="0" data-duration="2.4" data-track-index="1" data-track-kind="graphics">
+        <div class="band s1-shake">
+          <div class="s1-kicker">POV:</div>
+          <div class="xl">it worked<br />5 minutes<br /><span class="ice">ago.</span></div>
+        </div>
+        <div class="fill s1-flash"></div>
+      </div>
+
+      <!-- s2 · 2.4-6.6 · errors pile up, you beg, the AI "helps" -->
+      <div id="s2" class="clip scene" data-start="2.4" data-duration="4.2" data-track-index="1" data-track-kind="graphics">
+        <div class="s2-list">
+          <div class="err"><b>×</b>Cannot find module './Navbar'</div>
+          <div class="err"><b>×</b>TypeError: reading 'map'</div>
+          <div class="err"><b>×</b>Failed to compile.</div>
+          <div class="err"><b>×</b>Module not found: 'react-icons'</div>
+          <div class="err"><b>×</b>npm ERR! code ELIFECYCLE</div>
+          <div class="err"><b>×</b>Hydration failed</div>
+          <div class="err"><b>×</b>EADDRINUSE :::3000</div>
+          <div class="err"><b>×</b>500 Internal Server Error</div>
+          <div class="err"><b>×</b>process is not defined</div>
+          <div class="err"><b>×</b>TS2322: not assignable</div>
+          <div class="err"><b>×</b>Unexpected token '&lt;'</div>
+          <div class="err"><b>×</b>Build failed with 9 errors</div>
+        </div>
+        <div class="bubble s2-you"><small>you</small><span class="s2-type" data-split="chars">fix it pls</span></div>
+        <div class="bubble s2-ai"><small>your AI</small>Done! I changed<br />14 files.</div>
+      </div>
+
+      <!-- s3 · 6.6-10.4 · the counter rolls to 14, then the real question -->
+      <div id="s3" class="clip scene" data-start="6.6" data-duration="3.8" data-track-index="1" data-track-kind="graphics">
+        <div class="band s3-count">
+          <div class="s muted">Your AI changed</div>
+          <div class="slot" data-layout-allow-overflow>
+            <div class="slot-strip">
+              <div>1</div><div>2</div><div>3</div><div>4</div><div>5</div><div>6</div><div>7</div>
+              <div>8</div><div>9</div><div>10</div><div>11</div><div>12</div><div>13</div><div>14</div>
+            </div>
+          </div>
+          <div class="s">files.</div>
+        </div>
+        <div class="band">
+          <div class="l s3-q" data-split>Which one <span class="ice">broke</span> it?</div>
+        </div>
+      </div>
+
+      <!-- s4 · 10.4-12.4 · colour flood: sound familiar? -->
+      <div id="s4" class="clip scene" data-start="10.4" data-duration="2" data-track-index="1" data-track-kind="graphics">
+        <div class="fill s4-flood"></div>
+        <div class="band">
+          <div class="xl s4-q" data-split>Sound<br />familiar?</div>
+        </div>
+      </div>
+
+      <!-- s5 · 12.4-16.0 · the reveal: what we're building -->
+      <div id="s5" class="clip scene" data-start="12.4" data-duration="3.6" data-track-index="1" data-track-kind="graphics">
+        <div class="fill s5-flood"></div>
+        <div class="band">
+          <div class="s s5-kick" data-split>So we're building</div>
+          <div class="s5-name">
+            <img class="s5-mark" src="assets/logo-mark.png" alt="VibeHeal mark" />
+            <div class="end-name s5-word" data-split="chars">VibeHeal</div>
+          </div>
+          <div class="s5-lines">
+            <div class="m s5-l1">Fix it.</div>
+            <div class="m s5-l2">Understand it.</div>
+            <div class="m s5-l3">Undo it.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- s6 · 16.0-18.4 · the interactive ask -->
+      <div id="s6" class="clip scene" data-start="16" data-duration="2.4" data-track-index="1" data-track-kind="graphics">
+        <div class="band">
+          <div class="l s6-q" data-split>Comment the <span class="red">worst error</span> you've ever seen</div>
+        </div>
+        <svg class="s6-arrow" viewBox="0 0 1080 1920" data-layout-ignore>
+          <path class="s6-path" d="M 520 1360 C 600 1520, 760 1560, 900 1500" fill="none" stroke="#38BDF8" stroke-width="16" stroke-linecap="round" />
+          <path class="s6-head" d="M 850 1450 L 912 1496 L 860 1556" fill="none" stroke="#38BDF8" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+      </div>
+
+      <!-- end · 18.4-21.6 · end card, holds 2 s+ -->
+      <div id="end" class="clip scene" data-start="18.4" data-duration="3.2" data-track-index="1" data-track-kind="graphics">
+        <div class="end-floor" data-layout-ignore></div>
+        <div class="band">
+          <img class="end-mark" src="assets/logo-mark.png" alt="VibeHeal mark" />
+          <div class="end-name" data-split="chars">VibeHeal</div>
+          <div class="end-tag">Just vibeheal it.</div>
+          <div class="end-cta">Join the beta waitlist</div>
+          <div class="end-url"><span data-var-text="cta-url">vibeheal.online</span><div class="end-url-line"></div></div>
+          <div class="end-bio">link in bio</div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Split marked text into word (.w) or letter (.c) spans. Deterministic, runs once before the timeline is built.
+      document.querySelectorAll("[data-split]").forEach((el) => {
+        const chars = el.getAttribute("data-split") === "chars";
+        const walk = (node) => {
+          [...node.childNodes].forEach((n) => {
+            if (n.nodeType === 3) {
+              const frag = document.createDocumentFragment();
+              const parts = chars ? [...n.textContent] : n.textContent.split(/(\s+)/);
+              parts.forEach((p) => {
+                if (!p) return;
+                if (/^\s+$/.test(p)) { frag.appendChild(document.createTextNode(chars ? " " : p)); return; }
+                const s = document.createElement("span");
+                s.className = chars ? "c" : "w";
+                s.textContent = p;
+                frag.appendChild(s);
+              });
+              node.replaceChild(frag, n);
+            } else if (n.nodeType === 1 && n.tagName !== "BR") walk(n);
+          });
+        };
+        walk(el);
+      });
+
+      const tl = gsap.timeline({ paused: true });
+      const blurIn = (sel, t, stagger = 0.067) =>
+        tl.fromTo(sel, { opacity: 0, filter: "blur(8px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.14, ease: "power4.out", stagger }, t);
+      const blurOut = (sel, t) =>
+        tl.fromTo(sel, { opacity: 1, filter: "blur(0px)" }, { opacity: 0, filter: "blur(8px)", duration: 0.16, ease: "power2.in", immediateRender: false }, t);
+
+      // s1 · the build breaks at 1.5 s
+      tl.fromTo(".s1-shake", { x: 0 }, { keyframes: { x: [0, -26, 22, -16, 12, -6, 0] }, duration: 0.45, ease: "none" }, 1.5);
+      tl.fromTo(".s1-flash", { opacity: 0 }, { keyframes: { opacity: [0, 0.55, 0, 0.35, 0] }, duration: 0.45, ease: "none" }, 1.5);
+      tl.fromTo(".s1-shake", { opacity: 1 }, { opacity: 0.0, duration: 0.12, ease: "power2.in", immediateRender: false }, 2.26);
+
+      // s2 · errors stack every 0.15 s, then the chat
+      tl.fromTo("#s2 .err", { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.12, ease: "power3.out", stagger: 0.12 }, 2.42);
+      tl.fromTo(".s2-list", { opacity: 1 }, { opacity: 0.28, duration: 0.25, ease: "power2.out", immediateRender: false }, 3.7);
+      tl.fromTo(".s2-you", { scale: 0.7, opacity: 0, transformOrigin: "100% 100%" }, { scale: 1, opacity: 1, duration: 0.4, ease: "back.out(1.6)" }, 3.75);
+      tl.fromTo(".s2-type .c", { opacity: 0 }, { opacity: 1, duration: 0.01, stagger: 0.045, ease: "none" }, 3.9);
+      tl.fromTo(".s2-ai", { scale: 0.7, opacity: 0, transformOrigin: "0% 100%" }, { scale: 1, opacity: 1, duration: 0.4, ease: "back.out(1.6)" }, 4.5);
+
+      // s3 · slot counter 1 -> 14, then the question
+      tl.fromTo(".slot-strip", { y: 0 }, { y: -13 * 400, duration: 1.1, ease: "expo.out" }, 6.7);
+      blurOut(".s3-count", 8.35);
+      blurIn(".s3-q .w", 8.55);
+
+      // s4 · blue flood, then the line
+      tl.fromTo(".s4-flood", { clipPath: "circle(0% at 50% 45%)" }, { clipPath: "circle(150% at 50% 45%)", duration: 0.4, ease: "power2.inOut" }, 10.4);
+      blurIn(".s4-q .w", 10.75, 0.12);
+
+      // s5 · obsidian floods back from the mark, the name lands letter by letter
+      tl.fromTo(".s5-flood", { clipPath: "circle(0% at 30% 40%)" }, { clipPath: "circle(150% at 30% 40%)", duration: 0.45, ease: "power2.inOut" }, 12.4);
+      blurIn(".s5-kick .w", 12.6);
+      tl.fromTo(".s5-mark", { scale: 0.55, opacity: 0, filter: "blur(12px)" }, { scale: 1, opacity: 1, filter: "blur(0px)", duration: 0.5, ease: "expo.out" }, 12.9);
+      tl.fromTo(".s5-word .c", { opacity: 0.15 }, { opacity: 1, duration: 0.08, stagger: 0.06, ease: "none" }, 12.95);
+      tl.fromTo(".s5-l1", { color: "#3a4756" }, { color: "#f4f6f8", duration: 0.12, ease: "none" }, 13.85);
+      tl.fromTo(".s5-l2", { color: "#3a4756" }, { color: "#f4f6f8", duration: 0.12, ease: "none" }, 14.3);
+      tl.fromTo(".s5-l3", { color: "#3a4756" }, { color: "#38bdf8", duration: 0.12, ease: "none" }, 14.75);
+
+      // s6 · the ask, then an arrow down to the comments
+      blurIn(".s6-q .w", 16.05, 0.09);
+      tl.fromTo(".s6-path", { strokeDasharray: 520, strokeDashoffset: 520 }, { strokeDashoffset: 0, duration: 0.45, ease: "power3.out" }, 16.9);
+      tl.fromTo(".s6-head", { opacity: 0 }, { opacity: 1, duration: 0.08, ease: "none" }, 17.3);
+
+      // end card
+      tl.fromTo(".end-floor", { scaleX: 0 }, { scaleX: 1, duration: 0.5, ease: "expo.out" }, 18.4);
+      tl.fromTo("#end .end-mark", { scale: 0.6, opacity: 0, filter: "blur(12px)" }, { scale: 1, opacity: 1, filter: "blur(0px)", duration: 0.5, ease: "expo.out" }, 18.45);
+      tl.fromTo("#end .end-name .c", { opacity: 0.12 }, { opacity: 1, duration: 0.08, stagger: 0.06, ease: "none" }, 18.6);
+      blurIn("#end .end-tag", 18.95);
+      blurIn("#end .end-cta", 19.15);
+      blurIn("#end .end-url", 19.3);
+      tl.fromTo("#end .end-url-line", { scaleX: 0 }, { scaleX: 1, duration: 0.4, ease: "expo.out" }, 19.4);
+      blurIn("#end .end-bio", 19.5);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["main"] = tl;
+    </script>
+  </body>
+</html>
