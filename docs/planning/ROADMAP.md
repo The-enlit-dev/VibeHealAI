@@ -112,44 +112,42 @@ P-9 (identity), P-10 (host and cost), P-12 (key management), AU-3 and a document
 - **Done when:** the beta gate is met and the remaining risks are documented for users.
 
 ## Agent track (added 2026-11-08)
-Source: [FEATURES.md](./FEATURES.md), DEC-33 and DEC-34. Every milestone needs separate owner approval. All of them depend on the core safety workflow (M1–M4), because the Agent Relay reuses its script runner, snapshots, diff review and handoff brief.
+Source: [FEATURES.md](./FEATURES.md), DEC-33 to DEC-36. Every phase needs separate owner approval. Phase 1 includes the core safety workflow (M1–M4); everything after it depends on it.
 
-### A1: Agent connectors
-- **Objective:** launch and supervise an AI coding tool the user already has, safely.
+### A1: Safe local foundation ($0)
 - **Includes:**
-  - one connector first, for a tool whose terms clearly allow it to be driven (for example local models through Ollama, or Aider);
-  - a sandboxed git worktree per run;
-  - the referee rules (snapshots, protected paths, diff limits, approval for dependencies, network and deploy commands, secret redaction);
-  - the run log.
-- **Prerequisites:** a terms check for each vendor. **The Claude Code connector waits for P-1.**
-- **Done when:** a run's changes stay inside the worktree until the user approves; undo restores the project exactly; and tests show secrets never appear in prompts or logs.
+  - the permission system: manifest, file and folder picker, deny-by-default runtime, approval gates, kill switch;
+  - the local vault (OS keychain, redaction);
+  - Claude Code permission notifications through the user's own hooks;
+  - dashboard v1.
+- **Done when:** tests show an agent cannot read or write outside its chosen folders, and secrets never appear in logs or prompts.
 
-### A2: Agent Relay
-- **Objective:** agents calling agents, with VibeHeal as referee.
+### A2: Agent runtime ($0)
 - **Includes:**
-  - Fixer → Reviewer → Tester, with configurable roles and round limits;
-  - the live supervision timeline;
-  - the **Heal** button from a captured error.
-- **Done when:**
-  - on the test collection, a Relay run either ends with green project checks and user approval, or stops safely with everything rolled back;
-  - every agent-to-agent message is logged.
+  - tool calling through MCP, plus built-in tools (each permission-gated);
+  - bring-your-own agent connectors, starting with a terms-cleared tool (the Claude Code connector waits for P-1);
+  - bring-your-own API keys (after P-16);
+  - the Agent Relay (Fixer → Reviewer → Tester, refereed);
+  - offline mode with local models.
+- **Done when:** a Relay run either ends with green checks and user approval, or stops safely with everything rolled back, and every tool call and agent message is logged.
 
-### A3: Supervise external agents, and project memory
-- **Includes:**
-  - a folder watch that auto-snapshots changes made by any agent (Hermes, OpenClaw and others) and flags risky ones;
-  - a readable, editable project-memory file used in briefs.
+### A3: First automation agents ($0, the user's own AI)
+- **Includes:** QA testing, Audit, SEO/GEO/AEO checker, Daily update, Blog writer (drafts only).
+- **Done when:** each runs with a minimal permission manifest and its outputs are checked against real examples.
 
-### A4: Deploy watch and recipes
-- **Includes:**
-  - read-only deploy status from the IM3 adapters, offering a Heal run when a deploy breaks;
-  - first-party Relay recipes.
-- **Depends on:** A2 and IM3.
+### A4: Build and talk ($0)
+- **Includes:** making agents in plain words, the block builder (for example Blockly), and voice in and out (local speech first).
 
-### A5: Stage 2, bring-your-own API keys
-- **Includes:**
-  - user keys in the OS keychain;
-  - built-in explanations, a Reviewer role that needs no CLI, and a project chat.
-- **Prerequisite:** the P-16 security review.
+### A5: Ecosystem
+- **Includes:** more integrations, the reviewed and sandboxed marketplace (P-19), and apps inside the app (music first, through Spotify's official player and Web API).
+
+### A6: Outreach and media agents
+- **Includes:** Find prospects, Cold emailing, Replying to comments and emails, Making and uploading videos.
+- **Prerequisite:** the P-18 legal and privacy review. Sending always needs approval by default.
+
+### A7: Pro cloud (paid)
+- **Includes:** agents that keep running while the laptop sleeps.
+- **Prerequisite:** P-17 (pricing, hosting, accounts, billing). Not scheduled.
 
 ## Public beta (carefully scoped)
 - **Scope:** Windows x64, JavaScript/TypeScript npm projects only, no built-in AI.

@@ -16,7 +16,7 @@
   - read-only first [DEC-21];
   - managed by a VibeHeal **backend** that holds credentials, encrypted [DEC-18, DEC-20].
 - **AI:** staged [DEC-34]: (1) VibeHeal drives AI tools the user already has, (2) optional user-provided API keys, (3) a paid built-in tier later. No AI billing for us in stages 1 and 2.
-- **Positioning (2026-11-08):** "the supervisor for your AI coders", with the **Agent Relay** (agents calling agents, refereed by VibeHeal) as the headline feature [DEC-33, [FEATURES.md](./FEATURES.md)].
+- **Positioning (2026-11-08):** a **safe agent platform**. Anyone can build and run agents (plain words, blocks, or voice), with a reviewed marketplace and ready-made automation agents. Safety by design is the differentiator: the user picks the exact folders an agent may touch, approves sensitive actions, and keeps private data on the laptop. The vibe-coder safety net and the **Agent Relay** (agents calling agents) stay the flagship [DEC-33 to DEC-36, [FEATURES.md](./FEATURES.md)].
 - **Cost:** $0. The backend runs locally only: no hosting, paid APIs, databases or domains [DEC-05, DEC-22].
 - **Not in scope:** VibeHeal user accounts (DEC-07, DEC-23), third-party plugins (DEC-17), provider write actions (DEC-21), deployment of the backend (DEC-22).
 
@@ -24,8 +24,8 @@
 
 | Document | What it answers |
 |---|---|
-| [DECISIONS.md](./DECISIONS.md) | What the owner decided, what changed, what's pending (P-1 to P-17) |
-| [FEATURES.md](./FEATURES.md) | Feature roadmap (2026-11-08): positioning against Hermes, OpenClaw, Grok Bot and Dot; the Agent Relay; prioritised features; the agent track A1–A5 |
+| [DECISIONS.md](./DECISIONS.md) | What the owner decided, what changed, what's pending (P-1 to P-19) |
+| [FEATURES.md](./FEATURES.md) | Feature roadmap (2026-11-08): the safe agent platform, the competitor snapshot (Hermes, OpenClaw, Grok Bot, Dot), the safety model, the Agent Relay, features, ready-made automation agents, and the agent track A1–A7 |
 | [PRODUCT.md](./PRODUCT.md) | The problem, the user, the MVP workflow and scope, success measures, validation plan |
 | [ARCHITECTURE.md](./ARCHITECTURE.md) | Desktop app, backend API, integration platform, provider adapters, credentials; core components; open questions (U1–U17) |
 | [SECURITY.md](./SECURITY.md) | Security and privacy requirements with IDs and stages, release gates, residual risks |
