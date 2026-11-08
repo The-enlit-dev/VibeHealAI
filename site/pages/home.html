@@ -1,55 +1,97 @@
-    <section class="hero" id="top" aria-labelledby="hero-title">
-      <div class="hero-glow" aria-hidden="true"></div>
-      <div class="container hero-grid">
-        <div class="hero-copy">
-          <img class="hero-logo reveal-logo" src="{{ brand.logo.lockupPath }}" alt="VibeHealAI" width="1292" height="226">
-          <p class="eyebrow reveal-up d-350"><span class="eyebrow-dot" aria-hidden="true"></span>{{ content.hero.eyebrow }}</p>
-          <h1 id="hero-title" class="hero-title">{{{ blocks.heroHeadline }}}</h1>
-          <p class="lead reveal-up d-1100">{{ content.hero.lead }}</p>
-          <div class="actions hero-actions reveal-up d-1250">
-            <a class="button button-primary" href="#waitlist">Get Started</a>
-            <a class="button button-secondary" href="#product">Explore the Platform</a>
+    <div class="scroll-progress" aria-hidden="true"><span></span></div>
+
+    <section class="story" id="top" aria-labelledby="hero-title" data-story>
+      <div class="story-sticky">
+        <div class="story-sky" aria-hidden="true"></div>
+        <div class="story-floor" aria-hidden="true"></div>
+
+        <div class="story-stage" aria-hidden="true">
+          <div class="story-camera" data-camera>
+            <div class="s3 s3-card s3-tree" data-obj="tree">
+              <p class="s3-head"><span>YOUR PROJECT</span><span>3 issues</span></p>
+              <p class="s3-row"><i class="s3-dot"></i>src/</p>
+              <p class="s3-row s3-bad"><i class="s3-dot s3-dot-err"></i>app/page.tsx</p>
+              <p class="s3-row"><i class="s3-dot"></i>lib/db.ts</p>
+              <p class="s3-row s3-bad"><i class="s3-dot s3-dot-err"></i>.env.example</p>
+              <p class="s3-row"><i class="s3-dot"></i>package.json</p>
+            </div>
+
+            <div class="s3 s3-flip" data-obj="err">
+              <div class="s3-card s3-face s3-front">
+                <p class="s3-head"><span>ERROR · app/page.tsx:42</span><span>illustration</span></p>
+                <p class="s3-error">TypeError: Cannot read properties of undefined (reading 'map')</p>
+                <p class="s3-muted">at Page (app/page.tsx:42:18)</p>
+              </div>
+              <div class="s3-card s3-face s3-back">
+                <p class="s3-head"><span>IN PLAIN LANGUAGE</span><span>illustration</span></p>
+                <p class="s3-plain">The list of posts hasn't loaded yet when the page tries to show it.</p>
+                <p class="s3-plain s3-fix">Wait for the data, or show an empty state first.</p>
+              </div>
+            </div>
+
+            <div class="s3 s3-card s3-diff" data-obj="diff">
+              <p class="s3-head"><span>REVIEW CHANGE · 1 OF 3</span><span>backup saved</span></p>
+              <p class="s3-ln s3-rm">- {posts.map(p =&gt; &lt;Post {...p} /&gt;)}</p>
+              <p class="s3-ln s3-add">+ {(posts ?? []).map(p =&gt; &lt;Post {...p} /&gt;)}</p>
+              <p class="s3-btns"><span class="s3-keep">Keep change</span><span class="s3-undo">Undo</span></p>
+            </div>
+
+            <div class="s3 s3-card s3-file" data-obj="f1"><p class="s3-head"><span>lib/db.ts</span><i class="s3-dot s3-dot-err"></i></p><b></b><b></b><b></b></div>
+            <div class="s3 s3-card s3-file" data-obj="f2"><p class="s3-head"><span>app/layout.tsx</span><i class="s3-dot"></i></p><b></b><b></b><b></b></div>
+            <div class="s3 s3-card s3-file" data-obj="f3"><p class="s3-head"><span>.env.example</span><i class="s3-dot s3-dot-err"></i></p><b></b><b></b><b></b></div>
+
+            <svg class="s3 s3-path" data-obj="path" viewBox="0 0 400 200" focusable="false"><path d="M 10 170 C 120 190, 220 120, 390 20" fill="none" stroke="#38BDF8" stroke-width="2.5" stroke-dasharray="7 7" stroke-linecap="round"/></svg>
+
+            <div class="s3 s3-ring" data-obj="ring"></div>
+            <img class="s3 s3-mark" data-obj="mark" src="/assets/logo-mark-scene.png" alt="" width="336" height="222">
+            <div class="s3 s3-tile" data-obj="t1"><b>GitHub</b> · in development</div>
+            <div class="s3 s3-tile" data-obj="t2"><b>Vercel</b> · planned</div>
+            <div class="s3 s3-tile" data-obj="t3"><b>Supabase</b> · planned</div>
+            <div class="s3 s3-tile" data-obj="t4"><b>Figma</b> · planned</div>
           </div>
-          <p class="hero-note reveal-up d-1400">Early development. Not available yet. No release date has been set, and the waitlist is for early access.</p>
         </div>
 
-        <div class="hero-visual reveal-up d-600" aria-hidden="true">
-          <div class="stage">
-            <svg class="hero-connector" viewBox="0 0 100 100" preserveAspectRatio="none" focusable="false">
-              <path d="M 21 33 C 11 50, 11 70, 22 84" fill="none" stroke="#38BDF8" stroke-opacity="0.75" stroke-width="1.2" vector-effect="non-scaling-stroke" stroke-linecap="round"/>
-              <circle cx="21" cy="33" r="1.2" fill="#38BDF8"/>
-              <circle cx="22" cy="84" r="1.2" fill="#2684FF"/>
-            </svg>
-            <div class="panel panel-back">
-              <div class="panel-bar"><span></span><span></span><span></span><b>Integrations</b></div>
-              <div class="mini-grid">
-                <div class="mini-card is-selected"><span class="mini-mono">GH</span><span class="mini-name">GitHub</span><span class="badge badge-available">Available</span></div>
-                <div class="mini-card"><span class="mini-mono">VC</span><span class="mini-name">Vercel</span><span class="badge badge-coming_soon">Coming soon</span></div>
-                <div class="mini-card"><span class="mini-mono">NL</span><span class="mini-name">Netlify</span><span class="badge badge-coming_soon">Coming soon</span></div>
-                <div class="mini-card"><span class="mini-mono">SB</span><span class="mini-name">Supabase</span><span class="badge badge-coming_soon">Coming soon</span></div>
-              </div>
+        <div class="story-captions">
+          <div class="story-cap story-cap-hero is-active" data-cap="0">
+            <p class="eyebrow"><span class="eyebrow-dot" aria-hidden="true"></span>{{ content.hero.eyebrow }}</p>
+            <h1 id="hero-title" class="hero-title">{{{ blocks.heroHeadline }}}</h1>
+            <p class="lead">{{ content.hero.lead }}</p>
+            <div class="actions hero-actions">
+              <a class="button button-primary" href="#waitlist">Get Started</a>
+              <a class="button button-secondary" href="#product">Explore the Platform</a>
             </div>
-            <div class="panel panel-front">
-              <div class="details-head">
-                <span class="monogram monogram-md">GH</span>
-                <div><strong>GitHub</strong><span class="details-cat">Source control</span></div>
-                <span class="badge badge-available">Available</span>
-              </div>
-              <p class="details-sum">Read repositories, branches, commits and pull requests.</p>
-              <ul class="perm-list">
-                <li><span>Repository metadata</span><span class="access">Read only</span></li>
-                <li><span>Repository contents</span><span class="access">Read only</span></li>
-                <li><span>Pull requests</span><span class="access">Read only</span></li>
-              </ul>
-              <span class="cursor" aria-hidden="true"></span>
-            </div>
-            <div class="toast">
-              <span class="toast-dot"></span>
-              <span><b>GitHub: repository metadata</b><em>Success</em></span>
-            </div>
+            <p class="hero-note">Early development. Not available yet. No release date has been set, and the waitlist is for early access.</p>
           </div>
-          <p class="visual-caption">Sample screen, not connected to any account.</p>
+          <div class="story-cap" data-cap="1">
+            <p class="story-kicker"><span>01</span> Inspect</p>
+            <h2>See what actually broke.</h2>
+            <p>VibeHeal is designed to look at your project's setup and trace an error back to the file it came from.</p>
+            <span class="chip chip-planned">Planned</span>
+          </div>
+          <div class="story-cap" data-cap="2">
+            <p class="story-kicker"><span>02</span> Explain</p>
+            <h2>Errors, in plain language.</h2>
+            <p>Instead of a wall of stack trace, a short explanation of what went wrong and where to start.</p>
+            <span class="chip chip-planned">Planned</span>
+          </div>
+          <div class="story-cap" data-cap="3">
+            <p class="story-kicker"><span>03</span> Recover</p>
+            <h2>Review every change. Undo anything.</h2>
+            <p>A backup before changes, a file-by-file review, and undo for whatever you don't want to keep.</p>
+            <span class="chip chip-planned">Planned</span>
+          </div>
+          <div class="story-cap" data-cap="4">
+            <p class="story-kicker"><span>04</span> Connect</p>
+            <h2>Context from the tools you already use.</h2>
+            <p>Read-only connections first. GitHub is in development; Vercel, Supabase, Figma and others are planned.</p>
+            <span class="chip chip-working-in-development">In development</span>
+          </div>
         </div>
+
+        <ol class="story-rail" aria-hidden="true">
+          <li class="is-active">Start</li><li>Inspect</li><li>Explain</li><li>Recover</li><li>Connect</li>
+        </ol>
+        <p class="story-hint" aria-hidden="true">Scroll</p>
       </div>
     </section>
 
