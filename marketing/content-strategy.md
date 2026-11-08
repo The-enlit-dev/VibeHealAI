@@ -48,7 +48,7 @@ Start small. Increase only when the owner has the time.
 - Never post more than the platform allows for a normal account, and never buy or swap engagement.
 
 ## Links and the waitlist
-- The waitlist page is **not hosted yet**. Its address is not decided, and no hosting is approved. Do not include the waitlist link in any post until the owner approves a public address. Until then, use phrases like "a waitlist is coming" in drafts, and mark those items "link pending".
+- **Updated 2026-11-08:** the waitlist is live at https://vibeheal.online/#waitlist (Netlify Forms). Posts may link to it. For channels, ages and safety rules, [GTM.md](./GTM.md) takes precedence over this file.
 
 ## What to measure (honestly)
 - Replies, saves and questions (quality of engagement).

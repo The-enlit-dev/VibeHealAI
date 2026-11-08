@@ -8,6 +8,7 @@ This folder holds the marketing plan, the prompts that make drafts, and the draf
 
 | Path | What it is |
 |---|---|
+| `GTM.md` | **Start here.** Go-to-market and sales plan ($0): safety rules for a young founder, channels, phases, the self-serve sales strategy and a weekly routine |
 | `brand-guidelines.md` | Voice, words to avoid, the verified product status, and the pre-publication checklist |
 | `content-strategy.md` | Goals, cadence, the batch workflow, and the free-first publishing rules |
 | `content-calendar.md` | Suggested dates and status for each item in a batch |
