@@ -111,9 +111,49 @@ P-9 (identity), P-10 (host and cost), P-12 (key management), AU-3 and a document
 - **Includes:** all **B** requirements (PB-3, FC-6, SE-3, LD-4, WN-4, WN-5, VR-4); free signing route or documented unsigned limitation (U9); plain-language limitations and privacy notes.
 - **Done when:** the beta gate is met and the remaining risks are documented for users.
 
+## Agent track (added 2026-11-08)
+Source: [FEATURES.md](./FEATURES.md), DEC-33 and DEC-34. Every milestone needs separate owner approval. All of them depend on the core safety workflow (M1–M4), because the Agent Relay reuses its script runner, snapshots, diff review and handoff brief.
+
+### A1: Agent connectors
+- **Objective:** launch and supervise an AI coding tool the user already has, safely.
+- **Includes:**
+  - one connector first, for a tool whose terms clearly allow it to be driven (for example local models through Ollama, or Aider);
+  - a sandboxed git worktree per run;
+  - the referee rules (snapshots, protected paths, diff limits, approval for dependencies, network and deploy commands, secret redaction);
+  - the run log.
+- **Prerequisites:** a terms check for each vendor. **The Claude Code connector waits for P-1.**
+- **Done when:** a run's changes stay inside the worktree until the user approves; undo restores the project exactly; and tests show secrets never appear in prompts or logs.
+
+### A2: Agent Relay
+- **Objective:** agents calling agents, with VibeHeal as referee.
+- **Includes:**
+  - Fixer → Reviewer → Tester, with configurable roles and round limits;
+  - the live supervision timeline;
+  - the **Heal** button from a captured error.
+- **Done when:**
+  - on the test collection, a Relay run either ends with green project checks and user approval, or stops safely with everything rolled back;
+  - every agent-to-agent message is logged.
+
+### A3: Supervise external agents, and project memory
+- **Includes:**
+  - a folder watch that auto-snapshots changes made by any agent (Hermes, OpenClaw and others) and flags risky ones;
+  - a readable, editable project-memory file used in briefs.
+
+### A4: Deploy watch and recipes
+- **Includes:**
+  - read-only deploy status from the IM3 adapters, offering a Heal run when a deploy breaks;
+  - first-party Relay recipes.
+- **Depends on:** A2 and IM3.
+
+### A5: Stage 2, bring-your-own API keys
+- **Includes:**
+  - user keys in the OS keychain;
+  - built-in explanations, a Reviewer role that needs no CLI, and a project chat.
+- **Prerequisite:** the P-16 security review.
+
 ## Public beta (carefully scoped)
 - **Scope:** Windows x64, JavaScript/TypeScript npm projects only, no built-in AI.
 - **Prerequisites:** owner decisions on repository visibility (P-3), licence files (P-4) and distribution and signing.
 
 ## Later (not planned work)
-macOS/Linux, built-in AI (only via a permitted $0 path or a changed budget), other languages, accounts, design system, third-party marketplace plugins (DEC-17). *(GitHub integration moved into the integration track on 2026-10-31.)* Each needs its own decision ([PRODUCT.md §9](./PRODUCT.md#9-long-term-vision-parked-not-planned-work)).
+macOS/Linux, stage 3 paid built-in AI (P-17; see DEC-34 and the agent track), other languages, accounts, design system, third-party marketplace plugins (DEC-17). *(GitHub integration moved into the integration track on 2026-10-31.)* Each needs its own decision ([PRODUCT.md §9](./PRODUCT.md#9-long-term-vision-parked-not-planned-work)).
