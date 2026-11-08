@@ -25,6 +25,7 @@
 | Document | What it answers |
 |---|---|
 | [DECISIONS.md](./DECISIONS.md) | What the owner decided, what changed, what's pending (P-1 to P-19) |
+| [BUSINESS_PLAN.md](./BUSINESS_PLAN.md) | Business plan (2026-11-08): everything the business needs for $0 (legal with a parent, branding, website, release, support), the 7-day Diwali sprint to ship VibeHeal Guard 0.1, and the school-mode routine |
 | [FEATURES.md](./FEATURES.md) | Feature roadmap (2026-11-08): the safe agent platform, the competitor snapshot (Hermes, OpenClaw, Grok Bot, Dot), the safety model, the Agent Relay, features, ready-made automation agents, and the agent track A1–A7 |
 | [PRODUCT.md](./PRODUCT.md) | The problem, the user, the MVP workflow and scope, success measures, validation plan |
 | [ARCHITECTURE.md](./ARCHITECTURE.md) | Desktop app, backend API, integration platform, provider adapters, credentials; core components; open questions (U1–U17) |
