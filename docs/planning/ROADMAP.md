@@ -111,9 +111,47 @@ P-9 (identity), P-10 (host and cost), P-12 (key management), AU-3 and a document
 - **Includes:** all **B** requirements (PB-3, FC-6, SE-3, LD-4, WN-4, WN-5, VR-4); free signing route or documented unsigned limitation (U9); plain-language limitations and privacy notes.
 - **Done when:** the beta gate is met and the remaining risks are documented for users.
 
+## Agent track (added 2026-11-08)
+Source: [FEATURES.md](./FEATURES.md), DEC-33 to DEC-36. Every phase needs separate owner approval. Phase 1 includes the core safety workflow (M1–M4); everything after it depends on it.
+
+### A1: Safe local foundation ($0)
+- **Includes:**
+  - the permission system: manifest, file and folder picker, deny-by-default runtime, approval gates, kill switch;
+  - the local vault (OS keychain, redaction);
+  - Claude Code permission notifications through the user's own hooks;
+  - dashboard v1.
+- **Done when:** tests show an agent cannot read or write outside its chosen folders, and secrets never appear in logs or prompts.
+
+### A2: Agent runtime ($0)
+- **Includes:**
+  - tool calling through MCP, plus built-in tools (each permission-gated);
+  - bring-your-own agent connectors, starting with a terms-cleared tool (the Claude Code connector waits for P-1);
+  - bring-your-own API keys (after P-16);
+  - the Agent Relay (Fixer → Reviewer → Tester, refereed);
+  - offline mode with local models.
+- **Done when:** a Relay run either ends with green checks and user approval, or stops safely with everything rolled back, and every tool call and agent message is logged.
+
+### A3: First automation agents ($0, the user's own AI)
+- **Includes:** QA testing, Audit, SEO/GEO/AEO checker, Daily update, Blog writer (drafts only).
+- **Done when:** each runs with a minimal permission manifest and its outputs are checked against real examples.
+
+### A4: Build and talk ($0)
+- **Includes:** making agents in plain words, the block builder (for example Blockly), and voice in and out (local speech first).
+
+### A5: Ecosystem
+- **Includes:** more integrations, the reviewed and sandboxed marketplace (P-19), and apps inside the app (music first, through Spotify's official player and Web API).
+
+### A6: Outreach and media agents
+- **Includes:** Find prospects, Cold emailing, Replying to comments and emails, Making and uploading videos.
+- **Prerequisite:** the P-18 legal and privacy review. Sending always needs approval by default.
+
+### A7: Pro cloud (paid)
+- **Includes:** agents that keep running while the laptop sleeps.
+- **Prerequisite:** P-17 (pricing, hosting, accounts, billing). Not scheduled.
+
 ## Public beta (carefully scoped)
 - **Scope:** Windows x64, JavaScript/TypeScript npm projects only, no built-in AI.
 - **Prerequisites:** owner decisions on repository visibility (P-3), licence files (P-4) and distribution and signing.
 
 ## Later (not planned work)
-macOS/Linux, built-in AI (only via a permitted $0 path or a changed budget), other languages, accounts, design system, third-party marketplace plugins (DEC-17). *(GitHub integration moved into the integration track on 2026-10-31.)* Each needs its own decision ([PRODUCT.md §9](./PRODUCT.md#9-long-term-vision-parked-not-planned-work)).
+macOS/Linux, stage 3 paid built-in AI (P-17; see DEC-34 and the agent track), other languages, accounts, design system, third-party marketplace plugins (DEC-17). *(GitHub integration moved into the integration track on 2026-10-31.)* Each needs its own decision ([PRODUCT.md §9](./PRODUCT.md#9-long-term-vision-parked-not-planned-work)).

@@ -15,7 +15,8 @@
   - providers: GitHub, Vercel, Netlify, Supabase, Figma, Stripe, Shopify, Notion and Slack;
   - read-only first [DEC-21];
   - managed by a VibeHeal **backend** that holds credentials, encrypted [DEC-18, DEC-20].
-- **AI:** no built-in AI and no AI billing. The user runs their own Claude Code [DEC-06, DEC-24].
+- **AI:** staged [DEC-34]: (1) VibeHeal drives AI tools the user already has, (2) optional user-provided API keys, (3) a paid built-in tier later. No AI billing for us in stages 1 and 2.
+- **Positioning (2026-11-08):** a **safe agent platform**. Anyone can build and run agents (plain words, blocks, or voice), with a reviewed marketplace and ready-made automation agents. Safety by design is the differentiator: the user picks the exact folders an agent may touch, approves sensitive actions, and keeps private data on the laptop. The vibe-coder safety net and the **Agent Relay** (agents calling agents) stay the flagship [DEC-33 to DEC-36, [FEATURES.md](./FEATURES.md)].
 - **Cost:** $0. The backend runs locally only: no hosting, paid APIs, databases or domains [DEC-05, DEC-22].
 - **Not in scope:** VibeHeal user accounts (DEC-07, DEC-23), third-party plugins (DEC-17), provider write actions (DEC-21), deployment of the backend (DEC-22).
 
@@ -23,7 +24,9 @@
 
 | Document | What it answers |
 |---|---|
-| [DECISIONS.md](./DECISIONS.md) | What the owner decided, what changed, what's pending (P-1 to P-8) |
+| [DECISIONS.md](./DECISIONS.md) | What the owner decided, what changed, what's pending (P-1 to P-19) |
+| [BUSINESS_PLAN.md](./BUSINESS_PLAN.md) | Business plan (2026-11-08): everything the business needs for $0 (legal with a parent, branding, website, release, support), the 7-day Diwali sprint to ship VibeHeal Guard 0.1, and the school-mode routine |
+| [FEATURES.md](./FEATURES.md) | Feature roadmap (2026-11-08): the safe agent platform, the competitor snapshot (Hermes, OpenClaw, Grok Bot, Dot), the safety model, the Agent Relay, features, ready-made automation agents, and the agent track A1–A7 |
 | [PRODUCT.md](./PRODUCT.md) | The problem, the user, the MVP workflow and scope, success measures, validation plan |
 | [ARCHITECTURE.md](./ARCHITECTURE.md) | Desktop app, backend API, integration platform, provider adapters, credentials; core components; open questions (U1–U17) |
 | [SECURITY.md](./SECURITY.md) | Security and privacy requirements with IDs and stages, release gates, residual risks |
