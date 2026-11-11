@@ -12,7 +12,7 @@
   # Regenerate website/ from site/ on every deploy, so a blog post added from GitHub's web editor
   # (the content studio, DEC-32) goes live without a local build. The generator has no dependencies.
   # Netlify bills a production deploy at a flat rate, so building costs no extra credits.
-  command = "node scripts/build-site.mjs"
+  command = "node scripts/build-fix-core.mjs && node scripts/build-site.mjs"
 
 [build.environment]
   NODE_VERSION = "22"

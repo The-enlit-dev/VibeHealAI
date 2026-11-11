@@ -1,0 +1,74 @@
+    <section class="page-hero" aria-labelledby="fix-title">
+      <div class="container narrow">
+        <p class="section-kicker">Free tool</p>
+        <h1 id="fix-title">Understand your error in plain English</h1>
+        <p class="lead">Paste the error from your terminal. VibeHeal explains the common ones using built-in rules, hides anything that looks like a secret, and prepares a safe brief for the AI tool you already use.</p>
+        <p class="help fix-privacy"><strong>Private by design.</strong> This runs in your browser. What you paste is not uploaded, saved or sent to any AI. It is rule-based, so it only recognises common errors, and says so when it doesn't.</p>
+      </div>
+    </section>
+
+    <div class="container narrow fix">
+      <noscript><p class="auth-status">This tool needs JavaScript to run. Nothing is sent anywhere.</p></noscript>
+
+      <form class="studio-card fix-form" id="fix-form" novalidate hidden>
+        <div class="field">
+          <label for="fix-error">The error <span class="field-hint">(copy it from your terminal or browser)</span></label>
+          <textarea id="fix-error" name="errorText" rows="9" spellcheck="false" autocomplete="off" aria-describedby="fix-error-help fix-error-message" required></textarea>
+          <p class="help" id="fix-error-help">Include the lines above and below the red text if you can. Long output is fine.</p>
+          <p class="field-error" id="fix-error-message" role="alert" hidden></p>
+        </div>
+
+        <div class="field">
+          <label for="fix-command">The command that failed <span class="field-hint">(optional)</span></label>
+          <input id="fix-command" name="command" type="text" maxlength="200" placeholder="npm run build" spellcheck="false" autocomplete="off" aria-describedby="fix-command-message">
+          <p class="field-error" id="fix-command-message" role="alert" hidden></p>
+        </div>
+
+        <details class="field fix-details">
+          <summary>Add your package.json for sharper answers <span class="field-hint">(optional)</span></summary>
+          <label class="sr-only" for="fix-package">package.json contents</label>
+          <textarea id="fix-package" name="packageJson" rows="6" spellcheck="false" autocomplete="off" aria-describedby="fix-package-message"></textarea>
+          <p class="help">Only package names, version ranges, script names and the Node.js version are read. Script commands are ignored.</p>
+          <p class="field-error" id="fix-package-message" role="alert" hidden></p>
+        </details>
+
+        <div class="fix-actions">
+          <button class="button button-primary" type="submit">Explain this error</button>
+          <button class="button button-secondary" type="reset" id="fix-clear">Clear</button>
+        </div>
+
+        <div class="fix-examples">
+          <p class="help">No error handy? Try an example (made-up text, not from your project):</p>
+          <ul class="fix-example-list">
+            <li><button class="button button-secondary" type="button" data-fix-example="missing-package">Missing package</button></li>
+            <li><button class="button button-secondary" type="button" data-fix-example="port">Port in use</button></li>
+            <li><button class="button button-secondary" type="button" data-fix-example="env">Missing setting</button></li>
+            <li><button class="button button-secondary" type="button" data-fix-example="types">TypeScript error</button></li>
+          </ul>
+        </div>
+      </form>
+
+      <div class="fix-results" id="fix-results" aria-live="polite" tabindex="-1" hidden>
+        <p class="auth-status" id="fix-summary"></p>
+        <p class="help fix-redaction" id="fix-redaction" hidden></p>
+        <div id="fix-cards"></div>
+
+        <section class="studio-card" aria-labelledby="fix-brief-title">
+          <h2 id="fix-brief-title">Brief for your AI tool</h2>
+          <p class="help">Copy this into Claude Code, Cursor or any assistant you use. VibeHeal sends it nowhere: you do. Read it first, because automatic hiding of secrets can miss unusual formats.</p>
+          <label class="sr-only" for="fix-brief">Brief text</label>
+          <textarea id="fix-brief" rows="14" readonly spellcheck="false"></textarea>
+          <div class="fix-actions">
+            <button class="button button-primary" type="button" id="fix-copy">Copy the brief</button>
+            <p class="fix-copy-status" id="fix-copy-status" role="status"></p>
+          </div>
+        </section>
+
+        <details class="studio-card fix-redacted">
+          <summary>The error as VibeHeal read it (secrets hidden)</summary>
+          <pre id="fix-redacted-error" tabindex="0"></pre>
+        </details>
+      </div>
+
+      <p class="help fix-footnote">Only errors in JavaScript and TypeScript projects are covered for now. Rules cover missing packages and files, ports in use, missing settings, Node.js versions, TypeScript errors, npm install problems and folder mix-ups. <a href="/faq/">Read the FAQ</a>.</p>
+    </div>

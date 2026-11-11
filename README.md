@@ -23,6 +23,7 @@ There is **no built-in AI**. Users run their own AI tool, such as Claude Code, a
 | GitHub (IM2): read-only GitHub App integration | **Implemented and tested against a fake GitHub API only.** Shows **Not configured** until a GitHub App is registered ([setup](./docs/integrations/GITHUB_APP_SETUP.md)). **Not tested live** |
 | Vercel, Netlify, Supabase, Figma, Stripe, Shopify, Notion, Slack | **Coming soon:** catalog entries only, and they cannot be connected |
 | Core broken-project workflow (Project Gate, script runner, snapshots, diff review, undo, handoff brief) | **Not implemented yet** (milestones M1–M4) |
+| **V1 Error Explainer** at `/fix/` (paste an error: offline rule-based explanation, secret redaction, copy-ready AI brief) | **Built; tested locally** (browser test + unit tests). **Not deployed.** See [docs/V1.md](./docs/V1.md) |
 | Hosting | **None.** The backend runs locally only. Nothing is deployed |
 
 ## Local setup

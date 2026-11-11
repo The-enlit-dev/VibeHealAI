@@ -62,6 +62,11 @@ P-9 (identity), P-10 (host and cost), P-12 (key management), AU-3 and a document
 
 ---
 
+## V1 web Error Explainer (added 2026-11-11, DEC-33)
+- **Built:** the pure core in `shared/explainer/` (rules, redaction, brief) and the `/fix/` page. See [../V1.md](../V1.md).
+- **Tested locally:** unit tests and a headless-browser run of the page. Not yet deployed.
+- **Next:** measure rule coverage against a test collection (U2); reuse the core in the desktop app with M1 to M3.
+
 ## Core safety-workflow track (unchanged from v3)
 
 ## S0: Decisions and validation preparation (no code)
