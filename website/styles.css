@@ -2777,3 +2777,137 @@ html.js .flow-track .flow-step {
 .studio-posts li {
   margin-bottom: 6px;
 }
+
+/* ---------- Explain my error (/fix/) ---------- */
+
+.fix {
+  display: grid;
+  gap: 20px;
+  padding-bottom: 56px;
+}
+
+.fix-privacy {
+  max-width: 62ch;
+}
+
+.fix-form textarea,
+.fix-results textarea {
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.fix-details summary {
+  cursor: pointer;
+  font-weight: 650;
+  margin-bottom: 8px;
+}
+
+.fix-details textarea {
+  margin-top: 6px;
+}
+
+.fix-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+.fix-examples {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--color-line);
+}
+
+.fix-example-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+}
+
+.fix-results {
+  display: grid;
+  gap: 20px;
+  outline: none;
+}
+
+.fix-results[hidden],
+.fix-form[hidden] {
+  display: none;
+}
+
+.fix-card-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 16px;
+}
+
+.fix-card-head h2 {
+  margin: 0;
+}
+
+.fix-card h3 {
+  font-size: 1rem;
+  margin: 18px 0 6px;
+}
+
+.fix-summary {
+  font-size: 1.05rem;
+  margin-top: 12px;
+}
+
+.fix-card ol,
+.fix-card ul {
+  padding-left: 20px;
+  margin: 0;
+}
+
+.fix-card li {
+  margin-bottom: 6px;
+}
+
+.fix-evidence,
+.fix-redacted pre {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  background: var(--color-bg);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius);
+  padding: 12px;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  max-height: 320px;
+  margin: 0;
+}
+
+.fix-redacted summary {
+  cursor: pointer;
+  font-weight: 650;
+}
+
+.fix-redacted pre {
+  margin-top: 12px;
+}
+
+.fix-copy-status {
+  margin: 0;
+  color: var(--color-success);
+  font-weight: 600;
+}
+
+.fix-footnote {
+  margin-top: 0;
+}
+
+@media (max-width: 520px) {
+  .fix-actions .button {
+    width: 100%;
+  }
+}

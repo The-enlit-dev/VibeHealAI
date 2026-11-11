@@ -472,6 +472,19 @@ const PAGES = [
     indexable: true,
   },
   {
+    key: "fix",
+    path: "/fix/",
+    file: "fix/index.html",
+    body: "pages/fix.html",
+    title: (b) => `Explain my error in plain English | ${b.siteName}`,
+    description: () =>
+      "Paste a JavaScript or TypeScript error and get a plain-English explanation plus a secret-free brief for your AI tool. Runs in your browser, uploads nothing.",
+    schemaType: "WebPage",
+    indexable: true,
+    script: "/fix.js",
+    moduleScript: true,
+  },
+  {
     key: "blog",
     path: "/blog/",
     file: "blog/index.html",
@@ -571,7 +584,7 @@ export function buildSite({ root = defaultRoot, siteUrl } = {}) {
       : "<p>To ask for your email to be removed, reply to any email we send you. A direct contact address will be published here before the waitlist opens to the public.</p>",
   };
 
-  const renderPage = ({ key, pagePath, file, bodyTemplate, title, description, schemaType, indexable, script, ogType = "website", graphExtra = [], pageNodeExtra = {}, extra = {} }) => {
+  const renderPage = ({ key, pagePath, file, bodyTemplate, title, description, schemaType, indexable, script, moduleScript = false, ogType = "website", graphExtra = [], pageNodeExtra = {}, extra = {} }) => {
     const canonical = pagePath === "/404.html" ? `${base}/404.html` : `${base}${pagePath}`;
     const pageInfo = { canonical, title, description, schemaType };
     const graph = [websiteNode(brand, base), { ...pageNode(brand, base, pageInfo), ...pageNodeExtra }, ...graphExtra];
@@ -589,15 +602,13 @@ export function buildSite({ root = defaultRoot, siteUrl } = {}) {
         ogType,
         ogUrl: canonical,
         ogImage: `${base}${brand.socialImage.path}`,
-        key: page.key,
-        canonicalTag: page.indexable ? `<link rel="canonical" href="${escapeHtml(canonical)}">` : "",
-        jsonLd: page.indexable ? jsonLdScript({ "@context": "https://schema.org", "@graph": graph }) : "",
-        script: page.script ? '<script src="/app.js" defer></script>' + (page.key === "home" ? '\n  <script src="/landing.js" defer></script>\n  <script src="/landing-motion.js" defer></script>' : "") : "",
-        verificationTags: page.key === "home" ? verificationTags(brand) : "",
         key,
         canonicalTag: indexable ? `<link rel="canonical" href="${escapeHtml(canonical)}">` : "",
         jsonLd: indexable ? jsonLdScript({ "@context": "https://schema.org", "@graph": graph }) : "",
-        script: script ? `<script src="${escapeHtml(script)}" defer></script>` : "",
+        script: script
+          ? `<script src="${escapeHtml(script)}" ${moduleScript ? 'type="module"' : "defer"}></script>` +
+            (key === "home" ? '\n  <script src="/landing.js" defer></script>\n  <script src="/landing-motion.js" defer></script>' : "")
+          : "",
         verificationTags: key === "home" ? verificationTags(brand) : "",
         authScripts: auth.scripts,
         socialImageWidth: String(brand.socialImage.width),
@@ -620,6 +631,7 @@ export function buildSite({ root = defaultRoot, siteUrl } = {}) {
       schemaType: page.schemaType,
       indexable: page.indexable,
       script: page.script,
+      moduleScript: page.moduleScript,
       graphExtra: page.faqPage ? [faqPageNode(faq, { canonical })] : [],
       pageNodeExtra:
         page.key === "blog"
