@@ -589,15 +589,13 @@ export function buildSite({ root = defaultRoot, siteUrl } = {}) {
         ogType,
         ogUrl: canonical,
         ogImage: `${base}${brand.socialImage.path}`,
-        key: page.key,
-        canonicalTag: page.indexable ? `<link rel="canonical" href="${escapeHtml(canonical)}">` : "",
-        jsonLd: page.indexable ? jsonLdScript({ "@context": "https://schema.org", "@graph": graph }) : "",
-        script: page.script ? '<script src="/app.js" defer></script>' + (page.key === "home" ? '\n  <script src="/landing.js" defer></script>\n  <script src="/landing-motion.js" defer></script>' : "") : "",
-        verificationTags: page.key === "home" ? verificationTags(brand) : "",
         key,
         canonicalTag: indexable ? `<link rel="canonical" href="${escapeHtml(canonical)}">` : "",
         jsonLd: indexable ? jsonLdScript({ "@context": "https://schema.org", "@graph": graph }) : "",
-        script: script ? `<script src="${escapeHtml(script)}" defer></script>` : "",
+        script: script
+          ? `<script src="${escapeHtml(script)}" defer></script>` +
+            (key === "home" ? '\n  <script src="/landing.js" defer></script>\n  <script src="/landing-motion.js" defer></script>' : "")
+          : "",
         verificationTags: key === "home" ? verificationTags(brand) : "",
         authScripts: auth.scripts,
         socialImageWidth: String(brand.socialImage.width),
