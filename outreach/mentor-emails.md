@@ -25,7 +25,7 @@ I'm [Founder name], building VibeHealAI, an early-stage, free Windows desktop ap
 
 I saw that vibe-revert flags risky changes by AI agents and restores pre-session state, so I'd value your view on one thing: which kinds of changes do you think are most worth flagging for non-expert users, and which flags tend to create noise?
 
-To be transparent: this is very early, unfunded, with no paid roles, and I'm not asking for an ongoing commitment. Reply only if convenient. https://vibeheal.live
+To be transparent: this is very early, unfunded, with no paid roles, and I'm not asking for an ongoing commitment. Reply only if convenient. https://vibeheal.online (overview; product not public yet) · https://vibeheal.live (community hub)
 
 Thanks,
 [Founder name]

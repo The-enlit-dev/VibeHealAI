@@ -1,4 +1,19 @@
-# Outreach strategy (v1, 2026-11-11)
+# Outreach strategy (v2, 2026-11-11)
+
+## Round 2 update (US/India open-source collaborators)
+- Priority order: US maintainers, US designers, India maintainers, India designers. Professional and project criteria only.
+- Verified so far: 8 US and 5 India collaborators (targets 20 and 10). Detail in `open-source-research-report.md` and `prospects.csv`.
+- Every draft states the work is **unpaid and voluntary**, with no pay, equity, employment or future compensation. No evidence yet that any prospect volunteers for outside projects, so each approach is a respectful invitation with an easy opt-out.
+- Domains: `https://vibeheal.online` is the official public site (product not public yet); `https://vibeheal.live` is the development, beta, contributor and feedback hub. Do not mix them.
+- Send nothing (email, LinkedIn or DM) until the founder approves each recipient and message.
+
+## Netlify failures on PR #16 (investigated)
+- Could not read the Netlify deploy logs: the app.netlify.com pages need a login. So the log's text is **not** verified.
+- Reproduced locally by running the site build the Netlify config uses (`node scripts/build-site.mjs`). It fails with `ReferenceError: page is not defined` at `scripts/build-site.mjs:592` (inside `renderPage`, which destructures `key`, `indexable`, `script` etc. but is later read as `page.key`, `page.indexable`, `page.script`).
+- `scripts/` and `site/` are identical to `origin/main`, so the failure is not caused by this PR (which only adds `outreach/`). It affects both Netlify sites (`brixoai`, `vibehealai`).
+- Not fixed: you asked me not to change unrelated website files. A founder or site owner should fix `build-site.mjs` in a separate PR, then compare with the Netlify log to confirm this is the same error.
+
+## Round 1 notes (kept)
 
 ## Honest status vs. targets
 | Target | Goal | Delivered |
